@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Sun, 8 Jun 2025 00:58:12 +0800
+Subject: [PATCH] Rebrand to Lophine
+
+
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index fcf599846a38beeb8f094d5376c01d5a690f7a2f..9ddcb2b5ced68ff619516ddbac2327c23e316438 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -108,7 +108,8 @@ public class Main {
+                 JvmProfiler.INSTANCE.start(Environment.SERVER);
+             }
+ 
+-            me.earthme.luminol.config.LuminolConfig.preLoadConfig(); // Luminol - Luminol config
++            me.earthme.lophine.config.LophineConfig.initConfigs(); // Lophine - Lophine config
++            me.earthme.lophine.config.LophineConfig.preLoad(); // Luminol - Luminol config // Lophine - Lophine config
+             io.papermc.paper.plugin.PluginInitializerManager.load(optionSet); // Paper
+             Bootstrap.bootStrap();
+             Bootstrap.validate();
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 5290b9cb524160717fb40704fb10fc0d0a37941b..ba0cdba050cd3bf9231e15dd9543d34f37d9dae5 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -171,8 +171,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
+         this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
+         // Paper end - initialize global and world-defaults configuration
+-        me.earthme.luminol.config.LuminolConfig.finalizeLoadConfig(); //Luminol - load config file
+-        me.earthme.luminol.config.LuminolConfig.setupLatch(); //Luminol - load config file
++        me.earthme.lophine.config.LophineConfig.loadConfigFiles(); //Luminol - load config file // Lophine - load config file
+         if (false) this.server.spark.enableEarlyIfRequested(); // Paper - spark // Luminol - Force disable builtin spark
+         // Paper start - fix converting txt to json file; convert old users earlier after PlayerList creation but before file load/save
+         if (this.convertOldUsers()) {

@@ -73,10 +73,10 @@ dependencies {
 可查看 [Contributing](./docs/CONTRIBUTING.md)
 
 ## BStats
+Temporarily use Luminol's.
 ![bStats](https://bstats.org/signatures/server-implementation/Luminol.svg "bStats")
 
 ## 特别感谢
-Temporarily use Luminol's.
 <b>感谢[LegacyLands](https://github.com/LegacyLands)对本项目的赞助,如果你想开发一些跨folia/非folia平台的插件,[legacy-lands-library](https://github.com/LegacyLands/legacy-lands-library/)将会是个不错的lib</b>
 
 ![legacy-lands-logo](public/image/legacy-lands-logo.png)
