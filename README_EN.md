@@ -1,4 +1,4 @@
-[//]: # (<img src="./public/image/Lophine_LL方_白_字.png" alt="Logo" align="right" width="250">)
+<img src="public/image/lophine/lophine3.png" alt="Logo" align="right" width="250">
 
 # Lophine
 
@@ -25,7 +25,7 @@ Any versions are available in the [release](https://github.com/LuminolMC/Lightin
 ## Build
 To build a paperclip jar, you need to run the following command. You can find the jar in build/libs(Note: JDK21 is needed)
  ```shell
- ./gradlew applyPatches && ./gradlew createMojmapPaperclipJar
+ ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```
 ## Using API
 For gradle:

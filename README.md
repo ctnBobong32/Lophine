@@ -1,4 +1,4 @@
-[//]: # (<img src="./public/image/Lophine_LL方_白_字.png" alt="Logo" align="right" width="250">)
+<img src="public/image/lophine/lophine3.png" alt="Logo" align="right" width="250">
 
 # Lophine
 
