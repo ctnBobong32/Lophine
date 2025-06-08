@@ -2,12 +2,13 @@
 
 # Lophine
 
-<h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的目标</h4>
+<h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的实现</h4>
 
-[![License](https://img.shields.io/github/license/LuminolMC/LightingLuminol?style=flat-square)](LICENSE.md)
-[![Issues](https://img.shields.io/github/issues/LuminolMC/LightingLuminol?style=flat-square)](https://github.com/LuminolMC/LightingLuminol/issues)
-![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/LightingLuminol?style=flat-square)
-![GitHub all releases](https://img.shields.io/github/downloads/LuminolMC/LightingLuminol/total?style=flat-square)
+[![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
+[![Issues](https://img.shields.io/github/issues/LuminolMC/Lophine?style=flat-square)](https://github.com/LuminolMC/Lophine/issues)
+![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/Lophine?style=flat-square)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/LuminolMC/Lophine?style=flat-square)
+![GitHub all releases](https://img.shields.io/github/downloads/LuminolMC/Lophine/total?style=flat-square)
 
 [English](./README_EN.md) | **中文**
 
@@ -84,10 +85,10 @@ Temporarily use Luminol's.
 ## 请给我们一个 ⭐Star！
 > 你的每一个免费的 ⭐Star 就是我们每一个前进的动力。
 
-<a href="https://star-history.com/#LuminolMC/Luminol&LuminolMC/LightingLuminol&Date">
+<a href="https://star-history.com/#LuminolMC/Luminol&LuminolMC/LightingLuminol&LuminolMC/Lophine&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol&type=Date" />
-    <img alt="Star历史表" src="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol%2CLuminolMC/Lophine&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol%2CLuminolMC/Lophine&type=Date" />
+    <img alt="Star历史表" src="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol%2CLuminolMC/Lophine&type=Date" />
   </picture>
 </a>
