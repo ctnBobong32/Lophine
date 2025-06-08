@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/config/modules/removed/RemovedConfig.java
-@@ -1,0 +_,26 @@
+@@ -1,0 +_,25 @@
 +package me.earthme.lophine.config.modules.removed;
 +
 +import me.earthme.luminol.config.EnumConfigCategory;
@@ -11,7 +11,6 @@
 +
 +public class RemovedConfig implements IConfigModule {
 +    @TransformedConfig(name = "example", category = {"removed", "example"}, transform = false)
-+    @DoNotLoad
 +    @ConfigInfo(baseName = "removed", comments =
 +            """
 +                    RemovedConfig redirect to here, no any function.""")

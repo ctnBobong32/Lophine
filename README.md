@@ -1,6 +1,6 @@
-<img src="./public/image/LightingLuminol_LL方_白_字.png" alt="Logo" align="right" width="250">
+[//]: # (<img src="./public/image/Lophine_LL方_白_字.png" alt="Logo" align="right" width="250">)
 
-# LightingLuminol
+# Lophine
 
 <h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的目标</h4>
 

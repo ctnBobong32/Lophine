@@ -1,0 +1,154 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Tue, 29 Apr 2025 23:03:56 +0800
+Subject: [PATCH] Add config to enable Cross Region Damage trace
+
+
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..1764875b9024569671bf2be537afb8b492f79102 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -1330,6 +1330,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+             this.awardStat(Stats.ENTITY_KILLED_BY.get(killCredit.getType()));
+             killCredit.awardKillScore(this, cause);
+             this.createWitherRose(killCredit);
++        // Luminol Start - Cross Region Damage trace
++        } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++            final LivingEntity entitylivingnew = this.getKillCreditOrigin();
++            if (entitylivingnew != null) {
++                this.damageTransferToAsync(entitylivingnew, cause);
++            }
++        // Luminol End - Cross Region Damage trace
+         }
+ 
+         this.level().broadcastEntityEvent(this, (byte)3);
+@@ -1353,6 +1360,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+     }
+     // Leaves end - exp fix
+ 
++    // Luminol Start - Cross Region Damage trace
++    private void damageTransferToAsync(LivingEntity entity, DamageSource cause) {
++        // Operations running on current entity
++        this.awardStat(Stats.ENTITY_KILLED_BY.get(entity.getType()));
++        this.createWitherRose(entity);
++
++        // the entity might be in another tickregion sometimes, so we need to schedule the task onto the entity
++        // to ensure thread safe
++        entity.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
++            try {
++                nmsEntity.awardKillScore(this, cause);
++            } catch (Throwable ex) {
++                LOGGER.error(ex.getMessage(), ex);
++            }
++        }, null, 1L );
++    }
++    // Luminol End - Cross Region Damage trace
++
+     private void tellNeutralMobsThatIDied() {
+         AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
+         this.level()
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..063d682ae6cde044717a32402785b7a20ea8a351 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -1191,6 +1191,29 @@ public abstract class LivingEntity extends Entity implements Attackable {
+         }
+     }
+ 
++    // Luminol Start - raid revert adapt Cross Region Damage trace
++    public boolean addEffect(MobEffectInstance effectInstance, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, boolean fireEvent, boolean async) {
++        if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(entity)) {
++            return addEffect(effectInstance, entity, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true);
++        } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++            postToEntityThreadAddEffect(effectInstance, entity, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true);
++            return true;
++        }
++        return false;
++    }
++
++    private void postToEntityThreadAddEffect(MobEffectInstance effectInstance, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, boolean fireEvent) {
++        if (entity != null)
++            entity.getBukkitEntity().taskScheduler.schedule((Entity nmsEntity) -> {
++                try {
++                    addEffect(effectInstance, nmsEntity, cause, fireEvent);
++                } catch (Throwable ex) {
++                    LOGGER.error(ex.getMessage(), ex);
++                }
++            }, null, 1L );
++    }
++    // Luminol End - raid revert adapt Cross Region Damage trace
++
+     public boolean canBeAffected(MobEffectInstance effectInstance) {
+         if (this.getType().is(EntityTypeTags.IMMUNE_TO_INFESTED)) {
+             return !effectInstance.is(MobEffects.INFESTED);
+@@ -1916,6 +1939,13 @@ public abstract class LivingEntity extends Entity implements Attackable {
+             final LivingEntity killer = this.getKillCredit();
+             if (killer != null) {
+                 killer.awardKillScore(this, damageSource);
++            // Luminol Start - Cross Region Damage trace
++            } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++                final LivingEntity killernew = this.getKillCreditOrigin();
++                if (killernew != null) {
++                    this.damageTransferToAsync(killernew, damageSource);
++                }
++            // Luminol End - Cross Region Damage trace
+             }
+         }); // Paper end
+         this.postDeathDropItems(deathEvent); // Paper
+@@ -1926,6 +1956,18 @@ public abstract class LivingEntity extends Entity implements Attackable {
+         return deathEvent; // Paper
+     }
+ 
++    // Luminol Start - Cross Region Damage trace
++    private void damageTransferToAsync(LivingEntity entity, DamageSource damageSource) {
++        entity.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
++            try {
++                nmsEntity.awardKillScore(this, damageSource);
++            } catch (Throwable ex) {
++                LOGGER.error(ex.getMessage(), ex);
++            }
++        }, null, 1L );
++    }
++    // Luminol End - Cross Region Damage trace
++
+     protected void dropEquipment(ServerLevel level) {
+     }
+     protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
+@@ -2524,6 +2566,18 @@ public abstract class LivingEntity extends Entity implements Attackable {
+         }
+     }
+ 
++    // Luminol Start - Cross Region Damage trace
++    @Nullable
++    public LivingEntity getKillCreditOrigin() {
++        if (this.lastHurtByPlayer != null) {
++            return this.lastHurtByPlayer.getEntity(this.level(), Player.class);
++        } else if (this.lastHurtByMob != null) {
++            return this.lastHurtByMob.getEntity(this.level(), LivingEntity.class);
++        }
++        return null;
++    }
++    // Luminol End - Cross Region Damage trace
++
+     public final float getMaxHealth() {
+         return (float)this.getAttributeValue(Attributes.MAX_HEALTH);
+     }
+diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
+index b2bb9b0ff94a7e463ebc4e59fe4378e022e52843..4b72db3350f2990b00076fffb9df811560db8207 100644
+--- a/net/minecraft/world/entity/raid/Raider.java
++++ b/net/minecraft/world/entity/raid/Raider.java
+@@ -156,7 +156,13 @@ public abstract class Raider extends PatrollingMonster {
+                     net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, me.earthme.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
+ 
+                     if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
+-                        entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
++                        if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++                            // Luminol start - Raid changes adapt DamageSource trace
++                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true, true);
++                        } else {
++                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
++                        }
++                        // Luminol end - Raid changes adapt DamageSource trace
+                     }
+                     this.setPatrolLeader(false);
+                 }
