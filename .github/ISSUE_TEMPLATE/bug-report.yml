@@ -4,6 +4,7 @@ description:
   Report issues with plugin incompatbility or other behavior related issues.
 labels:
   - bug
+  - pending
 body:
   - type: markdown
     attributes:

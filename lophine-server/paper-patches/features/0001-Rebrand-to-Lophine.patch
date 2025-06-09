@@ -168,7 +168,7 @@ index fb63e2a3205ea9f7aaee0ff0f4dc0cc1a5268507..645f2f41de74f4461685c753dcd6cfc5
                      );
                  }
 diff --git a/src/main/java/me/earthme/luminol/config/LuminolConfig.java b/src/main/java/me/earthme/luminol/config/LuminolConfig.java
-index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb9700e7b466 100644
+index 57b1f606d2f4197e1f68d367bf63e04ce2fe1534..01f109fc02590d22a42676f35f23ae72ed08ac36 100644
 --- a/src/main/java/me/earthme/luminol/config/LuminolConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/LuminolConfig.java
 @@ -29,22 +29,33 @@ import java.util.jar.JarEntry;
@@ -276,7 +276,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          final EnumConfigCategory category = singleConfigModule.getCategory();
  
          Field[] fields = singleConfigModule.getClass().getDeclaredFields();
-@@ -200,7 +211,7 @@ public class LuminolConfig {
+@@ -203,7 +214,7 @@ public class LuminolConfig {
          }
      }
  
@@ -285,7 +285,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          configFileInstance.remove(name);
          Object configAtPath = configFileInstance.get(String.join(".", keys));
          if (configAtPath instanceof UnmodifiableConfig && ((UnmodifiableConfig) configAtPath).isEmpty()) {
-@@ -208,7 +219,7 @@ public class LuminolConfig {
+@@ -211,7 +222,7 @@ public class LuminolConfig {
          }
      }
  
@@ -294,7 +294,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          configFileInstance.remove(String.join(".", keys));
          Object configAtPath = configFileInstance.get(String.join(".", Arrays.copyOfRange(keys, 1, keys.length)));
          if (configAtPath instanceof UnmodifiableConfig && ((UnmodifiableConfig) configAtPath).isEmpty()) {
-@@ -216,11 +227,11 @@ public class LuminolConfig {
+@@ -219,11 +230,11 @@ public class LuminolConfig {
          }
      }
  
@@ -308,7 +308,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          if (configFileInstance.contains(key) && configFileInstance.get(key) != null) {
              stagedConfigMap.put(key, value);
              return true;
-@@ -228,7 +239,7 @@ public class LuminolConfig {
+@@ -231,7 +242,7 @@ public class LuminolConfig {
          return false;
      }
  
@@ -317,7 +317,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          if (!targetType.isAssignableFrom(value.getClass())) {
              try {
                  if (targetType == Integer.class) {
-@@ -252,27 +263,27 @@ public class LuminolConfig {
+@@ -255,27 +266,27 @@ public class LuminolConfig {
          return value;
      }
  
@@ -351,7 +351,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          List<String> allPaths = getAllConfigPaths(partialPath);
          List<String> result = new ArrayList<>();
  
-@@ -292,13 +303,13 @@ public class LuminolConfig {
+@@ -295,13 +306,13 @@ public class LuminolConfig {
          return result;
      }
  
@@ -367,7 +367,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          Set<Class<?>> classes = new LinkedHashSet<>();
          String packageDirName = pack.replace('.', '/');
          Enumeration<URL> dirs;
-@@ -329,7 +340,7 @@ public class LuminolConfig {
+@@ -332,7 +343,7 @@ public class LuminolConfig {
          return classes;
      }
  
@@ -376,7 +376,7 @@ index da945b930ed8ef24a907e9c397efa115d128a3d2..f9994cb3134accd2d43ae5de950fdb97
          File dir = new File(packagePath);
  
          if (!dir.exists() || !dir.isDirectory()) {
-@@ -353,7 +364,7 @@ public class LuminolConfig {
+@@ -356,7 +367,7 @@ public class LuminolConfig {
          }
      }
  

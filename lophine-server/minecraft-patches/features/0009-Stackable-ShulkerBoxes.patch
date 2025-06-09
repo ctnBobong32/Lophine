@@ -1,0 +1,409 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 9 Jun 2025 19:23:10 +0800
+Subject: [PATCH] Stackable ShulkerBoxes
+
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+Some of changes is a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/9d32c5bd3df7c76055aff886ed9efda02e45a45a/leaves-server/minecraft-patches/features/0034-Stackable-ShulkerBoxes.patch)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/net/minecraft/commands/arguments/item/ItemInput.java b/net/minecraft/commands/arguments/item/ItemInput.java
+index 643797124fe5a4489d0b7419b7e600c04f283ef2..3c0d01d444210029b6380417c6ee0e6408f89c18 100644
+--- a/net/minecraft/commands/arguments/item/ItemInput.java
++++ b/net/minecraft/commands/arguments/item/ItemInput.java
+@@ -39,8 +39,9 @@ public class ItemInput {
+     public ItemStack createItemStack(int count, boolean allowOversizedStacks) throws CommandSyntaxException {
+         ItemStack itemStack = new ItemStack(this.item, count);
+         itemStack.applyComponents(this.components);
+-        if (allowOversizedStacks && count > itemStack.getMaxStackSize()) {
+-            throw ERROR_STACK_TOO_BIG.create(this.getItemName(), itemStack.getMaxStackSize());
++        int maxCount = me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack); // Lophine - Stackable ShulkerBoxes
++        if (allowOversizedStacks && count > maxCount) { // Lophine - Stackable ShulkerBoxes
++            throw ERROR_STACK_TOO_BIG.create(this.getItemName(), maxCount); // Lophine - Stackable ShulkerBoxes
+         } else {
+             return itemStack;
+         }
+diff --git a/net/minecraft/server/commands/GiveCommand.java b/net/minecraft/server/commands/GiveCommand.java
+index c1c0dea9f5ac3101c2f12714c8dd460457d45cb7..f94fc39297caebd0cb14d7b71c865f13b5c3b17c 100644
+--- a/net/minecraft/server/commands/GiveCommand.java
++++ b/net/minecraft/server/commands/GiveCommand.java
+@@ -52,7 +52,7 @@ public class GiveCommand {
+     private static int giveItem(CommandSourceStack source, ItemInput item, Collection<ServerPlayer> targets, int count) throws CommandSyntaxException {
+         ItemStack itemStack = item.createItemStack(1, false);
+         final Component displayName = itemStack.getDisplayName(); // Paper - get display name early
+-        int maxStackSize = itemStack.getMaxStackSize();
++        int maxStackSize = me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack); // Lophine - Stackable ShulkerBoxes
+         int i = maxStackSize * 100;
+         if (count > i) {
+             source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", i, itemStack.getDisplayName()));
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 4fc3c9f2b04711569c12a0efa027601fdd0a40b5..e1e68cc934f8b5a8606a553f3e0a939c61a70377 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -3056,7 +3056,7 @@ public class ServerGamePacketListenerImpl
+                                             } else if (slot.mayPlace(cursor)) {
+                                                 if (ItemStack.isSameItemSameComponents(clickedItem, cursor)) {
+                                                     int toPlace = packet.buttonNum() == 0 ? cursor.getCount() : 1;
+-                                                    toPlace = Math.min(toPlace, clickedItem.getMaxStackSize() - clickedItem.getCount());
++                                                    toPlace = Math.min(toPlace, me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(clickedItem) - clickedItem.getCount()); // Lophine - Stackable ShulkerBoxes
+                                                     toPlace = Math.min(toPlace, slot.container.getMaxStackSize() - clickedItem.getCount());
+                                                     if (toPlace == 1) {
+                                                         action = InventoryAction.PLACE_ONE;
+@@ -3092,7 +3092,7 @@ public class ServerGamePacketListenerImpl
+                                                 }
+                                             } else if (ItemStack.isSameItemSameComponents(cursor, clickedItem)) {
+                                                 if (clickedItem.getCount() >= 0) {
+-                                                    if (clickedItem.getCount() + cursor.getCount() <= cursor.getMaxStackSize()) {
++                                                    if (clickedItem.getCount() + cursor.getCount() <= me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(cursor)) { // Lophine - Stackable ShulkerBoxes
+                                                         // As of 1.5, this is result slots only
+                                                         action = InventoryAction.PICKUP_ALL;
+                                                     }
+@@ -3351,6 +3351,7 @@ public class ServerGamePacketListenerImpl
+                         this.player.containerMenu.broadcastFullState();
+                     } else {
+                         this.player.containerMenu.broadcastChanges();
++                        if (me.earthme.lophine.utils.ShulkerBoxesUtil.shouldCheck()) this.player.containerMenu.broadcastCarriedItem(); // Lophine - Stackable ShulkerBoxes
+                     }
+                     if (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.updateEquipmentOnPlayerActions) this.player.detectEquipmentUpdates(); // Paper - Force update attributes.
+                 }
+@@ -3463,7 +3464,7 @@ public class ServerGamePacketListenerImpl
+             }
+ 
+             boolean flag1 = packet.slotNum() >= 1 && packet.slotNum() <= 45;
+-            boolean flag2 = itemStack.isEmpty() || itemStack.getCount() <= itemStack.getMaxStackSize();
++            boolean flag2 = itemStack.isEmpty() || itemStack.getCount() <= me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack); // Lophine - Stackable ShulkerBoxes
+             if (flag || (flag1 && !ItemStack.matches(this.player.inventoryMenu.getSlot(packet.slotNum()).getItem(), packet.itemStack()))) { // Insist on valid slot
+                 // CraftBukkit start - Call click event
+                 org.bukkit.inventory.InventoryView inventory = this.player.inventoryMenu.getBukkitView();
+@@ -3505,6 +3506,7 @@ public class ServerGamePacketListenerImpl
+                 this.player.inventoryMenu.getSlot(packet.slotNum()).setByPlayer(itemStack);
+                 this.player.inventoryMenu.setRemoteSlot(packet.slotNum(), itemStack);
+                 this.player.inventoryMenu.broadcastChanges();
++                if (me.earthme.lophine.utils.ShulkerBoxesUtil.shouldCheck()) this.player.containerMenu.broadcastCarriedItem(); // Lophine - Stackable ShulkerBoxes
+                 if (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.updateEquipmentOnPlayerActions) this.player.detectEquipmentUpdates(); // Paper - Force update attributes.
+             } else if (flag && flag2) {
+                 if (this.dropSpamThrottler.isUnderThreshold()) {
+diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
+index a9cc35b4b253d9a7fd90f811af9be629b164fad0..5c548cb30565d156c6eeb316b0c0ce8be93ad0d7 100644
+--- a/net/minecraft/world/entity/item/ItemEntity.java
++++ b/net/minecraft/world/entity/item/ItemEntity.java
+@@ -281,10 +281,45 @@ public class ItemEntity extends Entity implements TraceableEntity {
+ 
+     private boolean isMergable() {
+         ItemStack item = this.getItem();
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.despawnRate && item.getCount() < item.getMaxStackSize(); // Paper - Alternative item-despawn-rate
++        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.despawnRate && item.getCount() < me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(item); // Paper - Alternative item-despawn-rate // Lophine - Stackable ShulkerBoxes
++    }
++
++    // Lophine start - Stackable ShulkerBoxes
++    private boolean tryMergeShulkerBox(ItemEntity ote) {
++        ItemStack sf = this.getItem();
++        ItemStack ot = ote.getItem();
++        if (!me.earthme.lophine.utils.ShulkerBoxesUtil.checkShulkerBox(sf)) return false;
++        if (sf.getItem().equals(ot.getItem())
++                && me.earthme.lophine.utils.ShulkerBoxesUtil.emptyShulkerBoxCheck(sf)
++                && me.earthme.lophine.utils.ShulkerBoxesUtil.emptyShulkerBoxCheck(ot)
++                && Objects.equals(sf.getComponents(), ot.getComponents()) // empty block entity tags are cleaned up when spawning
++                && sf.getCount() != me.earthme.lophine.utils.ShulkerBoxesUtil.getShulkerBoxesMaxCountUnsafe()) {
++            int count = Math.min(ot.getCount(), me.earthme.lophine.utils.ShulkerBoxesUtil.getShulkerBoxesMaxCountUnsafe() - sf.getCount());
++            sf.grow(count);
++            this.setItem(sf);
++
++            this.pickupDelay = Math.max(ote.pickupDelay, this.pickupDelay);
++            this.age = Math.min(ote.getAge(), this.age);
++            ot.shrink(count);
++            if (ot.isEmpty()) {
++                ote.discard();
++            }
++            else {
++                ote.setItem(ot);
++            }
++            return true;
++        }
++        return false;
+     }
++    // Lophine end - Stackable ShulkerBoxes
+ 
+     private void tryToMerge(ItemEntity itemEntity) {
++        // Lophine start - Stackable ShulkerBoxes
++        if (me.earthme.lophine.utils.ShulkerBoxesUtil.shouldCheck()
++                && this.tryMergeShulkerBox(itemEntity)) {
++            return;
++        }
++        // Lophine end - Stackable ShulkerBoxes
+         ItemStack item = this.getItem();
+         ItemStack item1 = itemEntity.getItem();
+         if (Objects.equals(this.target, itemEntity.target) && areMergable(item, item1)) {
+diff --git a/net/minecraft/world/entity/player/Inventory.java b/net/minecraft/world/entity/player/Inventory.java
+index d9cb4f0ed0c4f63362c837aeef3c4194911455c9..eecaaa82378e03756b6b010b9b591607f9fe5af4 100644
+--- a/net/minecraft/world/entity/player/Inventory.java
++++ b/net/minecraft/world/entity/player/Inventory.java
+@@ -149,8 +149,8 @@ public class Inventory implements Container, Nameable {
+ 
+     private boolean hasRemainingSpaceForItem(ItemStack destination, ItemStack origin) {
+         return !destination.isEmpty()
+-            && destination.isStackable()
+-            && destination.getCount() < this.getMaxStackSize(destination)
++            && me.earthme.lophine.utils.ShulkerBoxesUtil.isStackable(destination) // Lophine - Stackable ShulkerBoxes
++            && destination.getCount() < me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(destination) // Lophine - Stackable ShulkerBoxes
+             && ItemStack.isSameItemSameComponents(destination, origin); // Paper - check if itemstack is stackable first
+     }
+ 
+@@ -164,7 +164,7 @@ public class Inventory implements Container, Nameable {
+             }
+ 
+             if (this.hasRemainingSpaceForItem(itemInSlot, itemStack)) {
+-                remains -= (itemInSlot.getMaxStackSize() < this.getMaxStackSize() ? itemInSlot.getMaxStackSize() : this.getMaxStackSize()) - itemInSlot.getCount();
++                remains -= (me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemInSlot) < this.getMaxStackSize() ? me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemInSlot) : this.getMaxStackSize()) - itemInSlot.getCount(); // Lophine - Stackable ShulkerBoxes
+             }
+             if (remains <= 0) {
+                 return itemStack.getCount();
+@@ -173,7 +173,7 @@ public class Inventory implements Container, Nameable {
+ 
+         ItemStack itemInOffhand = this.equipment.get(EquipmentSlot.OFFHAND);
+         if (this.hasRemainingSpaceForItem(itemInOffhand, itemStack)) {
+-            remains -= (itemInOffhand.getMaxStackSize() < this.getMaxStackSize() ? itemInOffhand.getMaxStackSize() : this.getMaxStackSize()) - itemInOffhand.getCount();
++            remains -= (me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemInOffhand) < this.getMaxStackSize() ? me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemInOffhand) : this.getMaxStackSize()) - itemInOffhand.getCount(); // Lophine - Stackable ShulkerBoxes
+         }
+         if (remains <= 0) {
+             return itemStack.getCount();
+@@ -403,7 +403,7 @@ public class Inventory implements Container, Nameable {
+                 break;
+             }
+ 
+-            int i = stack.getMaxStackSize() - this.getItem(slotWithRemainingSpace).getCount();
++            int i = me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(stack) - this.getItem(slotWithRemainingSpace).getCount(); // Lophine - Stackable ShulkerBoxes
+             if (this.add(slotWithRemainingSpace, stack.split(i)) && sendPacket && this.player instanceof ServerPlayer serverPlayer) {
+                 serverPlayer.connection.send(this.createInventoryUpdatePacket(slotWithRemainingSpace));
+             }
+diff --git a/net/minecraft/world/entity/player/StackedItemContents.java b/net/minecraft/world/entity/player/StackedItemContents.java
+index 83ccde54c625d40dc595e000c533f60aa929bd5a..16e9ac7449761c1427a528be60e964ef737ce897 100644
+--- a/net/minecraft/world/entity/player/StackedItemContents.java
++++ b/net/minecraft/world/entity/player/StackedItemContents.java
+@@ -23,7 +23,7 @@ public class StackedItemContents {
+     }
+ 
+     public void accountStack(ItemStack stack) {
+-        this.accountStack(stack, stack.getMaxStackSize());
++        this.accountStack(stack, me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(stack)); // Lophine - Stackable Shulker Boxes
+     }
+ 
+     public void accountStack(ItemStack stack, int maxStackSize) {
+diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
+index a9cf0ef95b706f05060bbcd2a4f5a03c60f783d2..0dc79181c6f8e74b018eaffc90daa9e2a0f39ce4 100644
+--- a/net/minecraft/world/inventory/AbstractContainerMenu.java
++++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
+@@ -234,6 +234,14 @@ public abstract class AbstractContainerMenu {
+         return list;
+     }
+ 
++    // Lophine start - Stackable ShulkerBoxes
++    public void boardcastChangesSigleSlot(int slot, ItemStack item) {
++        if (this.synchronizer != null) {
++            this.synchronizer.sendSlotChange(this, slot, item);
++        }
++    }
++    // Lophine end - Stackable ShulkerBoxes
++
+     public void broadcastChanges() {
+         for (int i = 0; i < this.slots.size(); i++) {
+             ItemStack item = this.slots.get(i).getItem();
+@@ -427,7 +435,7 @@ public abstract class AbstractContainerMenu {
+                             && (this.quickcraftType == 2 || carried1.getCount() >= this.quickcraftSlots.size())
+                             && this.canDragTo(slot1)) {
+                             int i2 = slot1.hasItem() ? slot1.getItem().getCount() : 0;
+-                            int min = Math.min(itemStack.getMaxStackSize(), slot1.getMaxStackSize(itemStack));
++                            int min = Math.min(me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack), slot1.getMaxStackSize(itemStack)); // Lophine - Stackable ShulkerBoxes
+                             int min1 = Math.min(getQuickCraftPlaceCount(this.quickcraftSlots, this.quickcraftType, itemStack) + i2, min);
+                             count -= min1 - i2;
+                             // slot1.setByPlayer(itemStack.copyWithCount(min1));
+@@ -541,7 +549,7 @@ public abstract class AbstractContainerMenu {
+                                 slot.setByPlayer(carried2);
+                             }
+                         } else if (ItemStack.isSameItemSameComponents(carried, carried2)) {
+-                            Optional<ItemStack> optional1 = slot.tryRemove(carried.getCount(), carried2.getMaxStackSize() - carried2.getCount(), player);
++                            Optional<ItemStack> optional1 = slot.tryRemove(carried.getCount(), me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(carried2) - carried2.getCount(), player); // Lophine - Stackable ShulkerBoxes
+                             optional1.ifPresent(itemStack2 -> {
+                                 carried2.grow(itemStack2.getCount());
+                                 slot.onTake(player, itemStack2);
+@@ -603,7 +611,7 @@ public abstract class AbstractContainerMenu {
+             Slot slot2 = this.slots.get(slotId);
+             if (slot2.hasItem()) {
+                 ItemStack itemStack = slot2.getItem();
+-                this.setCarried(itemStack.copyWithCount(itemStack.getMaxStackSize()));
++                this.setCarried(itemStack.copyWithCount(me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack))); // Lophine - Stackable ShulkerBoxes
+             }
+         } else if (clickType == ClickType.THROW && this.getCarried().isEmpty() && slotId >= 0) {
+             Slot slot2 = this.slots.get(slotId);
+@@ -634,15 +642,15 @@ public abstract class AbstractContainerMenu {
+                 int maxStackSize = button == 0 ? 1 : -1;
+ 
+                 for (int i3 = 0; i3 < 2; i3++) {
+-                    for (int i4 = count; i4 >= 0 && i4 < this.slots.size() && itemStack.getCount() < itemStack.getMaxStackSize(); i4 += maxStackSize) {
++                    for (int i4 = count; i4 >= 0 && i4 < this.slots.size() && itemStack.getCount() < me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack); i4 += maxStackSize) { // Lophine - Stackable ShulkerBoxes
+                         Slot slot3 = this.slots.get(i4);
+                         if (slot3.hasItem()
+                             && canItemQuickReplace(slot3, itemStack, true)
+                             && slot3.mayPickup(player)
+                             && this.canTakeItemForPickAll(itemStack, slot3)) {
+                             ItemStack item1 = slot3.getItem();
+-                            if (i3 != 0 || item1.getCount() != item1.getMaxStackSize()) {
+-                                ItemStack itemStack1 = slot3.safeTake(item1.getCount(), itemStack.getMaxStackSize() - itemStack.getCount(), player);
++                            if (i3 != 0 || item1.getCount() != me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(item1)) { // Lophine - stackable shulker boxes
++                                ItemStack itemStack1 = slot3.safeTake(item1.getCount(), me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack) - itemStack.getCount(), player); // Lophine - stackable shulker boxes
+                                 itemStack.grow(itemStack1.getCount());
+                             }
+                         }
+@@ -744,7 +752,7 @@ public abstract class AbstractContainerMenu {
+             i = endIndex - 1;
+         }
+ 
+-        if (stack.isStackable()) {
++        if (me.earthme.lophine.utils.ShulkerBoxesUtil.isStackable(stack)) { // Lophine - Stackable ShulkerBoxes
+             while (!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
+                 Slot slot = this.slots.get(i);
+                 ItemStack item = slot.getItem();
+@@ -845,7 +853,7 @@ public abstract class AbstractContainerMenu {
+     public static boolean canItemQuickReplace(@Nullable Slot slot, ItemStack stack, boolean stackSizeMatters) {
+         boolean flag = slot == null || !slot.hasItem();
+         return !flag && ItemStack.isSameItemSameComponents(stack, slot.getItem())
+-            ? slot.getItem().getCount() + (stackSizeMatters ? 0 : stack.getCount()) <= stack.getMaxStackSize()
++            ? slot.getItem().getCount() + (stackSizeMatters ? 0 : stack.getCount()) <= me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(stack) // Lophine - Stackable ShulkerBoxes
+             : flag;
+     }
+ 
+@@ -853,7 +861,7 @@ public abstract class AbstractContainerMenu {
+         return switch (type) {
+             case 0 -> Mth.floor((float)stack.getCount() / slots.size());
+             case 1 -> 1;
+-            case 2 -> stack.getMaxStackSize();
++            case 2 -> me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(stack); // Lophine - Stackable ShulkerBoxes
+             default -> stack.getCount();
+         };
+     }
+diff --git a/net/minecraft/world/inventory/Slot.java b/net/minecraft/world/inventory/Slot.java
+index 5ceb8964476b40db4511bec91ff13c4f522a1357..170353b8d1d330e54d9836e78ba2d41d023e0f51 100644
+--- a/net/minecraft/world/inventory/Slot.java
++++ b/net/minecraft/world/inventory/Slot.java
+@@ -75,7 +75,7 @@ public class Slot {
+     }
+ 
+     public int getMaxStackSize(ItemStack stack) {
+-        return Math.min(this.getMaxStackSize(), stack.getMaxStackSize());
++        return Math.min(this.getMaxStackSize(), me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(stack)); // Lophine - Stackable ShulkerBoxes
+     }
+ 
+     @Nullable
+diff --git a/net/minecraft/world/item/ItemStack.java b/net/minecraft/world/item/ItemStack.java
+index 09455150810e4fb6e4637fdb9e2e8a30fe0bc247..5d2571d0199a25087954b4e67bc7551f282c6bd2 100644
+--- a/net/minecraft/world/item/ItemStack.java
++++ b/net/minecraft/world/item/ItemStack.java
+@@ -165,7 +165,7 @@ public final class ItemStack implements DataComponentHolder {
+     @Deprecated
+     @Nullable
+     private Item item;
+-    PatchedDataComponentMap components;
++    public PatchedDataComponentMap components; // Leaves - stackable shulker boxes
+     @Nullable
+     private Entity entityRepresentation;
+ 
+@@ -192,7 +192,8 @@ public final class ItemStack implements DataComponentHolder {
+                 } else {
+                     Holder<Item> holder = Item.STREAM_CODEC.decode(buffer);
+                     DataComponentPatch dataComponentPatch = codec.decode(buffer);
+-                    return new ItemStack(holder, varInt, dataComponentPatch);
++                    ItemStack itemStack = new ItemStack(holder, varInt, dataComponentPatch);
++                    return me.earthme.lophine.utils.ShulkerBoxesUtil.decodeMaxStackSize(itemStack);
+                 }
+             }
+ 
+@@ -201,13 +202,15 @@ public final class ItemStack implements DataComponentHolder {
+                 if (value.isEmpty() || value.getItem() == null) { // CraftBukkit - NPE fix itemstack.getItem()
+                     buffer.writeVarInt(0);
+                 } else {
+-                    buffer.writeVarInt(io.papermc.paper.util.sanitizer.ItemComponentSanitizer.sanitizeCount(io.papermc.paper.util.sanitizer.ItemObfuscationSession.currentSession(), value, value.getCount())); // Paper - potentially sanitize count
+-                    Item.STREAM_CODEC.encode(buffer, value.getItemHolder());
++                    // Leaves start - stackable shulker boxes
++                    final ItemStack itemStack = me.earthme.lophine.utils.ShulkerBoxesUtil.encodeMaxStackSize(value.copy());
++                    buffer.writeVarInt(io.papermc.paper.util.sanitizer.ItemComponentSanitizer.sanitizeCount(io.papermc.paper.util.sanitizer.ItemObfuscationSession.currentSession(), itemStack, itemStack.getCount())); // Paper - potentially sanitize count
++                    Item.STREAM_CODEC.encode(buffer, itemStack.getItemHolder());
+                     // Paper start - adventure; conditionally render translatable components
+                     boolean prev = net.minecraft.network.chat.ComponentSerialization.DONT_RENDER_TRANSLATABLES.get();
+-                    try (final io.papermc.paper.util.SafeAutoClosable ignored = io.papermc.paper.util.sanitizer.ItemObfuscationSession.withContext(c -> c.itemStack(value))) { // pass the itemstack as context to the obfuscation session
++                    try (final io.papermc.paper.util.SafeAutoClosable ignored = io.papermc.paper.util.sanitizer.ItemObfuscationSession.withContext(c -> c.itemStack(itemStack))) { // pass the itemstack as context to the obfuscation session
+                         net.minecraft.network.chat.ComponentSerialization.DONT_RENDER_TRANSLATABLES.set(true);
+-                    codec.encode(buffer, value.components.asPatch());
++                    codec.encode(buffer, itemStack.components.asPatch());
+                     } finally {
+                         net.minecraft.network.chat.ComponentSerialization.DONT_RENDER_TRANSLATABLES.set(prev);
+                     }
+@@ -302,7 +305,7 @@ public final class ItemStack implements DataComponentHolder {
+ 
+             for (ItemStack itemStack : itemContainerContents.nonEmptyItems()) {
+                 int count = itemStack.getCount();
+-                int maxStackSize = itemStack.getMaxStackSize();
++                int maxStackSize = me.earthme.lophine.utils.ShulkerBoxesUtil.getItemMaxCount(itemStack); // Leaves - stackable shulker boxes
+                 if (count > maxStackSize) {
+                     return DataResult.error(() -> "Item stack with count of " + count + " was larger than maximum: " + maxStackSize);
+                 }
+diff --git a/net/minecraft/world/level/block/AbstractCauldronBlock.java b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+index ad3f32888afd8b5f0038445a1b0fcc8cacec9fe2..ee0315ff52914666e3e3cfc38f726512e3301986 100644
+--- a/net/minecraft/world/level/block/AbstractCauldronBlock.java
++++ b/net/minecraft/world/level/block/AbstractCauldronBlock.java
+@@ -62,9 +62,27 @@ public abstract class AbstractCauldronBlock extends Block {
+         ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult
+     ) {
+         CauldronInteraction cauldronInteraction = this.interactions.map().get(stack.getItem());
+-        return cauldronInteraction.interact(state, level, pos, player, hand, stack, hitResult.getDirection()); // Paper - pass hit direction
++        return wrapInteractor(cauldronInteraction, state, level, pos, player, hand, stack, hitResult.getDirection()); // Paper - pass hit direction // Leaves - stackable shulker boxes
+     }
+ 
++    // Leaves start - stackable shulker boxes
++    private InteractionResult wrapInteractor(CauldronInteraction cauldronBehavior, BlockState blockState, Level world, BlockPos blockPos, Player playerEntity, InteractionHand hand, ItemStack itemStack, net.minecraft.core.Direction hitDirection) {
++        int count = -1;
++        if (me.earthme.lophine.utils.ShulkerBoxesUtil.shouldCheck() && itemStack.getItem() instanceof net.minecraft.world.item.BlockItem bi &&
++            bi.getBlock() instanceof ShulkerBoxBlock) {
++            count = itemStack.getCount();
++        }
++        InteractionResult result = cauldronBehavior.interact(blockState, world, blockPos, playerEntity, hand, itemStack, hitDirection);
++        if (count > 0 && result.consumesAction()) {
++            ItemStack current = playerEntity.getItemInHand(hand);
++            if (current.getItem() instanceof net.minecraft.world.item.BlockItem bi && bi.getBlock() instanceof ShulkerBoxBlock) {
++                current.setCount(count);
++            }
++        }
++        return result;
++    }
++    // Leaves end - stackable shulker boxes
++
+     @Override
+     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+         return SHAPE;
+diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+index 6f5a47a3e9452f25b318e4a7a628e917da99c96f..d5d2fec12eaea7cf8f351c8924e50a776769cee3 100644
+--- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
+@@ -690,9 +690,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+             if (item.isEmpty()) {
+                 // Spigot start - SPIGOT-6693, SimpleContainer#setItem
+                 ItemStack leftover = ItemStack.EMPTY; // Paper - Make hoppers respect inventory max stack size
+-                if (!stack.isEmpty() && stack.getCount() > destination.getMaxStackSize()) {
++                if (!stack.isEmpty() && (stack.getCount() > destination.getMaxStackSize() || stack.getCount() > stack.getMaxStackSize())) {
+                     leftover = stack; // Paper - Make hoppers respect inventory max stack size
+-                    stack = stack.split(destination.getMaxStackSize());
++                    stack = stack.split(Math.min(destination.getMaxStackSize(), stack.getMaxStackSize()));
+                 }
+                 // Spigot end
+                 IGNORE_TILE_UPDATES.set(Boolean.TRUE); // Paper - Perf: Optimize Hoppers // Folia - region threading
+diff --git a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
+index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..69e51104939d40acb53b830831acca9d482a10bd 100644
+--- a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
+@@ -76,6 +76,7 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
+ 
+     @Override
+     public int getMaxStackSize() {
++        if (me.earthme.lophine.utils.ShulkerBoxesUtil.shouldCheck()) return me.earthme.lophine.utils.ShulkerBoxesUtil.getShulkerBoxesMaxCountUnsafe(); // Lophine - Stackable ShulkerBoxes
+         return this.maxStack;
+     }
+ 

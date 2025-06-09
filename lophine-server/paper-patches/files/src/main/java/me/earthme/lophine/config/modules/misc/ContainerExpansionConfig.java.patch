@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/config/modules/misc/ContainerExpansionConfig.java
-@@ -1,0 +_,27 @@
+@@ -1,0 +_,32 @@
 +package me.earthme.lophine.config.modules.misc;
 +
 +import me.earthme.luminol.config.EnumConfigCategory;
@@ -10,13 +10,18 @@
 +public class ContainerExpansionConfig implements IConfigModule {
 +    @ConfigInfo(baseName = "barrel_rows", comments =
 +            """
-+                    range: 1~6\s""")
++                    range: 1~6""")
 +    public static int barrelRows = 3;
 +
 +    @ConfigInfo(baseName = "enderchest_rows", comments =
 +            """
-+                    range: 1~6\s""")
++                    range: 1~6""")
 +    public static int enderchestRows = 3;
++
++    @ConfigInfo(baseName = "shulker_stackable_count", comments =
++            """
++                    range: 1~64""")
++    public static int shulkerCount = 1;
 +
 +    @Override
 +    public EnumConfigCategory getCategory() {
