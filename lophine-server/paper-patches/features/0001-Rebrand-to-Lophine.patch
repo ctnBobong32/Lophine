@@ -385,6 +385,19 @@ index 57b1f606d2f4197e1f68d367bf63e04ce2fe1534..01f109fc02590d22a42676f35f23ae72
          while (entries.hasMoreElements()) {
              JarEntry entry = entries.nextElement();
              String name = entry.getName();
+diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
+index ded1f0667327a70a923ebda55c41b1c9094d3e37..57ddc0832b919b115b85c81ac30f136e32f1e77e 100644
+--- a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
++++ b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
+@@ -6,7 +6,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
+ 
+ public class ServerModNameConfig implements IConfigModule {
+     @ConfigInfo(baseName = "name")
+-    public static String serverModName = "Luminol";
++    public static String serverModName = "Lophine";
+ 
+     @ConfigInfo(baseName = "vanilla_spoof")
+     public static boolean fakeVanilla = false;
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 index 9699d7dcca5cf67f50ad05c0e875de424a4e00c5..1c3b94a2592cff74924cf9b355e30b0fa182b79b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
