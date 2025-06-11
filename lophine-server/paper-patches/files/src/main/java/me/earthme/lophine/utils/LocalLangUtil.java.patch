@@ -1,0 +1,159 @@
+--- /dev/null
++++ b/src/main/java/me/earthme/lophine/utils/LocalLangUtil.java
+@@ -1,0 +_,156 @@
++package me.earthme.lophine.utils;
++
++import com.google.gson.JsonElement;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParser;
++
++import java.io.ByteArrayInputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.InputStreamReader;
++import java.net.HttpURLConnection;
++import java.net.URL;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.nio.file.Paths;
++import java.util.Objects;
++import java.util.concurrent.CompletableFuture;
++import java.util.logging.Logger;
++
++import static me.earthme.lophine.config.modules.optimizations.LanguageConfig.lang;
++
++public class LocalLangUtil {
++    static Logger logger = Logger.getLogger("LangLoader");
++    static String VERSION = "1.21.5";
++    static String basePath = "cache/lophine/" + VERSION + "/";
++
++    public static void init() {
++        if (Objects.equals(lang, "en_us")) return;
++        CompletableFuture.runAsync(() -> {
++            try {
++                downloadLangAndCheck();
++                net.minecraft.locale.Language.loadLocalLang(basePath + "lang/" + lang + ".json");
++            } catch (Exception e) {
++                logger.severe(() -> "Async initialization failed: " + e.getMessage());
++            }
++        });
++    }
++
++    private static void downloadLangAndCheck() {
++        Path path = Paths.get(basePath + VERSION + ".json");
++        JsonObject json;
++        if (Files.exists(path)) {
++            try {
++                json = loadJson(path.toString());
++            } catch (Exception e) {
++                logger.warning("Failed to load local JSON: " + e.getMessage());
++                json = download();
++            }
++        } else {
++            json = download();
++        }
++
++        if (json == null) {
++            logger.warning("Failed to load language metadata");
++            return;
++        }
++
++        try {
++            JsonObject assetIndex = json.getAsJsonObject("assetIndex");
++            String assetUrl = assetIndex.get("url").getAsString();
++            byte[] assetData = fetchAndSave(assetUrl, basePath + "resource.json");
++
++            JsonObject assets = JsonParser.parseString(new String(assetData)).getAsJsonObject();
++            JsonObject langEntry = assets.getAsJsonObject("objects")
++                    .getAsJsonObject("minecraft/lang/" + lang + ".json");
++
++            String hash = langEntry.get("hash").getAsString();
++            if (hash == null || hash.length() < 2) {
++                throw new IllegalArgumentException("Invalid hash value");
++            }
++
++            downloadLang(hash);
++        } catch (Exception e) {
++            logger.warning("Asset processing failed: " + e.getMessage());
++        }
++    }
++
++    private static void downloadLang(String hash) {
++        String url = "https://resources.download.minecraft.net/"
++                + hash.substring(0, 2) + "/" + hash;
++
++        for (int i = 0; i < 3; i++) {
++            try {
++                fetchAndSave(url, basePath + "lang/" + lang + ".json");
++                return;
++            } catch (Exception e) {
++                if (i == 2) logger.warning("Final attempt failed: " + e.getMessage());
++            }
++        }
++    }
++
++    private static JsonObject download() {
++        String versionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
++        String targetVersionUrl = null;
++
++        // Phase 1: Fetch version manifest
++        for (int i = 0; i < 3; i++) {
++            try (InputStreamReader reader = new InputStreamReader(
++                    new ByteArrayInputStream(fetch(versionManifestUrl)))) {
++                JsonObject manifest = JsonParser.parseReader(reader).getAsJsonObject();
++                for (JsonElement element : manifest.getAsJsonArray("versions")) {
++                    JsonObject version = element.getAsJsonObject();
++                    if (VERSION.equals(version.get("id").getAsString())) {
++                        targetVersionUrl = version.get("url").getAsString();
++                        break;
++                    }
++                }
++                if (targetVersionUrl != null) break;
++            } catch (Exception e) {
++                logger.warning("Failed to fetch version manifest: " + e.getMessage());
++            }
++        }
++
++        if (targetVersionUrl == null) return null;
++
++        // Phase 2: Fetch version metadata
++        for (int i = 0; i < 3; i++) {
++            try (InputStreamReader reader = new InputStreamReader(
++                    new ByteArrayInputStream(fetchAndSave(targetVersionUrl, basePath + VERSION + ".json")))) {
++                return JsonParser.parseReader(reader).getAsJsonObject();
++            } catch (Exception e) {
++                logger.warning("Failed to fetch version metadata: " + e.getMessage());
++            }
++        }
++        return null;
++    }
++
++    public static byte[] fetch(String urlString) throws IOException {
++        HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
++        conn.setRequestMethod("GET");
++        conn.setConnectTimeout(5000);
++        conn.setReadTimeout(10000);
++
++        try (InputStream stream = conn.getInputStream()) {
++            if (conn.getResponseCode() != 200) {
++                throw new IOException("HTTP error: " + conn.getResponseCode());
++            }
++            return stream.readAllBytes();
++        } finally {
++            conn.disconnect();
++        }
++    }
++
++    public static byte[] fetchAndSave(String url, String savePath) throws IOException {
++        byte[] data = fetch(url);
++        Path outputPath = Paths.get(savePath);
++        Files.createDirectories(outputPath.getParent());
++        Files.write(outputPath, data);
++        return data;
++    }
++
++    public static JsonObject loadJson(String path) throws IOException {
++        byte[] data = Files.readAllBytes(Paths.get(path));
++        return JsonParser.parseString(new String(data)).getAsJsonObject();
++    }
++}
