@@ -20,10 +20,10 @@
  - More functions
 
 ## Download
-Any versions are available in the [release](https://github.com/LuminolMC/LightingLuminol/releases), also you can build it by yourself through [the following steps](./README_EN.md#Build).
+Any versions are available in the [release](https://github.com/LuminolMC/Lophine/releases), also you can build it by yourself through [the following steps](./README_EN.md#Build).
 
 ## Build
-To build a paperclip jar, you need to run the following command. You can find the jar in build/libs(Note: JDK21 is needed)
+To build a paperclip jar, you need to run the following command. You can find the jar in lophine-server/build/libs(Note: `JDK21` is needed)
  ```shell
  ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```

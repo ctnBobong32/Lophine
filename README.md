@@ -20,10 +20,10 @@
  - 更多有用的功能
 
 ## 下载
-任何版本都可以在 [Release](https://github.com/LuminolMC/LightingLuminol/releases), 中找到，你也可以通过[以下步骤](./README.md#构建)自己构建。
+任何版本都可以在 [Release](https://github.com/LuminolMC/Lophine/releases), 中找到，你也可以通过[以下步骤](./README.md#构建)自己构建。
 
 ## 构建
-要构建一个paperclip jar，你需要运行以下命令。你可以在lightingluminol-server/build/libs中找到jar（注意：需要`JDK21`）
+要构建一个paperclip jar，你需要运行以下命令。你可以在lophine-server/build/libs中找到jar（注意：需要`JDK21`）
  ```shell
 ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```

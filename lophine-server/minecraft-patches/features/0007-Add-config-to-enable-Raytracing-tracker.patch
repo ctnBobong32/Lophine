@@ -18,7 +18,7 @@ index ee53f78396f4377d3e5c2998826f231208066ef6..607091ecbd4a7261f2c0d839ee4dd1d2
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index 0814ad6820b08a856f7bd261e96143568e772ac4..b7ef7df56e94b6af9398d0a4768747a35ac6f4fd 100644
+index a023cc399fc8bfee7771e5ca6716578f89b7072f..f487b44174678196e2bade0066511daf58e93876 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -140,7 +140,7 @@ import net.minecraft.world.scores.ScoreHolder;
@@ -30,7 +30,7 @@ index 0814ad6820b08a856f7bd261e96143568e772ac4..b7ef7df56e94b6af9398d0a4768747a3
      // CraftBukkit start
      private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
      private static final int CURRENT_LEVEL = 2;
-@@ -6107,4 +6107,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -6106,4 +6106,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG

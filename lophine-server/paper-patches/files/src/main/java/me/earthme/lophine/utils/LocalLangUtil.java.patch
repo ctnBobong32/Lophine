@@ -1,11 +1,18 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/utils/LocalLangUtil.java
-@@ -1,0 +_,156 @@
+@@ -1,0 +_,257 @@
 +package me.earthme.lophine.utils;
 +
 +import com.google.gson.JsonElement;
 +import com.google.gson.JsonObject;
++import com.google.gson.JsonParseException;
 +import com.google.gson.JsonParser;
++import net.minecraft.locale.DeprecatedTranslationsInfo;
++import net.minecraft.locale.Language;
++import net.minecraft.network.chat.FormattedText;
++import net.minecraft.network.chat.Style;
++import net.minecraft.util.FormattedCharSequence;
++import net.minecraft.util.StringDecomposer;
 +
 +import java.io.ByteArrayInputStream;
 +import java.io.IOException;
@@ -16,35 +23,47 @@
 +import java.nio.file.Files;
 +import java.nio.file.Path;
 +import java.nio.file.Paths;
-+import java.util.Objects;
++import java.util.*;
 +import java.util.concurrent.CompletableFuture;
++import java.util.function.BiConsumer;
 +import java.util.logging.Logger;
 +
-+import static me.earthme.lophine.config.modules.optimizations.LanguageConfig.lang;
-+
 +public class LocalLangUtil {
-+    static Logger logger = Logger.getLogger("LangLoader");
-+    static String VERSION = "1.21.5";
-+    static String basePath = "cache/lophine/" + VERSION + "/";
++    final static Logger logger = Logger.getLogger("LangLoader");
++    final static String VERSION = "1.21.5";
++    final static String basePath = "cache/lophine/" + VERSION + "/";
++    static String lang = me.earthme.lophine.config.modules.optimizations.LanguageConfig.lang;
++    static boolean isReloading = false;
 +
 +    public static void init() {
 +        if (Objects.equals(lang, "en_us")) return;
 +        CompletableFuture.runAsync(() -> {
 +            try {
-+                downloadLangAndCheck();
-+                net.minecraft.locale.Language.loadLocalLang(basePath + "lang/" + lang + ".json");
++                String path = basePath + "lang/" + lang + ".json";
++                if (!Files.exists(Path.of(path))) downloadLangAndCheck();
++                try {
++                    loadLocalLang(path);
++                    isReloading = false;
++                } catch (JsonParseException e) {
++                    cleanCache();
++                    if (!isReloading) {
++                        isReloading = true;
++                        init();
++                    }
++                }
 +            } catch (Exception e) {
 +                logger.severe(() -> "Async initialization failed: " + e.getMessage());
++                isReloading = false;
 +            }
 +        });
 +    }
 +
 +    private static void downloadLangAndCheck() {
-+        Path path = Paths.get(basePath + VERSION + ".json");
++        String path = basePath + VERSION + ".json";
 +        JsonObject json;
-+        if (Files.exists(path)) {
++        if (Files.exists(Path.of(path))) {
 +            try {
-+                json = loadJson(path.toString());
++                json = loadJson(path);
 +            } catch (Exception e) {
 +                logger.warning("Failed to load local JSON: " + e.getMessage());
 +                json = download();
@@ -152,8 +171,90 @@
 +        return data;
 +    }
 +
++    private static void cleanCache() {
++        Path cachePath = Paths.get(basePath);
++        try {
++            if (Files.exists(cachePath)) {
++                Files.walk(cachePath)
++                        .sorted(Comparator.reverseOrder())
++                        .forEach(path -> {
++                            try {
++                                Files.deleteIfExists(path);
++                            } catch (IOException e) {
++                                logger.warning("Failed to delete: " + path + " - " + e.getMessage());
++                            }
++                        });
++                logger.info("Cache cleaned: " + cachePath);
++            } else {
++                logger.info("Cache directory does not exist: " + cachePath);
++            }
++        } catch (IOException e) {
++            logger.severe("Cache cleanup failed: " + e.getMessage());
++        }
++    }
++
++
 +    public static JsonObject loadJson(String path) throws IOException {
 +        byte[] data = Files.readAllBytes(Paths.get(path));
 +        return JsonParser.parseString(new String(data)).getAsJsonObject();
++    }
++
++    public static void loadLocalLang(String lang) {
++        try {
++            Language.inject(load(lang));
++        } catch (Exception e) {
++            logger.warning("Failed to load language file for " + lang + "\n" + e);
++            Language.inject(Language.loadDefault());
++        }
++    }
++
++    private static Language load(String lang) {
++        DeprecatedTranslationsInfo deprecatedTranslationsInfo = DeprecatedTranslationsInfo.loadFromDefaultResource();
++        Map<String, String> map = new HashMap<>();
++        BiConsumer<String, String> biConsumer = map::put;
++        Language.parseTranslations(biConsumer, "/assets/minecraft/lang/en_us.json");
++        parseTranslations(biConsumer, lang);
++        deprecatedTranslationsInfo.applyToMap(map);
++        final Map<String, String> map1 = Map.copyOf(map);
++        return new Language() {
++            @Override
++            public String getOrDefault(String key, String defaultValue) {
++                return map1.getOrDefault(key, defaultValue);
++            }
++
++            @Override
++            public boolean has(String id) {
++                return map1.containsKey(id);
++            }
++
++            @Override
++            public boolean isDefaultRightToLeft() {
++                return false;
++            }
++
++            @Override
++            public FormattedCharSequence getVisualOrder(FormattedText text) {
++                return sink -> text.visit(
++                                (style, content) -> StringDecomposer.iterateFormatted(content, style, sink) ? Optional.empty() : FormattedText.STOP_ITERATION,
++                                Style.EMPTY
++                        )
++                        .isPresent();
++            }
++        };
++    }
++
++    public static void parseTranslations(BiConsumer<String, String> output, String languagePath) {
++        try {
++            java.nio.file.Path filePath = java.nio.file.Paths.get(languagePath);
++            try (InputStream fileStream = java.nio.file.Files.newInputStream(filePath)) {
++                Language.loadFromJson(fileStream, output);
++            } catch (java.nio.file.NoSuchFileException fileEx) {
++                logger.warning("Language file not found in both locations: " + languagePath);
++            } catch (Exception fileEx) {
++                logger.warning("Failed to load from filesystem " + filePath + "\n" + fileEx);
++            }
++        } catch (Exception ep) {
++            logger.warning("Couldn't read strings from " + languagePath + "\n" + ep);
++        }
 +    }
 +}
