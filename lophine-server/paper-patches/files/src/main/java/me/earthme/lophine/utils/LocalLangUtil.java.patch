@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/utils/LocalLangUtil.java
-@@ -1,0 +_,257 @@
+@@ -1,0 +_,267 @@
 +package me.earthme.lophine.utils;
 +
 +import com.google.gson.JsonElement;
@@ -33,27 +33,29 @@
 +    final static String VERSION = "1.21.5";
 +    final static String basePath = "cache/lophine/" + VERSION + "/";
 +    static String lang = me.earthme.lophine.config.modules.optimizations.LanguageConfig.lang;
-+    static boolean isReloading = false;
 +
 +    public static void init() {
++        init(true);
++    }
++
++    public static void init(boolean init) {
 +        if (Objects.equals(lang, "en_us")) return;
 +        CompletableFuture.runAsync(() -> {
 +            try {
 +                String path = basePath + "lang/" + lang + ".json";
-+                if (!Files.exists(Path.of(path))) downloadLangAndCheck();
++                if (!Files.exists(Path.of(path))) {
++                    downloadLangAndCheck();
++                }
 +                try {
-+                    loadLocalLang(path);
-+                    isReloading = false;
++                    loadLocalLang(path, init);
 +                } catch (JsonParseException e) {
 +                    cleanCache();
-+                    if (!isReloading) {
-+                        isReloading = true;
-+                        init();
++                    if (init) {
++                        init(false);
 +                    }
 +                }
 +            } catch (Exception e) {
 +                logger.severe(() -> "Async initialization failed: " + e.getMessage());
-+                isReloading = false;
 +            }
 +        });
 +    }
@@ -199,16 +201,21 @@
 +        return JsonParser.parseString(new String(data)).getAsJsonObject();
 +    }
 +
-+    public static void loadLocalLang(String lang) {
++    public static void loadLocalLang(String lang, boolean init) throws IOException {
 +        try {
 +            Language.inject(load(lang));
 +        } catch (Exception e) {
 +            logger.warning("Failed to load language file for " + lang + "\n" + e);
-+            Language.inject(Language.loadDefault());
++            logger.info("Load default en_us instead of local lang " + lang);
++            if (init) {
++                throw e;
++            } else {
++                Language.inject(Language.loadDefault());
++            }
 +        }
 +    }
 +
-+    private static Language load(String lang) {
++    private static Language load(String lang) throws IOException {
 +        DeprecatedTranslationsInfo deprecatedTranslationsInfo = DeprecatedTranslationsInfo.loadFromDefaultResource();
 +        Map<String, String> map = new HashMap<>();
 +        BiConsumer<String, String> biConsumer = map::put;
@@ -243,18 +250,21 @@
 +        };
 +    }
 +
-+    public static void parseTranslations(BiConsumer<String, String> output, String languagePath) {
++    public static void parseTranslations(BiConsumer<String, String> output, String languagePath) throws IOException {
 +        try {
-+            java.nio.file.Path filePath = java.nio.file.Paths.get(languagePath);
-+            try (InputStream fileStream = java.nio.file.Files.newInputStream(filePath)) {
++            Path filePath = Paths.get(languagePath);
++            try (InputStream fileStream = Files.newInputStream(filePath)) {
 +                Language.loadFromJson(fileStream, output);
 +            } catch (java.nio.file.NoSuchFileException fileEx) {
 +                logger.warning("Language file not found in both locations: " + languagePath);
++                throw fileEx;
 +            } catch (Exception fileEx) {
 +                logger.warning("Failed to load from filesystem " + filePath + "\n" + fileEx);
++                throw fileEx;
 +            }
 +        } catch (Exception ep) {
 +            logger.warning("Couldn't read strings from " + languagePath + "\n" + ep);
++            throw ep;
 +        }
 +    }
 +}

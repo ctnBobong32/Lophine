@@ -5,16 +5,15 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
-index fcf599846a38beeb8f094d5376c01d5a690f7a2f..9ddcb2b5ced68ff619516ddbac2327c23e316438 100644
+index fcf599846a38beeb8f094d5376c01d5a690f7a2f..a70c04dc72a15e4e8de8de677951f1eb605057b0 100644
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -108,7 +108,8 @@ public class Main {
+@@ -108,7 +108,7 @@ public class Main {
                  JvmProfiler.INSTANCE.start(Environment.SERVER);
              }
  
 -            me.earthme.luminol.config.LuminolConfig.preLoadConfig(); // Luminol - Luminol config
 +            me.earthme.lophine.config.LophineConfig.initConfigs(); // Lophine - Lophine config
-+            me.earthme.lophine.config.LophineConfig.preLoad(); // Luminol - Luminol config // Lophine - Lophine config
              io.papermc.paper.plugin.PluginInitializerManager.load(optionSet); // Paper
              Bootstrap.bootStrap();
              Bootstrap.validate();

@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/config/LophineConfig.java
-@@ -1,0 +_,32 @@
+@@ -1,0 +_,33 @@
 +package me.earthme.lophine.config;
 +
 +import me.earthme.luminol.config.LuminolConfig;
@@ -15,9 +15,10 @@
 +    private static final File luminolConfigFolder = new File("luminol_config");
 +    private static final File lophineConfigFolder = new File("lophine_config");
 +
-+    public static void initConfigs() {
++    public static void initConfigs() throws IOException {
 +        configfiles.put("luminol", new LuminolConfig(luminolConfigFolder, "luminol", "me.earthme.luminol.config.modules"));
 +        configfiles.put("lophine", new LuminolConfig(lophineConfigFolder, "lophine", "me.earthme.lophine.config.modules"));
++        preLoad();
 +    }
 +
 +    public static void preLoad() throws IOException {
