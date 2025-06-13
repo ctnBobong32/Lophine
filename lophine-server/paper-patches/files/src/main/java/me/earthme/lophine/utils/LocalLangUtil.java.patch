@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/utils/LocalLangUtil.java
-@@ -1,0 +_,267 @@
+@@ -1,0 +_,264 @@
 +package me.earthme.lophine.utils;
 +
 +import com.google.gson.JsonElement;
@@ -23,7 +23,10 @@
 +import java.nio.file.Files;
 +import java.nio.file.Path;
 +import java.nio.file.Paths;
-+import java.util.*;
++import java.util.HashMap;
++import java.util.Map;
++import java.util.Objects;
++import java.util.Optional;
 +import java.util.concurrent.CompletableFuture;
 +import java.util.function.BiConsumer;
 +import java.util.logging.Logger;
@@ -33,6 +36,8 @@
 +    final static String VERSION = "1.21.5";
 +    final static String basePath = "cache/lophine/" + VERSION + "/";
 +    static String lang = me.earthme.lophine.config.modules.optimizations.LanguageConfig.lang;
++    static String versionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
++    static String resourceUrlHeader = "https://resources.download.minecraft.net/";
 +
 +    public static void init() {
 +        init(true);
@@ -100,8 +105,7 @@
 +    }
 +
 +    private static void downloadLang(String hash) {
-+        String url = "https://resources.download.minecraft.net/"
-+                + hash.substring(0, 2) + "/" + hash;
++        String url = resourceUrlHeader + hash.substring(0, 2) + "/" + hash;
 +
 +        for (int i = 0; i < 3; i++) {
 +            try {
@@ -114,7 +118,6 @@
 +    }
 +
 +    private static JsonObject download() {
-+        String versionManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 +        String targetVersionUrl = null;
 +
 +        // Phase 1: Fetch version manifest
@@ -178,7 +181,6 @@
 +        try {
 +            if (Files.exists(cachePath)) {
 +                Files.walk(cachePath)
-+                        .sorted(Comparator.reverseOrder())
 +                        .forEach(path -> {
 +                            try {
 +                                Files.deleteIfExists(path);
@@ -207,11 +209,7 @@
 +        } catch (Exception e) {
 +            logger.warning("Failed to load language file for " + lang + "\n" + e);
 +            logger.info("Load default en_us instead of local lang " + lang);
-+            if (init) {
-+                throw e;
-+            } else {
-+                Language.inject(Language.loadDefault());
-+            }
++            if (init) throw e;
 +        }
 +    }
 +
@@ -219,7 +217,6 @@
 +        DeprecatedTranslationsInfo deprecatedTranslationsInfo = DeprecatedTranslationsInfo.loadFromDefaultResource();
 +        Map<String, String> map = new HashMap<>();
 +        BiConsumer<String, String> biConsumer = map::put;
-+        Language.parseTranslations(biConsumer, "/assets/minecraft/lang/en_us.json");
 +        parseTranslations(biConsumer, lang);
 +        deprecatedTranslationsInfo.applyToMap(map);
 +        final Map<String, String> map1 = Map.copyOf(map);
