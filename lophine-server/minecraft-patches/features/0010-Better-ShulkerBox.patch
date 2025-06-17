@@ -6,28 +6,27 @@ Subject: [PATCH] Better ShulkerBox
 You can open shulker box with shift & right click
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 1764875b9024569671bf2be537afb8b492f79102..0ae350d7e4b63abad1666c84df6925c71b73a013 100644
+index 1764875b9024569671bf2be537afb8b492f79102..b395482c6b5609c3b878f4e1ed17861b3b3fe9f7 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -2351,6 +2351,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.containerMenu.removed(this);
          this.inventoryMenu.transferState(this.containerMenu);
          this.containerMenu = this.inventoryMenu;
-+        this.shulkerOpen = false;
++        me.earthme.lophine.utils.ShulkerBoxesUtil.clearMap(this); // Lophine - better shulker box
      }
  
      @Override
 diff --git a/net/minecraft/world/entity/player/Inventory.java b/net/minecraft/world/entity/player/Inventory.java
-index 9fbd605df26d388c01d2ed9ca6a6138651e7f9a7..e8141cb25d6b9a433890e2cded188c2eb5bcf755 100644
+index 9fbd605df26d388c01d2ed9ca6a6138651e7f9a7..075526ce459cee3b157d5338ec079ad1515c6640 100644
 --- a/net/minecraft/world/entity/player/Inventory.java
 +++ b/net/minecraft/world/entity/player/Inventory.java
-@@ -470,6 +470,16 @@ public class Inventory implements Container, Nameable {
+@@ -470,6 +470,15 @@ public class Inventory implements Container, Nameable {
          if (equipmentSlot != null) {
              this.equipment.set(equipmentSlot, stack);
          }
-+
 +        // Lophine start - better shulker box
-+        if (me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker && !this.player.pendingClosingShulker) {
++        if (me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker) {
 +            boolean isMainHand = index == selected;
 +            boolean isOffHand = index == 40;
 +            if (isMainHand || isOffHand) {
@@ -39,50 +38,25 @@ index 9fbd605df26d388c01d2ed9ca6a6138651e7f9a7..e8141cb25d6b9a433890e2cded188c2e
  
      public ListTag save(ListTag listTag) {
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 27e335e01d8f09f05a4fea5f15407dbe3a4555cb..fbb9fee8223cc27125e4c0c94a7eb8acab5e9a13 100644
+index 27e335e01d8f09f05a4fea5f15407dbe3a4555cb..b1389af2c04527fbc8f62577fad4bc679506a0e9 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -211,6 +211,11 @@ public abstract class Player extends LivingEntity {
-     public boolean affectsSpawning = true; // Paper - Affects Spawning API
-     public net.kyori.adventure.util.TriState flyingFallDamage = net.kyori.adventure.util.TriState.NOT_SET; // Paper - flying fall damage
-     public int enderChestSlotCount = -1; // Purpur - Barrels and enderchests 6 rows
-+    // Lophine start - better shulker box
-+    public net.minecraft.world.InteractionHand shulkerHand;
-+    public boolean pendingClosingShulker = false;
-+    public boolean shulkerOpen = false;
-+    // Lophine end - better shulker box
- 
-     // CraftBukkit start
-     public boolean fauxSleeping;
-@@ -595,11 +600,13 @@ public abstract class Player extends LivingEntity {
+@@ -595,11 +595,13 @@ public abstract class Player extends LivingEntity {
      // Paper start - special close for unloaded inventory
      public void closeUnloadedInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
          this.containerMenu = this.inventoryMenu;
-+        this.shulkerOpen = false;
++        me.earthme.lophine.utils.ShulkerBoxesUtil.clearMap(this); // Lophine - better shulker box
      }
      // Paper end - special close for unloaded inventory
  
      public void closeContainer() {
          this.containerMenu = this.inventoryMenu;
-+        this.shulkerOpen = false;
++        me.earthme.lophine.utils.ShulkerBoxesUtil.clearMap(this); // Lophine - better shulker box
      }
  
      protected void doCloseContainer() {
-diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
-index 6c5a01b065c7daa37219a8ab2a471d93e882e756..7b49b35e7a0b9872daceb620cf83b06ae61c3df9 100644
---- a/net/minecraft/world/inventory/AbstractContainerMenu.java
-+++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
-@@ -697,7 +697,7 @@ public abstract class AbstractContainerMenu {
-         }
-     }
- 
--    private static void dropOrPlaceInInventory(Player player, ItemStack stack) {
-+    public static void dropOrPlaceInInventory(Player player, ItemStack stack) { // Lophine - better shulker box
-         boolean flag = !player.isAlive(); //player.isRemoved() && player.getRemovalReason() != Entity.RemovalReason.CHANGED_DIMENSION; // Luminol - Fix uncorrected death check of folia
-         boolean flag1 = player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected();
-         if (flag || flag1) {
 diff --git a/net/minecraft/world/inventory/ShulkerBoxMenu.java b/net/minecraft/world/inventory/ShulkerBoxMenu.java
-index 903025c659e6a9423224fe65973696405c69ec6a..545fc46416932db922dc1476b983ac8b9b9f3c7b 100644
+index 903025c659e6a9423224fe65973696405c69ec6a..e850b533d89f95d01a3b9d265a70845793e37bd7 100644
 --- a/net/minecraft/world/inventory/ShulkerBoxMenu.java
 +++ b/net/minecraft/world/inventory/ShulkerBoxMenu.java
 @@ -53,7 +53,7 @@ public class ShulkerBoxMenu extends AbstractContainerMenu {
@@ -90,7 +64,7 @@ index 903025c659e6a9423224fe65973696405c69ec6a..545fc46416932db922dc1476b983ac8b
      @Override
      public boolean stillValid(Player player) {
 -        if (!this.checkReachable) return true; // CraftBukkit
-+        if (!this.checkReachable || player.shulkerOpen) return true; // CraftBukkit // Lophine - better shulker box
++        if (!this.checkReachable || me.earthme.lophine.utils.ShulkerBoxesUtil.checkIfValid(player)) return true; // CraftBukkit // Lophine - better shulker box
          return this.container.stillValid(player);
      }
  
@@ -126,7 +100,7 @@ index ecf794f94177fc7b6df483516d920719fbc6fa43..4fda59a4c17009a0009f3d3c13258f4f
              throw new IllegalArgumentException("Got " + items.size() + " items, but maximum is 256");
          } else {
 diff --git a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
-index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..e22114dbfbfd1619260a45929397c11c9356b8a0 100644
+index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..7e97f0e200e7fd83aa9504a5fced83d2d00e0319 100644
 --- a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
 @@ -46,6 +46,11 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
@@ -135,8 +109,8 @@ index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..e22114dbfbfd1619260a45929397c11c
      private float progressOld;
 +    // Lophine start - better shulker box
 +    public boolean haveRealBlock = true;
-+    public Player createPlayer;
-+    public ItemStack item;
++    public net.minecraft.world.InteractionHand shulkerHand;
++    public ItemStack finalItem;
 +    // Lophine end - better shulker box
      @Nullable
      private final DyeColor color;
@@ -148,7 +122,7 @@ index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..e22114dbfbfd1619260a45929397c11c
 +    // Lophine start - better shulker box
 +    public void setItem(int index, ItemStack stack) {
 +        super.setItem(index, stack);
-+        if (!createPlayer.pendingClosingShulker && !haveRealBlock && me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker) {
++        if (me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker && !haveRealBlock) {
 +            me.earthme.lophine.utils.ShulkerBoxesUtil.shulkerBoxEntityCallBack(this);
 +        }
 +    }

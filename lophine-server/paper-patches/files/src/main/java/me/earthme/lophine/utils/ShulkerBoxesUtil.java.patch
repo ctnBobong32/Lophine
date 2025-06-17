@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/src/main/java/me/earthme/lophine/utils/ShulkerBoxesUtil.java
-@@ -1,0 +_,153 @@
+@@ -1,0 +_,181 @@
 +package me.earthme.lophine.utils;
 +
 +import me.earthme.lophine.config.modules.misc.ContainerExpansionConfig;
@@ -19,12 +19,15 @@
 +import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 +import org.jetbrains.annotations.NotNull;
 +
++import java.util.HashMap;
 +import java.util.Objects;
 +import java.util.Optional;
 +
-+import static net.minecraft.world.inventory.AbstractContainerMenu.dropOrPlaceInInventory;
-+
 +public class ShulkerBoxesUtil {
++    // Better ShulkerBoxes used
++    public static HashMap<Player, ShulkerBoxBlockEntity> shulkerMap = new HashMap<>();
++    public static HashMap<ShulkerBoxBlockEntity, Player> playerMap = new HashMap<>();
++
 +    // Stackable ShulkerBoxes part
 +    public static boolean shouldCheck() {
 +        return ContainerExpansionConfig.shulkerCount > 1 && ContainerExpansionConfig.shulkerCount <= 64;
@@ -94,7 +97,12 @@
 +        return checkIsShulkerBox(itemStack) && itemStack.getCount() == 1;
 +    }
 +
-+    public static void openShulkerBox(Player player, ItemStack itemInHand, InteractionHand hand) {
++    public static boolean checkIfValid(Player player) {
++        return shulkerMap.get(player) != null;
++    }
++
++    public static void openShulkerBox(Player player, ItemStack item, InteractionHand hand) {
++        ItemStack itemInHand = item.copy();
 +        ShulkerBoxBlockEntity shulkerBoxEntity = new ShulkerBoxBlockEntity(
 +                player.blockPosition(),
 +                ((BlockItem) itemInHand.getItem()).getBlock().defaultBlockState()
@@ -111,11 +119,13 @@
 +
 +        shulkerBoxEntity.setItems(items);
 +
-+        shulkerBoxEntity.setLevel(player.level());
 +        shulkerBoxEntity.haveRealBlock = false;
-+        shulkerBoxEntity.createPlayer = player;
-+        player.shulkerHand = hand;
-+        player.shulkerOpen = true;
++        shulkerBoxEntity.shulkerHand = hand;
++        shulkerBoxEntity.finalItem = itemInHand;
++        shulkerBoxEntity.setLevel(player.level());
++
++        shulkerMap.put(player, shulkerBoxEntity);
++        playerMap.put(shulkerBoxEntity, player);
 +
 +        if (player.openMenu(shulkerBoxEntity).isPresent()) {
 +            player.awardStat(Stats.OPEN_SHULKER_BOX);
@@ -123,34 +133,52 @@
 +    }
 +
 +    public static void shulkerBoxEntityCallBack(ShulkerBoxBlockEntity shulkerBoxEntity) {
-+        Player player = shulkerBoxEntity.createPlayer;
-+        if (player.shulkerOpen) {
-+            InteractionHand hand = player.shulkerHand;
++        Player player = playerMap.get(shulkerBoxEntity);
++        if (player != null) {
++            InteractionHand hand = shulkerBoxEntity.shulkerHand;
 +            ItemStack currentItem = player.getItemInHand(hand);
++            ItemStack copy = currentItem.copy();
 +
-+            currentItem.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(shulkerBoxEntity.getItems()));
++            copy.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(shulkerBoxEntity.getItems()));
 +
-+            player.setItemInHand(hand, currentItem);
++            player.setItemInHand(hand, copy);
++
++            shulkerBoxEntity.finalItem = copy;
 +        }
 +    }
 +
 +    public static void inventoryCallBack(boolean isMainHand, Player player) {
-+        if (player.shulkerOpen) {
-+            if (isMainHand == Objects.equals(player.shulkerHand, InteractionHand.MAIN_HAND)) {
-+                player.pendingClosingShulker = true;
-+                closeScreen(player);
-+                player.pendingClosingShulker = false;
-+            }
++        ShulkerBoxBlockEntity entity = shulkerMap.get(player);
++        if (entity != null && isMainHand == Objects.equals(entity.shulkerHand, InteractionHand.MAIN_HAND)) {
++            closeScreen(entity, player);
 +        }
 +    }
 +
-+    public static void closeScreen(Player player) {
-+        if (player instanceof ServerPlayer) {
-+            ItemStack stack = player.containerMenu.getCarried();
++    public static void closeScreen(ShulkerBoxBlockEntity entity, Player player) {
++        if (player instanceof ServerPlayer serverPlayer) {
++            ItemStack stack1 = entity.finalItem;
++            ItemStack stack2 = player.containerMenu.getCarried();
++            ItemStack stack = stack2.isEmpty() ? stack1 : stack2;
 +            if (!stack.isEmpty()) {
-+                dropOrPlaceInInventory(player, stack);
++                if (!player.isAlive() || serverPlayer.hasDisconnected()) {
++                    player.drop(stack, false);
++                } else {
++                    player.getInventory().placeItemBackInInventory(stack);
++                }
 +            }
 +        }
 +        player.closeContainer();
++    }
++
++    public static void clearMap(Player p) {
++        ShulkerBoxBlockEntity e = shulkerMap.get(p);
++        if (e != null) playerMap.remove(e);
++        shulkerMap.remove(p);
++    }
++
++    public static void clearMap(ShulkerBoxBlockEntity e) {
++        Player p = playerMap.get(e);
++        if (p != null) shulkerMap.remove(p);
++        playerMap.remove(e);
 +    }
 +}

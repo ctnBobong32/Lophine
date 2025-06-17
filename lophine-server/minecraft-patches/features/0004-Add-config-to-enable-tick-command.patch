@@ -44,7 +44,7 @@ index 8e91ec81128bdbd5f78e1f04fe17bcbd6e5dc280..6b4a33189b4dcd4979fb421248f72530
                  world.setDayTime(world.levelData.getDayTime() + (long)tickCount);
              }
 diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
-index fa6b8d756195c1b430cc11214a901bd42eebc98d..1d79465c9b04c5cdfd299278786916cb10e49522 100644
+index 0357792de0ed8ec9058d1847c8b45c33ff365af6..0bb3752d361bda347646dab5dc83bcf6bd5e717f 100644
 --- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
 +++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
 @@ -31,8 +31,8 @@ public final class TickRegionScheduler {
@@ -58,7 +58,7 @@ index fa6b8d756195c1b430cc11214a901bd42eebc98d..1d79465c9b04c5cdfd299278786916cb
  
      // Folia start - watchdog
      public static final FoliaWatchdogThread WATCHDOG_THREAD = new FoliaWatchdogThread();
-@@ -375,8 +375,23 @@ public final class TickRegionScheduler {
+@@ -394,8 +394,23 @@ public final class TickRegionScheduler {
              final long cpuStart = MEASURE_CPU_TIME ? THREAD_MX_BEAN.getCurrentThreadCpuTime() : 0L;
              final long tickStart = System.nanoTime();
  
@@ -84,7 +84,7 @@ index fa6b8d756195c1b430cc11214a901bd42eebc98d..1d79465c9b04c5cdfd299278786916cb
  
              if (!this.tryMarkTicking()) {
                  if (!this.cancelled.get()) {
-@@ -416,6 +431,11 @@ public final class TickRegionScheduler {
+@@ -435,6 +450,11 @@ public final class TickRegionScheduler {
              try {
                  // next start isn't updated until the end of this tick
                  this.tickRegion(tickCount, tickStart, scheduledEnd);
