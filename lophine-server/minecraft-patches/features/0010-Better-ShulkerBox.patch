@@ -18,25 +18,33 @@ index a4eeb75eeb1cd69c60cd1c273f23f9744837148f..5596214edb14d30c9ed5af4ffdcdd204
  
      @Override
 diff --git a/net/minecraft/world/entity/player/Inventory.java b/net/minecraft/world/entity/player/Inventory.java
-index 9020f7c83e5bd19e9a9d3748d200ce5772a9cefa..8138eb8ce2184ade08b4244dbd150ec264387f7a 100644
+index 9020f7c83e5bd19e9a9d3748d200ce5772a9cefa..5bd913911075c0d93f4434e88c9cf7f3ac7248fc 100644
 --- a/net/minecraft/world/entity/player/Inventory.java
 +++ b/net/minecraft/world/entity/player/Inventory.java
-@@ -470,6 +470,15 @@ public class Inventory implements Container, Nameable {
-         if (equipmentSlot != null) {
-             this.equipment.set(equipmentSlot, stack);
-         }
+@@ -299,6 +299,11 @@ public class Inventory implements Container, Nameable {
+ 
+         int i = this.getMaxStackLeaves(item) - item.getCount();
+         int min = Math.min(count, i);
 +        // Lophine start - better shulker box
 +        if (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker) {
-+            boolean isMainHand = index == selected;
-+            boolean isOffHand = index == 40;
-+            if (isMainHand || isOffHand) {
-+                fun.bm.lophine.utils.ShulkerBoxesUtil.inventoryCallBack(isMainHand, this.player);
-+            }
++            fun.bm.lophine.utils.ShulkerBoxesUtil.inventoryCallBack(player, slot);
 +        }
 +        // Lophine end - better shulker box
-     }
- 
-     public ListTag save(ListTag listTag) {
+         if (min == 0) {
+             return count;
+         } else {
+@@ -351,6 +356,11 @@ public class Inventory implements Container, Nameable {
+                     if (slot >= 0) {
+                         this.items.set(slot, stack.copyAndClear());
+                         this.items.get(slot).setPopTime(5);
++                        // Lophine start - better shulker box
++                        if (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker) {
++                            fun.bm.lophine.utils.ShulkerBoxesUtil.inventoryCallBack(player, slot);
++                        }
++                        // Lophine end - better shulker box
+                         return true;
+                     } else if (this.player.hasInfiniteMaterials()) {
+                         stack.setCount(0);
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
 index 1f7a97b0a52461108fe5a17d2ecc224b1a9f26a1..86854467df17cc72e48360a0f19a4bbe4aaba3e8 100644
 --- a/net/minecraft/world/entity/player/Player.java
@@ -55,6 +63,22 @@ index 1f7a97b0a52461108fe5a17d2ecc224b1a9f26a1..86854467df17cc72e48360a0f19a4bbe
      }
  
      protected void doCloseContainer() {
+diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
+index 45ff5b9a50bdec611f7c1aa4cb77fb0b13b6910c..606025e0e4bfbcc996ce5a54ccf74c74430531a1 100644
+--- a/net/minecraft/world/inventory/AbstractContainerMenu.java
++++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
+@@ -658,6 +658,11 @@ public abstract class AbstractContainerMenu {
+                 }
+             }
+         }
++        // Lophine start - better shulker box
++        if (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.betterShulker) {
++            fun.bm.lophine.utils.ShulkerBoxesUtil.inventoryCallBack(player, slotId - 54);
++        }
++        // Lophine end - better shulker box
+     }
+ 
+     private boolean tryItemClickBehaviourOverride(Player player, ClickAction action, Slot slot, ItemStack clickedItem, ItemStack carriedItem) {
 diff --git a/net/minecraft/world/inventory/ShulkerBoxMenu.java b/net/minecraft/world/inventory/ShulkerBoxMenu.java
 index 903025c659e6a9423224fe65973696405c69ec6a..eb20f83d5aa2c06f60c3941e8a54434737c017c4 100644
 --- a/net/minecraft/world/inventory/ShulkerBoxMenu.java
@@ -100,22 +124,21 @@ index ecf794f94177fc7b6df483516d920719fbc6fa43..4fda59a4c17009a0009f3d3c13258f4f
              throw new IllegalArgumentException("Got " + items.size() + " items, but maximum is 256");
          } else {
 diff --git a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
-index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..ecf15ffc37e65a469bc33406559bfbd122fe810c 100644
+index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..a36080d522841c4d9b186b475aa6667d1942c0eb 100644
 --- a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
-@@ -46,6 +46,11 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
+@@ -46,6 +46,10 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
      private ShulkerBoxBlockEntity.AnimationStatus animationStatus = ShulkerBoxBlockEntity.AnimationStatus.CLOSED;
      private float progress;
      private float progressOld;
 +    // Lophine start - better shulker box
 +    public boolean haveRealBlock = true;
-+    public net.minecraft.world.InteractionHand shulkerHand;
-+    public ItemStack finalItem;
++    public int slot;
 +    // Lophine end - better shulker box
      @Nullable
      private final DyeColor color;
  
-@@ -236,6 +241,15 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
+@@ -236,6 +240,15 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
          return Component.translatable("container.shulkerBox");
      }
  
@@ -131,7 +154,7 @@ index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..ecf15ffc37e65a469bc33406559bfbd1
      @Override
      protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
          super.loadAdditional(tag, registries);
-@@ -258,12 +272,12 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
+@@ -258,12 +271,12 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
      }
  
      @Override

@@ -4,6 +4,28 @@ Date: Wed, 18 Jun 2025 14:24:54 +0800
 Subject: [PATCH] Old replaceable by mushrooms
 
 
+diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
+index ba1ccd6eab77e27a38d22c12dba0797d65cc4c4e..373f91df79fc7a7bd6fd137bf53b8a55dd745e31 100644
+--- a/net/minecraft/world/level/Level.java
++++ b/net/minecraft/world/level/Level.java
+@@ -11,6 +11,8 @@ import java.util.function.Consumer;
+ import java.util.function.Predicate;
+ import java.util.stream.Collectors;
+ import javax.annotation.Nullable;
++
++import fun.bm.lophine.config.modules.misc.OldFeatureConfig;
+ import net.minecraft.CrashReport;
+ import net.minecraft.CrashReportCategory;
+ import net.minecraft.ReportedException;
+@@ -1111,7 +1113,7 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
+         if (worldData.captureTreeGeneration) { // Folia - region threading
+             // Paper start - Protect Bedrock and End Portal/Frames from being destroyed
+             BlockState type = getBlockState(pos);
+-            if (!type.isDestroyable()) return false;
++            if (!type.isDestroyable() && !(OldFeatureConfig.oldReplaceableByMushrooms && flags == 3)) return false;
+             // Paper end - Protect Bedrock and End Portal/Frames from being destroyed
+             CraftBlockState blockstate = worldData.capturedBlockStates.get(pos); // Folia - region threading
+             if (blockstate == null) {
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
 index 834e27ef2f7b342b074ff9e1e390e02f3ca1c399..f5765e3bbf9e735d6f959e1bf6ee1846ee11b4e9 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
