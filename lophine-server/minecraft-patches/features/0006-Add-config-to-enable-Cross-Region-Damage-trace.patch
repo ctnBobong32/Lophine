@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable Cross Region Damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..1764875b9024569671bf2be537afb8b492f79102 100644
+index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..a4eeb75eeb1cd69c60cd1c273f23f9744837148f 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1330,6 +1330,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -13,7 +13,7 @@ index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..1764875b9024569671bf2be537afb8b4
              killCredit.awardKillScore(this, cause);
              this.createWitherRose(killCredit);
 +        // Luminol Start - Cross Region Damage trace
-+        } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++        } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +            final LivingEntity entitylivingnew = this.getKillCreditOrigin();
 +            if (entitylivingnew != null) {
 +                this.damageTransferToAsync(entitylivingnew, cause);
@@ -48,7 +48,7 @@ index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..1764875b9024569671bf2be537afb8b4
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..063d682ae6cde044717a32402785b7a20ea8a351 100644
+index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa7cedb231 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -1191,6 +1191,29 @@ public abstract class LivingEntity extends Entity implements Attackable {
@@ -59,7 +59,7 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..063d682ae6cde044717a32402785b7a2
 +    public boolean addEffect(MobEffectInstance effectInstance, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause, boolean fireEvent, boolean async) {
 +        if (ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(entity)) {
 +            return addEffect(effectInstance, entity, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true);
-+        } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++        } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +            postToEntityThreadAddEffect(effectInstance, entity, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true);
 +            return true;
 +        }
@@ -86,7 +86,7 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..063d682ae6cde044717a32402785b7a2
              if (killer != null) {
                  killer.awardKillScore(this, damageSource);
 +            // Luminol Start - Cross Region Damage trace
-+            } else if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++            } else if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +                final LivingEntity killernew = this.getKillCreditOrigin();
 +                if (killernew != null) {
 +                    this.damageTransferToAsync(killernew, damageSource);
@@ -134,15 +134,15 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..063d682ae6cde044717a32402785b7a2
          return (float)this.getAttributeValue(Attributes.MAX_HEALTH);
      }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index b2bb9b0ff94a7e463ebc4e59fe4378e022e52843..4b72db3350f2990b00076fffb9df811560db8207 100644
+index 3ab6288dc1903da0aaf93ed8b5d9848e4fe663f1..61eab8abd59914a7bf613393059ec039bab1b8ee 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -156,7 +156,13 @@ public abstract class Raider extends PatrollingMonster {
-                     net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, me.earthme.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
+                     net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, fun.bm.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
  
                      if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
 -                        entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
-+                        if (me.earthme.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
++                        if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +                            // Luminol start - Raid changes adapt DamageSource trace
 +                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true, true);
 +                        } else {

@@ -18,7 +18,7 @@ index ee53f78396f4377d3e5c2998826f231208066ef6..607091ecbd4a7261f2c0d839ee4dd1d2
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index a023cc399fc8bfee7771e5ca6716578f89b7072f..f487b44174678196e2bade0066511daf58e93876 100644
+index a023cc399fc8bfee7771e5ca6716578f89b7072f..88ce4001a2fa764a4dc41ca0132ad067d40d3d03 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -140,7 +140,7 @@ import net.minecraft.world.scores.ScoreHolder;
@@ -59,7 +59,7 @@ index a023cc399fc8bfee7771e5ca6716578f89b7072f..f487b44174678196e2bade0066511daf
 +
 +    @Override
 +    public boolean isCulled() {
-+        if (!me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled)
++        if (!fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled)
 +            return false;
 +        return this.culled;
 +    }
@@ -71,7 +71,7 @@ index a023cc399fc8bfee7771e5ca6716578f89b7072f..f487b44174678196e2bade0066511daf
 +
 +    @Override
 +    public boolean isOutOfCamera() {
-+        if (!me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled)
++        if (!fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled)
 +            return false;
 +        return this.outOfCamera;
 +    }
@@ -92,7 +92,7 @@ index 6b72ab233508e6df1eca34360ce76d102ee25a41..f39ee4605cc15102d6560afd1dad5f56
      public EntityType(
          EntityType.EntityFactory<T> factory,
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..34c4c195519de03ec11897160b98c80353eb3d6c 100644
+index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..a26ec6f1a1553bf0b415f382177c75f481e21180 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -220,6 +220,25 @@ public abstract class Player extends LivingEntity {
@@ -102,18 +102,18 @@ index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..34c4c195519de03ec11897160b98c803
 +    // Luminol start - Raytracing entity tracker
 +    public dev.tr7zw.entityculling.CullTask cullTask;
 +    {
-+        if (!me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled) {
++        if (!fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled) {
 +            this.cullTask = null;
 +        }else {
 +            final com.logisticscraft.occlusionculling.OcclusionCullingInstance culling = new com.logisticscraft.occlusionculling.OcclusionCullingInstance(
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.tracingDistance,
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.tracingDistance,
 +                    new dev.tr7zw.entityculling.DefaultChunkDataProvider(this.level())
 +            );
 +
 +            this.cullTask = new dev.tr7zw.entityculling.CullTask(
 +                    culling, this,
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.hitboxLimit,
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.checkIntervalMs
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.hitboxLimit,
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.checkIntervalMs
 +            );
 +        }
 +    }
@@ -126,19 +126,19 @@ index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..34c4c195519de03ec11897160b98c803
      @Override
      public void tick() {
 +        // Luminol start - Ray tracing entity tracker
-+        if (!me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled) {
++        if (!fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.enabled) {
 +            if (this.cullTask != null) this.cullTask.signalStop();
 +            this.cullTask = null;
 +        }else {
 +            final com.logisticscraft.occlusionculling.OcclusionCullingInstance culling = new com.logisticscraft.occlusionculling.OcclusionCullingInstance(
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.tracingDistance,
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.tracingDistance,
 +                    new dev.tr7zw.entityculling.DefaultChunkDataProvider(this.level())
 +            );
 +
 +            this.cullTask = new dev.tr7zw.entityculling.CullTask(
 +                    culling, this,
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.hitboxLimit,
-+                    me.earthme.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.checkIntervalMs
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.hitboxLimit,
++                    fun.bm.lophine.config.modules.experiment.RayTrackingEntityTrackerConfig.checkIntervalMs
 +            );
 +        }
 +        if (this.cullTask != null) this.cullTask.setup();

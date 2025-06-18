@@ -5,7 +5,7 @@ Subject: [PATCH] Purpur-Barrels-and-enderchests-6-rows
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
-index c00ddfe41439954fa0fd87c0933f274c8a752eb6..ac0218fcdf9e9c77a30b7f09b2a5e557ef0f7591 100644
+index c00ddfe41439954fa0fd87c0933f274c8a752eb6..77aa23d252e429e01bc7bd8c47e23d12ca596fdb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 @@ -150,9 +150,26 @@ public class CraftContainer extends AbstractContainerMenu {
@@ -15,7 +15,7 @@ index c00ddfe41439954fa0fd87c0933f274c8a752eb6..ac0218fcdf9e9c77a30b7f09b2a5e557
 -            case BARREL:
 -                this.delegate = new ChestMenu(net.minecraft.world.inventory.MenuType.GENERIC_9x3, windowId, bottom, top, top.getContainerSize() / 9);
 +                // Purpur start - Barrels and enderchests 6 rows
-+                this.delegate = new ChestMenu(switch (me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows) {
++                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows) {
 +                    case 6 -> net.minecraft.world.inventory.MenuType.GENERIC_9x6;
 +                    case 5 -> net.minecraft.world.inventory.MenuType.GENERIC_9x5;
 +                    case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;
@@ -25,7 +25,7 @@ index c00ddfe41439954fa0fd87c0933f274c8a752eb6..ac0218fcdf9e9c77a30b7f09b2a5e557
 +                }, windowId, bottom, top, top.getContainerSize() / 9);
                  break;
 +            case BARREL:
-+                this.delegate = new ChestMenu(switch (me.earthme.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
++                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
 +                    case 6 -> net.minecraft.world.inventory.MenuType.GENERIC_9x6;
 +                    case 5 -> net.minecraft.world.inventory.MenuType.GENERIC_9x5;
 +                    case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;

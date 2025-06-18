@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 1764875b9024569671bf2be537afb8b492f79102..473f9de0908d3fb2cfb640ff7c6f7b78c1280721 100644
+index 5596214edb14d30c9ed5af4ffdcdd2041d135c6d..1a02b14cb457ba8e8c84ec1b111d3829a9c0209c 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -221,6 +221,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -20,7 +20,7 @@ index 1764875b9024569671bf2be537afb8b492f79102..473f9de0908d3fb2cfb640ff7c6f7b78
          this.tickClientLoadTimeout();
          this.gameMode.tick();
          this.wardenSpawnTracker.tick();
-+        if (me.earthme.lophine.config.modules.misc.OldFeatureConfig.spawnInvulnerableTime && this.invulnerableTime > 0) --this.spawnInvulnerableTime; // Lophine - spawn invulnerable time
++        if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.spawnInvulnerableTime && this.invulnerableTime > 0) --this.spawnInvulnerableTime; // Lophine - spawn invulnerable time
          if (this.invulnerableTime > 0) {
              this.invulnerableTime--;
          }
@@ -29,7 +29,7 @@ index 1764875b9024569671bf2be537afb8b492f79102..473f9de0908d3fb2cfb640ff7c6f7b78
              return false;
          } else {
 +            // Lophine start - spawn invulnerable time
-+            if (me.earthme.lophine.config.modules.misc.OldFeatureConfig.spawnInvulnerableTime) {
++            if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.spawnInvulnerableTime) {
 +                if (this.spawnInvulnerableTime > 0 && !damageSource.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 +                    return false;
 +                }

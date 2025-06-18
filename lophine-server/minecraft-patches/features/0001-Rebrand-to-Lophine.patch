@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
-index fcf599846a38beeb8f094d5376c01d5a690f7a2f..a70c04dc72a15e4e8de8de677951f1eb605057b0 100644
+index fcf599846a38beeb8f094d5376c01d5a690f7a2f..48ef71f32b9aa385a8caecafcc8442f932ef8470 100644
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
 @@ -108,7 +108,7 @@ public class Main {
@@ -13,12 +13,12 @@ index fcf599846a38beeb8f094d5376c01d5a690f7a2f..a70c04dc72a15e4e8de8de677951f1eb
              }
  
 -            me.earthme.luminol.config.LuminolConfig.preLoadConfig(); // Luminol - Luminol config
-+            me.earthme.lophine.config.LophineConfig.initConfigs(); // Lophine - Lophine config
++            fun.bm.lophine.config.LophineConfig.initConfigs(); // Lophine - Lophine config
              io.papermc.paper.plugin.PluginInitializerManager.load(optionSet); // Paper
              Bootstrap.bootStrap();
              Bootstrap.validate();
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 5290b9cb524160717fb40704fb10fc0d0a37941b..ba0cdba050cd3bf9231e15dd9543d34f37d9dae5 100644
+index 5290b9cb524160717fb40704fb10fc0d0a37941b..1b60378cdbf5bc88f996010a61cceec7c2b9e2dc 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -171,8 +171,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -27,7 +27,7 @@ index 5290b9cb524160717fb40704fb10fc0d0a37941b..ba0cdba050cd3bf9231e15dd9543d34f
          // Paper end - initialize global and world-defaults configuration
 -        me.earthme.luminol.config.LuminolConfig.finalizeLoadConfig(); //Luminol - load config file
 -        me.earthme.luminol.config.LuminolConfig.setupLatch(); //Luminol - load config file
-+        me.earthme.lophine.config.LophineConfig.loadConfigFiles(); //Luminol - load config file // Lophine - load config file
++        fun.bm.lophine.config.LophineConfig.loadConfigFiles(); //Luminol - load config file // Lophine - load config file
          if (false) this.server.spark.enableEarlyIfRequested(); // Paper - spark // Luminol - Force disable builtin spark
          // Paper start - fix converting txt to json file; convert old users earlier after PlayerList creation but before file load/save
          if (this.convertOldUsers()) {

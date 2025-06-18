@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to revert raid changes
 
 
 diff --git a/net/minecraft/world/effect/BadOmenMobEffect.java b/net/minecraft/world/effect/BadOmenMobEffect.java
-index 80f17f33f670018240c854df589cf90cdeab6e70..faf31ef66ab7fcdb4135e4c225312dc353bdb99b 100644
+index 80f17f33f670018240c854df589cf90cdeab6e70..985f27d249810bf133a520d937b7006e57f553ec 100644
 --- a/net/minecraft/world/effect/BadOmenMobEffect.java
 +++ b/net/minecraft/world/effect/BadOmenMobEffect.java
 @@ -22,6 +22,11 @@ class BadOmenMobEffect extends MobEffect {
@@ -13,7 +13,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..faf31ef66ab7fcdb4135e4c225312dc3
              && level.getDifficulty() != Difficulty.PEACEFUL
              && level.isVillage(serverPlayer.blockPosition())) {
 +            // Leaves start - Revert raid changes
-+            if (me.earthme.lophine.config.modules.misc.RaidChangesConfig.trigger) {
++            if (fun.bm.lophine.config.modules.misc.RaidChangesConfig.trigger) {
 +                return level.getRaids().createOrExtendRaid(serverPlayer, serverPlayer.blockPosition()) == null;
 +            }
 +            // Leaves end - Revert raid changes
@@ -21,7 +21,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..faf31ef66ab7fcdb4135e4c225312dc3
              if (raidAt == null || raidAt.getRaidOmenLevel() < raidAt.getMaxRaidOmenLevel()) {
                  serverPlayer.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplifier));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e032e6add8 100644
+index dbb207c638a64b733dc21704033ff55ca1f44f1d..bcafacb6fce19212e99a3f04e0356b34304d92f1 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
 @@ -340,7 +340,20 @@ public class Raid {
@@ -30,7 +30,7 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e0
                          if (flag1) {
 -                            this.waveSpawnPos = this.getValidSpawnPos(level);
 +                            // Luminol Start - Raid revert
-+                            if (!me.earthme.lophine.config.modules.misc.RaidChangesConfig.posRevert) {
++                            if (!fun.bm.lophine.config.modules.misc.RaidChangesConfig.posRevert) {
 +                                this.waveSpawnPos = this.getValidSpawnPos(level);
 +                            } else {
 +                                int n4 = 0;
@@ -53,7 +53,7 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e0
 -                    BlockPos blockPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
 +                    // Luminol Start - Raid revert
 +                    BlockPos blockPos;
-+                    if (!me.earthme.lophine.config.modules.misc.RaidChangesConfig.posRevert) {
++                    if (!fun.bm.lophine.config.modules.misc.RaidChangesConfig.posRevert) {
 +                        blockPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
 +                    } else {
 +                        blockPos = this.waveSpawnPos.isPresent() ? this.waveSpawnPos.get() : this.findRandomSpawnPos(level, i, 20);
@@ -67,7 +67,7 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e0
                      }
  
 -                    if (i > 5) {
-+                    if (i > (me.earthme.lophine.config.modules.misc.RaidChangesConfig.posRevert ? 3 : 5)) { // Luminol - Raid revert
++                    if (i > (fun.bm.lophine.config.modules.misc.RaidChangesConfig.posRevert ? 3 : 5)) { // Luminol - Raid revert
                          org.bukkit.craftbukkit.event.CraftEventFactory.callRaidStopEvent(level, this, org.bukkit.event.raid.RaidStopEvent.Reason.UNSPAWNABLE); // CraftBukkit
                          this.stop();
                          break;
@@ -94,7 +94,7 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e0
              int i3 = this.center.getZ() + Mth.floor(Mth.sin(f2) * 32.0F * f) + level.random.nextInt(3) * Mth.floor(f);
              int height = level.getHeight(Heightmap.Types.WORLD_SURFACE, i2, i3);
 -            if (Mth.abs(height - this.center.getY()) <= 96) {
-+            if (me.earthme.lophine.config.modules.misc.RaidChangesConfig.heightCheck || Mth.abs(height - this.center.getY()) <= 96) { // Leaves - Disable height check
++            if (fun.bm.lophine.config.modules.misc.RaidChangesConfig.heightCheck || Mth.abs(height - this.center.getY()) <= 96) { // Leaves - Disable height check
                  mutableBlockPos.set(i2, height, i3);
                  if (!level.isVillage(mutableBlockPos) || i <= 7) {
                      int i4 = 10;
@@ -126,7 +126,7 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..94fdf1b5ce2622e4e654d09562f8a3e0
          // Folia start - make raids thread-safe
          if (!this.ownsRaid(level)) {
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index f6f36c15120da6c57c0cbea3743a0819252cb6cc..b2bb9b0ff94a7e463ebc4e59fe4378e022e52843 100644
+index f6f36c15120da6c57c0cbea3743a0819252cb6cc..3ab6288dc1903da0aaf93ed8b5d9848e4fe663f1 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -127,6 +127,41 @@ public abstract class Raider extends PatrollingMonster {
@@ -135,7 +135,7 @@ index f6f36c15120da6c57c0cbea3743a0819252cb6cc..b2bb9b0ff94a7e463ebc4e59fe4378e0
              }
 +
 +            // Leaves start - Revert raid changes
-+            if (me.earthme.lophine.config.modules.misc.RaidChangesConfig.effect && !this.hasRaid()) {
++            if (fun.bm.lophine.config.modules.misc.RaidChangesConfig.effect && !this.hasRaid()) {
 +                ItemStack itemstack = this.getItemBySlot(EquipmentSlot.HEAD);
 +                net.minecraft.world.entity.player.Player entityhuman = null;
 +                if (entity instanceof net.minecraft.world.entity.player.Player player) {
@@ -159,7 +159,7 @@ index f6f36c15120da6c57c0cbea3743a0819252cb6cc..b2bb9b0ff94a7e463ebc4e59fe4378e0
 +                    }
 +
 +                    i = net.minecraft.util.Mth.clamp(i, 0, 4);
-+                    net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, me.earthme.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
++                    net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, fun.bm.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
 +
 +                    if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
 +                        entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
@@ -176,12 +176,12 @@ index f6f36c15120da6c57c0cbea3743a0819252cb6cc..b2bb9b0ff94a7e463ebc4e59fe4378e0
  
      public boolean hasRaid() {
 -        return this.level() instanceof ServerLevel serverLevel && (this.getCurrentRaid() != null || serverLevel.getRaidAt(this.blockPosition()) != null);
-+        return !me.earthme.lophine.config.modules.misc.RaidChangesConfig.selfCheck && (this.level() instanceof ServerLevel serverLevel && (this.getCurrentRaid() != null || serverLevel.getRaidAt(this.blockPosition()) != null)); // Leaves - Disable raid self check
++        return !fun.bm.lophine.config.modules.misc.RaidChangesConfig.selfCheck && (this.level() instanceof ServerLevel serverLevel && (this.getCurrentRaid() != null || serverLevel.getRaidAt(this.blockPosition()) != null)); // Leaves - Disable raid self check
      }
  
      public boolean hasActiveRaid() {
 diff --git a/net/minecraft/world/item/component/OminousBottleAmplifier.java b/net/minecraft/world/item/component/OminousBottleAmplifier.java
-index 33907bb190ffa22ccf9ea424b1e536297878711a..4b48aa0db9c1ab3e6227d1e1a42ce73db6943b04 100644
+index 33907bb190ffa22ccf9ea424b1e536297878711a..2fca459f2c888079322f6b957bbee3ac0e33c4bc 100644
 --- a/net/minecraft/world/item/component/OminousBottleAmplifier.java
 +++ b/net/minecraft/world/item/component/OminousBottleAmplifier.java
 @@ -29,7 +29,7 @@ public record OminousBottleAmplifier(int value) implements ConsumableListener, T
@@ -189,7 +189,7 @@ index 33907bb190ffa22ccf9ea424b1e536297878711a..4b48aa0db9c1ab3e6227d1e1a42ce73d
      @Override
      public void onConsume(Level level, LivingEntity entity, ItemStack stack, Consumable consumable) {
 -        entity.addEffect(new MobEffectInstance(MobEffects.BAD_OMEN, 120000, this.value, false, false, true)); // Paper - properly resend entities - diff on change for below
-+        entity.addEffect(new MobEffectInstance(MobEffects.BAD_OMEN, me.earthme.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, this.value, false, false, true)); // Paper - properly resend entities - diff on change for below // Luminol - Raid effect infinite
++        entity.addEffect(new MobEffectInstance(MobEffects.BAD_OMEN, fun.bm.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, this.value, false, false, true)); // Paper - properly resend entities - diff on change for below // Luminol - Raid effect infinite
      }
  
      // Paper start - properly resend entities - collect packets for bundle
@@ -198,7 +198,7 @@ index 33907bb190ffa22ccf9ea424b1e536297878711a..4b48aa0db9c1ab3e6227d1e1a42ce73d
      @Override
      public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
 -        List<MobEffectInstance> list = List.of(new MobEffectInstance(MobEffects.BAD_OMEN, 120000, this.value, false, false, true));
-+        List<MobEffectInstance> list = List.of(new MobEffectInstance(MobEffects.BAD_OMEN, me.earthme.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, this.value, false, false, true)); // Luminol - Raid effect infinite
++        List<MobEffectInstance> list = List.of(new MobEffectInstance(MobEffects.BAD_OMEN, fun.bm.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, this.value, false, false, true)); // Luminol - Raid effect infinite
          PotionContents.addPotionTooltip(list, tooltipAdder, 1.0F, context.tickRate());
      }
  }

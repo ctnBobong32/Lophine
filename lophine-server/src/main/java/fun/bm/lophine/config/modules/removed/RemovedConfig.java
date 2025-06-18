@@ -1,0 +1,24 @@
+package fun.bm.lophine.config.modules.removed;
+
+import me.earthme.luminol.config.EnumConfigCategory;
+import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.TransformedConfig;
+
+public class RemovedConfig implements IConfigModule {
+    @TransformedConfig(name = "example", category = {"removed", "example"}, transform = false)
+    @ConfigInfo(baseName = "removed", comments =
+            """
+                    RemovedConfig redirect to here, no any function.""")
+    public static boolean enabled = true;
+
+    @Override
+    public EnumConfigCategory getCategory() {
+        return EnumConfigCategory.REMOVED;
+    }
+
+    @Override
+    public String getBaseName() {
+        return "removed_config";
+    }
+}

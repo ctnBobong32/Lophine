@@ -6,7 +6,7 @@ Subject: [PATCH] Old nether portal collision
 This patch should removed in 1.21.6 when mojang revert it.
 
 diff --git a/net/minecraft/world/level/block/NetherPortalBlock.java b/net/minecraft/world/level/block/NetherPortalBlock.java
-index 421ea9c748159ac989900427a13abe9b244dc7aa..ecdecf0484137e0f98bf41d09e0dc7dc7715fd35 100644
+index 421ea9c748159ac989900427a13abe9b244dc7aa..a5a220e6d41c992d1db8617069aa00eddcf7b95a 100644
 --- a/net/minecraft/world/level/block/NetherPortalBlock.java
 +++ b/net/minecraft/world/level/block/NetherPortalBlock.java
 @@ -65,7 +65,7 @@ public class NetherPortalBlock extends Block implements Portal {
@@ -14,7 +14,7 @@ index 421ea9c748159ac989900427a13abe9b244dc7aa..ecdecf0484137e0f98bf41d09e0dc7dc
      @Override
      protected VoxelShape getEntityInsideCollisionShape(BlockState state, BlockGetter level, BlockPos pos, Entity entity) {
 -        return state.getShape(level, pos);
-+        return me.earthme.lophine.config.modules.misc.OldFeatureConfig.oldNetherPortalCollision ? Shapes.block() : state.getShape(level, pos); // Lophine - Old nether portal collision
++        return fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldNetherPortalCollision ? Shapes.block() : state.getShape(level, pos); // Lophine - Old nether portal collision
      }
  
      @Override
