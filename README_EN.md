@@ -73,8 +73,7 @@ When you meet any problems, just ask us, we will do our best to solve it, but re
 See [Contributing](./docs/CONTRIBUTING_EN.md)
 
 ## BStats
-Temporarily use Luminol's.
-![bStats](https://bstats.org/signatures/server-implementation/Luminol.svg "bStats")
+![bStats](https://bstats.org/signatures/server-implementation/Lophine.svg "bStats")
 
 ## Special Thanks
 Thanks [LegacyLands](https://github.com/LegacyLands) for sponsoring this project.If you want to develop some crossing folia/non-folia platform plugins, [legacy-lands-library](https://github.com/LegacyLands/legacy-lands-library/) will be a nice choice for you
