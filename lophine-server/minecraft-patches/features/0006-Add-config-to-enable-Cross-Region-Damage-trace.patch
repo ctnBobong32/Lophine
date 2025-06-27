@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable Cross Region Damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..a4eeb75eeb1cd69c60cd1c273f23f9744837148f 100644
+index a632bfb00e151a395e886aff3471084dc6cf4102..528d0a111b36e51d8943a013b36c378d442ef2dd 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -1330,6 +1330,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1407,6 +1407,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
              this.awardStat(Stats.ENTITY_KILLED_BY.get(killCredit.getType()));
              killCredit.awardKillScore(this, cause);
              this.createWitherRose(killCredit);
@@ -22,7 +22,7 @@ index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..a4eeb75eeb1cd69c60cd1c273f23f974
          }
  
          this.level().broadcastEntityEvent(this, (byte)3);
-@@ -1353,6 +1360,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -1430,6 +1437,24 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
      }
      // Leaves end - exp fix
  
@@ -48,10 +48,10 @@ index c3201cb0ba6f928f658d4c74a1ef2b7e8900b1f6..a4eeb75eeb1cd69c60cd1c273f23f974
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa7cedb231 100644
+index 19b44e5b5c4c0b7caee7f67420ac4732da52c375..b66d4ccaff4a3168d08b36590bd42d663b7f1ca3 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -1191,6 +1191,29 @@ public abstract class LivingEntity extends Entity implements Attackable {
+@@ -1216,6 +1216,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  
@@ -81,7 +81,7 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa
      public boolean canBeAffected(MobEffectInstance effectInstance) {
          if (this.getType().is(EntityTypeTags.IMMUNE_TO_INFESTED)) {
              return !effectInstance.is(MobEffects.INFESTED);
-@@ -1916,6 +1939,13 @@ public abstract class LivingEntity extends Entity implements Attackable {
+@@ -1948,6 +1971,13 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
              final LivingEntity killer = this.getKillCredit();
              if (killer != null) {
                  killer.awardKillScore(this, damageSource);
@@ -95,7 +95,7 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa
              }
          }); // Paper end
          this.postDeathDropItems(deathEvent); // Paper
-@@ -1926,6 +1956,18 @@ public abstract class LivingEntity extends Entity implements Attackable {
+@@ -1958,6 +1988,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          return deathEvent; // Paper
      }
  
@@ -114,7 +114,7 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa
      protected void dropEquipment(ServerLevel level) {
      }
      protected void postDeathDropItems(org.bukkit.event.entity.EntityDeathEvent event) {} // Paper - method for post death logic that cannot be ran before the event is potentially cancelled
-@@ -2524,6 +2566,18 @@ public abstract class LivingEntity extends Entity implements Attackable {
+@@ -2556,6 +2598,18 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
          }
      }
  
@@ -134,10 +134,10 @@ index 5b5e63c4dc10076ba33a8ddf0ebae96643b1161f..f5a1b2711a4eb910decb26b26c57ebfa
          return (float)this.getAttributeValue(Attributes.MAX_HEALTH);
      }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 3ab6288dc1903da0aaf93ed8b5d9848e4fe663f1..61eab8abd59914a7bf613393059ec039bab1b8ee 100644
+index 510514e363f4816a6e286fb9b5488153e03c9e55..89d6e4deebba271d3a73e296cf0015f407c224b0 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
-@@ -156,7 +156,13 @@ public abstract class Raider extends PatrollingMonster {
+@@ -157,7 +157,13 @@ public abstract class Raider extends PatrollingMonster {
                      net.minecraft.world.effect.MobEffectInstance mobeffect1 = new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BAD_OMEN, fun.bm.lophine.config.modules.misc.RaidChangesConfig.infinite ? net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION : 120000, i, false, false, true);
  
                      if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {

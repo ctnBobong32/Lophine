@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class ServerI18nUtil {
 
     private static final Logger logger = Logger.getLogger("LangLoader");
-    private static final String VERSION = DetectedVersion.BUILT_IN.getName();
+    private static final String VERSION = DetectedVersion.BUILT_IN.name();
     private static final String BASE_PATH = "cache/lophine/" + VERSION + "/";
     private static final String manifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     private static final String resourceBaseUrl = "https://resources.download.minecraft.net/";

@@ -57,7 +57,7 @@ index 22125dbe1765f930fe10fe420be1c275ec553139..d5b070d1a3d84e228960dacd614e0f1a
          final @Nullable Component history = this.getHistory();
  
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-index e3c5f4c31f084294a59830f3e764921433dd80d5..fe0f4aee0ad92e2e9713f88e328d6588f494dfd3 100644
+index 4ada790812957657d580cb748077c4961987d0cb..3a539df860305e777e85ed6dc72b5effe76734b4 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 @@ -31,7 +31,7 @@ public record ServerBuildInfoImpl(
@@ -78,8 +78,8 @@ index e3c5f4c31f084294a59830f3e764921433dd80d5..fe0f4aee0ad92e2e9713f88e328d6588
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_NAME)
 -                .orElse(BRAND_LUMINOL_NAME), // Folia // Luminol
 +                .orElse(BRAND_LOPHINE_NAME), // Folia // Luminol // Lophine
-             SharedConstants.getCurrentVersion().getId(),
-             SharedConstants.getCurrentVersion().getName(),
+             SharedConstants.getCurrentVersion().id(),
+             SharedConstants.getCurrentVersion().name(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
 @@ -62,7 +62,7 @@ public record ServerBuildInfoImpl(
  

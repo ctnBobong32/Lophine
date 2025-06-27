@@ -5,10 +5,10 @@ Subject: [PATCH] Old zombie reinforcement
 
 
 diff --git a/net/minecraft/world/entity/monster/Zombie.java b/net/minecraft/world/entity/monster/Zombie.java
-index 4395947fc8c719864ac2afde5e6bbb53da5129c2..f2b2859084bcff3a004d9b4bfac1f51e75970d39 100644
+index 14d0758aca54d9a25e369dfa8c89c930f27946c9..6f1f26b7f759e56f843e674167470da943785728 100644
 --- a/net/minecraft/world/entity/monster/Zombie.java
 +++ b/net/minecraft/world/entity/monster/Zombie.java
-@@ -342,7 +342,7 @@ public class Zombie extends Monster {
+@@ -341,7 +341,7 @@ public class Zombie extends Monster {
                  int floor = Mth.floor(this.getX());
                  int floor1 = Mth.floor(this.getY());
                  int floor2 = Mth.floor(this.getZ());

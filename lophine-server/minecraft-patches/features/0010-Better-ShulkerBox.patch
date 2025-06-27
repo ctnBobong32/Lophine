@@ -6,10 +6,10 @@ Subject: [PATCH] Better ShulkerBox
 You can open shulker box with shift & right click
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index a4eeb75eeb1cd69c60cd1c273f23f9744837148f..5596214edb14d30c9ed5af4ffdcdd2041d135c6d 100644
+index 528d0a111b36e51d8943a013b36c378d442ef2dd..2e03b114dd2b8c0816621c7522fb9654025d7111 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
-@@ -2351,6 +2351,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
+@@ -2450,6 +2450,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
          this.containerMenu.removed(this);
          this.inventoryMenu.transferState(this.containerMenu);
          this.containerMenu = this.inventoryMenu;
@@ -18,10 +18,10 @@ index a4eeb75eeb1cd69c60cd1c273f23f9744837148f..5596214edb14d30c9ed5af4ffdcdd204
  
      @Override
 diff --git a/net/minecraft/world/entity/player/Inventory.java b/net/minecraft/world/entity/player/Inventory.java
-index 9020f7c83e5bd19e9a9d3748d200ce5772a9cefa..5bd913911075c0d93f4434e88c9cf7f3ac7248fc 100644
+index 53210a7d32241c47c2b1cd698b515726f0a1fd0d..399a7424712471329ca82094839859bbac8ed087 100644
 --- a/net/minecraft/world/entity/player/Inventory.java
 +++ b/net/minecraft/world/entity/player/Inventory.java
-@@ -299,6 +299,11 @@ public class Inventory implements Container, Nameable {
+@@ -316,6 +316,11 @@ public class Inventory implements Container, Nameable {
  
          int i = this.getMaxStackLeaves(item) - item.getCount();
          int min = Math.min(count, i);
@@ -33,7 +33,7 @@ index 9020f7c83e5bd19e9a9d3748d200ce5772a9cefa..5bd913911075c0d93f4434e88c9cf7f3
          if (min == 0) {
              return count;
          } else {
-@@ -351,6 +356,11 @@ public class Inventory implements Container, Nameable {
+@@ -368,6 +373,11 @@ public class Inventory implements Container, Nameable {
                      if (slot >= 0) {
                          this.items.set(slot, stack.copyAndClear());
                          this.items.get(slot).setPopTime(5);
@@ -46,10 +46,10 @@ index 9020f7c83e5bd19e9a9d3748d200ce5772a9cefa..5bd913911075c0d93f4434e88c9cf7f3
                      } else if (this.player.hasInfiniteMaterials()) {
                          stack.setCount(0);
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 1f7a97b0a52461108fe5a17d2ecc224b1a9f26a1..86854467df17cc72e48360a0f19a4bbe4aaba3e8 100644
+index 283991c8da3ff07359c89482a72a7238c2cb7e26..5320f57897d673f3468b2bfecee4768bb00ef783 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -595,11 +595,13 @@ public abstract class Player extends LivingEntity {
+@@ -605,11 +605,13 @@ public abstract class Player extends LivingEntity {
      // Paper start - special close for unloaded inventory
      public void closeUnloadedInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason) {
          this.containerMenu = this.inventoryMenu;
@@ -64,7 +64,7 @@ index 1f7a97b0a52461108fe5a17d2ecc224b1a9f26a1..86854467df17cc72e48360a0f19a4bbe
  
      protected void doCloseContainer() {
 diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
-index 45ff5b9a50bdec611f7c1aa4cb77fb0b13b6910c..606025e0e4bfbcc996ce5a54ccf74c74430531a1 100644
+index 379ccae078370b4e8fc909e642f1a70066f70ebf..c28629f8900bf4c51a0daa1a8effd6c405ab1526 100644
 --- a/net/minecraft/world/inventory/AbstractContainerMenu.java
 +++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
 @@ -658,6 +658,11 @@ public abstract class AbstractContainerMenu {
@@ -93,7 +93,7 @@ index 903025c659e6a9423224fe65973696405c69ec6a..eb20f83d5aa2c06f60c3941e8a544347
      }
  
 diff --git a/net/minecraft/world/item/Item.java b/net/minecraft/world/item/Item.java
-index c52fb17d1e496a91223b7387cacb128c1865caee..af070f075b1b6523040a4ff29ef37c730af28427 100644
+index 40cb5e6bbcf9dbdb400f1503e86c0804b60e07be..8c279c6ed58f1af451170f9633e3a32f9ab59ee0 100644
 --- a/net/minecraft/world/item/Item.java
 +++ b/net/minecraft/world/item/Item.java
 @@ -187,6 +187,13 @@ public class Item implements FeatureElement, ItemLike {
@@ -124,7 +124,7 @@ index ecf794f94177fc7b6df483516d920719fbc6fa43..4fda59a4c17009a0009f3d3c13258f4f
              throw new IllegalArgumentException("Got " + items.size() + " items, but maximum is 256");
          } else {
 diff --git a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
-index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..a36080d522841c4d9b186b475aa6667d1942c0eb 100644
+index ebea67223ce1d350087c73dff0cc3fe6d7b47ca0..efbe87de81ad23d0d248dfa487d20190c6049cf4 100644
 --- a/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ShulkerBoxBlockEntity.java
 @@ -46,6 +46,10 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
@@ -152,8 +152,8 @@ index 87ebdb6deb66662a38b3eec0dae27eaf859ecabb..a36080d522841c4d9b186b475aa6667d
 +    // Lophine end - better shulker box
 +
      @Override
-     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-         super.loadAdditional(tag, registries);
+     protected void loadAdditional(ValueInput input) {
+         super.loadAdditional(input);
 @@ -258,12 +271,12 @@ public class ShulkerBoxBlockEntity extends RandomizableContainerBlockEntity impl
      }
  

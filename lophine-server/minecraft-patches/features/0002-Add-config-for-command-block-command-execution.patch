@@ -5,10 +5,10 @@ Subject: [PATCH] Add config for command block command execution
 
 
 diff --git a/net/minecraft/world/level/BaseCommandBlock.java b/net/minecraft/world/level/BaseCommandBlock.java
-index 91e30f9c83259abc0589f4ee69c429cd4305d6ea..e1cc5576017358849e7c536accd14d2e6eb5c706 100644
+index 8b8ce26de104211728d4b64e641a2b471ce89073..fde808499f047128010fd3f94ba086dfab44299a 100644
 --- a/net/minecraft/world/level/BaseCommandBlock.java
 +++ b/net/minecraft/world/level/BaseCommandBlock.java
-@@ -102,7 +102,7 @@ public abstract class BaseCommandBlock implements CommandSource {
+@@ -96,7 +96,7 @@ public abstract class BaseCommandBlock implements CommandSource {
      }
  
      public boolean performCommand(Level level) {

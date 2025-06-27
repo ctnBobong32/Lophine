@@ -21,7 +21,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..985f27d249810bf133a520d937b7006e
              if (raidAt == null || raidAt.getRaidOmenLevel() < raidAt.getMaxRaidOmenLevel()) {
                  serverPlayer.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplifier));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index dbb207c638a64b733dc21704033ff55ca1f44f1d..bcafacb6fce19212e99a3f04e0356b34304d92f1 100644
+index 1910bff3f08147bfd63703097e30b9f88c84e337..26f4d7359f638a11ea2d768d18091e261d6b1791 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
 @@ -340,7 +340,20 @@ public class Raid {
@@ -126,10 +126,10 @@ index dbb207c638a64b733dc21704033ff55ca1f44f1d..bcafacb6fce19212e99a3f04e0356b34
          // Folia start - make raids thread-safe
          if (!this.ownsRaid(level)) {
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index f6f36c15120da6c57c0cbea3743a0819252cb6cc..3ab6288dc1903da0aaf93ed8b5d9848e4fe663f1 100644
+index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..510514e363f4816a6e286fb9b5488153e03c9e55 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
-@@ -127,6 +127,41 @@ public abstract class Raider extends PatrollingMonster {
+@@ -128,6 +128,41 @@ public abstract class Raider extends PatrollingMonster {
  
                  currentRaid.removeFromRaid(serverLevel, this, false);
              }
@@ -171,7 +171,7 @@ index f6f36c15120da6c57c0cbea3743a0819252cb6cc..3ab6288dc1903da0aaf93ed8b5d9848e
          }
  
          super.die(cause);
-@@ -155,7 +190,7 @@ public abstract class Raider extends PatrollingMonster {
+@@ -156,7 +191,7 @@ public abstract class Raider extends PatrollingMonster {
      }
  
      public boolean hasRaid() {

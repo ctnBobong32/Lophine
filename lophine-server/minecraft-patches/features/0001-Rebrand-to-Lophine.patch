@@ -5,10 +5,10 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
-index fcf599846a38beeb8f094d5376c01d5a690f7a2f..48ef71f32b9aa385a8caecafcc8442f932ef8470 100644
+index a75a5ce8477da8d3f7b0ae41bfbd75defe1d2ed4..ad80d198d96bb05d71200958216c4223bde7bb97 100644
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
-@@ -108,7 +108,7 @@ public class Main {
+@@ -109,7 +109,7 @@ public class Main {
                  JvmProfiler.INSTANCE.start(Environment.SERVER);
              }
  
@@ -18,16 +18,16 @@ index fcf599846a38beeb8f094d5376c01d5a690f7a2f..48ef71f32b9aa385a8caecafcc8442f9
              Bootstrap.bootStrap();
              Bootstrap.validate();
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 5290b9cb524160717fb40704fb10fc0d0a37941b..1b60378cdbf5bc88f996010a61cceec7c2b9e2dc 100644
+index 1f3c26cc9f3b687693c36f2946394fad5ab6bc9f..45cd92cd69bcb66b94bc6278f2897ea4a31c45b6 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -171,8 +171,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
          // Paper end - initialize global and world-defaults configuration
--        me.earthme.luminol.config.LuminolConfig.finalizeLoadConfig(); //Luminol - load config file
--        me.earthme.luminol.config.LuminolConfig.setupLatch(); //Luminol - load config file
-+        fun.bm.lophine.config.LophineConfig.loadConfigFiles(); //Luminol - load config file // Lophine - load config file
+-        me.earthme.luminol.config.LuminolConfig.finalizeLoadConfig(); // Luminol - load config file
+-        me.earthme.luminol.config.LuminolConfig.setupLatch(); // Luminol - load config file
++        fun.bm.lophine.config.LophineConfig.loadConfigFiles(); // Lophine - load config file
          if (false) this.server.spark.enableEarlyIfRequested(); // Paper - spark // Luminol - Force disable builtin spark
          // Paper start - fix converting txt to json file; convert old users earlier after PlayerList creation but before file load/save
          if (this.convertOldUsers()) {

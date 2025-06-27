@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable Raytracing tracker
 
 
 diff --git a/net/minecraft/server/level/ChunkMap.java b/net/minecraft/server/level/ChunkMap.java
-index ee53f78396f4377d3e5c2998826f231208066ef6..607091ecbd4a7261f2c0d839ee4dd1d27fa2190a 100644
+index 6868b915bf3deb85783a638d4441a15fea6da2dc..70740381c6501c1a518c52b24381edd16792507f 100644
 --- a/net/minecraft/server/level/ChunkMap.java
 +++ b/net/minecraft/server/level/ChunkMap.java
 @@ -1278,7 +1278,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
@@ -18,19 +18,19 @@ index ee53f78396f4377d3e5c2998826f231208066ef6..607091ecbd4a7261f2c0d839ee4dd1d2
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index a023cc399fc8bfee7771e5ca6716578f89b7072f..88ce4001a2fa764a4dc41ca0132ad067d40d3d03 100644
+index 990ea0359c9015f867dc529a284148cd4846f5e8..5c2796a072228e6cb6d7f27ec2536a94b9f3ac40 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
-@@ -140,7 +140,7 @@ import net.minecraft.world.scores.ScoreHolder;
- import net.minecraft.world.scores.Team;
+@@ -147,7 +147,7 @@ import net.minecraft.world.waypoints.WaypointTransmitter;
  import org.jetbrains.annotations.Contract;
+ import org.slf4j.Logger;
  
 -public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess, ScoreHolder, DataComponentGetter, ca.spottedleaf.moonrise.patches.chunk_system.entity.ChunkSystemEntity, ca.spottedleaf.moonrise.patches.entity_tracker.EntityTrackerEntity { // Paper - rewrite chunk system // Paper - optimise entity tracker
 +public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess, ScoreHolder, DataComponentGetter, ca.spottedleaf.moonrise.patches.chunk_system.entity.ChunkSystemEntity, ca.spottedleaf.moonrise.patches.entity_tracker.EntityTrackerEntity, dev.tr7zw.entityculling.versionless.access.Cullable { // Paper - rewrite chunk system // Paper - optimise entity tracker // Luminol - Ray tracing entity tracker
      // CraftBukkit start
-     private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
      private static final int CURRENT_LEVEL = 2;
-@@ -6106,4 +6106,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+     public boolean preserveMotion = true; // Paper - Fix Entity Teleportation and cancel velocity if teleported; keep initial motion on first snapTo
+@@ -6363,4 +6363,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG
@@ -78,10 +78,10 @@ index a023cc399fc8bfee7771e5ca6716578f89b7072f..88ce4001a2fa764a4dc41ca0132ad067
 +
  }
 diff --git a/net/minecraft/world/entity/EntityType.java b/net/minecraft/world/entity/EntityType.java
-index 6b72ab233508e6df1eca34360ce76d102ee25a41..f39ee4605cc15102d6560afd1dad5f56dd53cf4e 100644
+index 6f00ffa05d9597917574357e0069c9b056aa5ce2..5cc7a91e32f17d8d9585ae4844a4ed3b706e3273 100644
 --- a/net/minecraft/world/entity/EntityType.java
 +++ b/net/minecraft/world/entity/EntityType.java
-@@ -1109,6 +1109,9 @@ public class EntityType<T extends Entity> implements FeatureElement, EntityTypeT
+@@ -1119,6 +1119,9 @@ public class EntityType<T extends Entity> implements FeatureElement, EntityTypeT
      public final int passengerTickTimerId;
      public final int passengerInactiveTickTimerId;
      // Folia end - profiler
@@ -92,10 +92,10 @@ index 6b72ab233508e6df1eca34360ce76d102ee25a41..f39ee4605cc15102d6560afd1dad5f56
      public EntityType(
          EntityType.EntityFactory<T> factory,
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..a26ec6f1a1553bf0b415f382177c75f481e21180 100644
+index 47f62fbe97c559c25ad2bc67c18f2025c78e2c69..0a114ac527026473c86f11dab564ac3c31c41f39 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -220,6 +220,25 @@ public abstract class Player extends LivingEntity {
+@@ -229,6 +229,25 @@ public abstract class Player extends LivingEntity {
          return (org.bukkit.craftbukkit.entity.CraftHumanEntity) super.getBukkitEntity();
      }
      // CraftBukkit end
@@ -119,9 +119,9 @@ index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..a26ec6f1a1553bf0b415f382177c75f4
 +    }
 +    // Luminol end
  
-     public Player(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
+     public Player(Level level, GameProfile gameProfile) {
          super(EntityType.PLAYER, level);
-@@ -277,6 +296,26 @@ public abstract class Player extends LivingEntity {
+@@ -287,6 +306,26 @@ public abstract class Player extends LivingEntity {
  
      @Override
      public void tick() {
@@ -148,7 +148,7 @@ index 543750bee43bfaaaf33f2cec53eb0de05e7a1dd2..a26ec6f1a1553bf0b415f382177c75f4
          this.noPhysics = this.isSpectator();
          if (this.isSpectator() || this.isPassenger()) {
              this.setOnGround(false);
-@@ -1415,6 +1454,7 @@ public abstract class Player extends LivingEntity {
+@@ -1427,6 +1466,7 @@ public abstract class Player extends LivingEntity {
          if (this.containerMenu != null && this.hasContainerOpen()) {
              this.doCloseContainer();
          }

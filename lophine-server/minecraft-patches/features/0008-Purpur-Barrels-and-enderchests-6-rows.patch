@@ -8,10 +8,10 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 001483b7098523f3645a95c81fcf0e38b551705e..70be6c3ef009f1746353cc330a188bc693174ed7 100644
+index b8bd7410e3d5cd8f81f41b52a3a8732134829478..7f155ab485a5157d810585074b5b9de4be6bfa4e 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1116,6 +1116,10 @@ public abstract class PlayerList {
+@@ -1104,6 +1104,10 @@ public abstract class PlayerList {
          player.getBukkitEntity().recalculatePermissions(); // CraftBukkit
          this.server.getCommands().sendCommands(player);
          } // Paper - Add sendOpLevel API
@@ -23,10 +23,10 @@ index 001483b7098523f3645a95c81fcf0e38b551705e..70be6c3ef009f1746353cc330a188bc6
  
      public boolean isWhiteListed(GameProfile profile) {
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index a26ec6f1a1553bf0b415f382177c75f481e21180..1f7a97b0a52461108fe5a17d2ecc224b1a9f26a1 100644
+index 0a114ac527026473c86f11dab564ac3c31c41f39..283991c8da3ff07359c89482a72a7238c2cb7e26 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
-@@ -210,6 +210,7 @@ public abstract class Player extends LivingEntity {
+@@ -219,6 +219,7 @@ public abstract class Player extends LivingEntity {
      private int currentImpulseContextResetGraceTime = 0;
      public boolean affectsSpawning = true; // Paper - Affects Spawning API
      public net.kyori.adventure.util.TriState flyingFallDamage = net.kyori.adventure.util.TriState.NOT_SET; // Paper - flying fall damage
@@ -70,7 +70,7 @@ index 0fffa384f928ab84451331380968fb4650eafe26..d84a10396395939149da88bcb01be59e
          return new ChestMenu(MenuType.GENERIC_9x6, containerId, playerInventory, container, 6);
      }
 diff --git a/net/minecraft/world/inventory/PlayerEnderChestContainer.java b/net/minecraft/world/inventory/PlayerEnderChestContainer.java
-index bc2b95973192069fc64581b59583b19df876f55d..89a2f0286b9ab036f4412a9d657c0105382ed64f 100644
+index beb74bc8398de8b48f41af7daef14d624826310e..5dd6e89931d397b8afdb84024ed46b0d06dcf347 100644
 --- a/net/minecraft/world/inventory/PlayerEnderChestContainer.java
 +++ b/net/minecraft/world/inventory/PlayerEnderChestContainer.java
 @@ -25,11 +25,18 @@ public class PlayerEnderChestContainer extends SimpleContainer {
@@ -115,7 +115,7 @@ index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..fe374f08b7829b846b2a1c2ac3ca500c
                  // Paper end - Fix InventoryOpenEvent cancellation - moved up;
                      player.awardStat(Stats.OPEN_ENDERCHEST);
 diff --git a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-index 027502d0af5512c31878978c4d05c52fa3029cca..e05239582477157bd530222704bf43b1254c63ca 100644
+index d679ab599dfd0bdbdc3ab5530d7fcd1c38baf7fa..6b4e2956222a0ca7f72f73032dc98878fbd257ee 100644
 --- a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 @@ -56,7 +56,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity {

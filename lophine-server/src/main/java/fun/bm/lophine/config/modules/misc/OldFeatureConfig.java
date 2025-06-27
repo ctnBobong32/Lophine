@@ -5,9 +5,6 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
 public class OldFeatureConfig implements IConfigModule {
-    @ConfigInfo(baseName = "old_nether_portal_collision")
-    public static boolean oldNetherPortalCollision = false;
-
     @ConfigInfo(baseName = "spawn_invulnerable_time")
     public static boolean spawnInvulnerableTime = false;
 

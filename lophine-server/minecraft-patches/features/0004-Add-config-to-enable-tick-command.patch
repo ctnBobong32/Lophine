@@ -97,10 +97,10 @@ index 0357792de0ed8ec9058d1847c8b45c33ff365af6..4945c11f573a53df2f5be4beb7af6a3f
                  this.scheduler.regionFailed(this, false, thr);
                  // regionFailed will schedule a shutdown, so we should avoid letting this region tick further
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index ea50e3c0c4044f03dc8257680814f808fbf3a177..63154426854c507738d646490ac76f531145fab2 100644
+index 14719cca5ff91c8647b3b616b2dfd4d153946d92..4a872ce3a3815d42da124a20af1bf232c9b47e12 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -214,7 +214,11 @@ public class Commands {
+@@ -243,7 +243,11 @@ public class Commands {
          TeleportCommand.register(this.dispatcher);
          TellRawCommand.register(this.dispatcher, context);
          //TestCommand.register(this.dispatcher, context); // Folia - region threading
@@ -114,10 +114,10 @@ index ea50e3c0c4044f03dc8257680814f808fbf3a177..63154426854c507738d646490ac76f53
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 33d596c0f07d076886c0dd8eb93e901cdb56e438..87625b365e04ce05fa2b6cdf2003c839255c4393 100644
+index 737df5c9345e22fa4487cbb83c7462b92a4f9e78..9f868e8865a1360b27cc8ac990f3a07d893af722 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -266,7 +266,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      private String serverId;
      public MinecraftServer.ReloadableResources resources;
      private final StructureTemplateManager structureTemplateManager;
@@ -153,7 +153,7 @@ index 40338efd1c0e56d869d03f1d0687e7ff0fcbf11a..d0d90a25a10bbecfffceee1992af88c6
          this.sprintTimeSpend = this.sprintTimeSpend + (System.nanoTime() - this.sprintTickStartTime);
      }
 diff --git a/net/minecraft/server/commands/TickCommand.java b/net/minecraft/server/commands/TickCommand.java
-index 6b6c8ce49eda6806c8288d70848dd143ba2c4703..5d09d2c8bb45cc10b2a13100793249adc7b5a7e9 100644
+index 126685fb266692082b432ed297a499149e921dfb..9d8f6025c420e651611da17e77a362c738228b72 100644
 --- a/net/minecraft/server/commands/TickCommand.java
 +++ b/net/minecraft/server/commands/TickCommand.java
 @@ -14,7 +14,7 @@ import net.minecraft.server.ServerTickRateManager;
