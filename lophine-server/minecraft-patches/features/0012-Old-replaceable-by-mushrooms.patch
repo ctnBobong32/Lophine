@@ -27,7 +27,7 @@ index 93d722d437121e605cee0e168ac17ee9bef0610e..3f2755aab2c3c1715f7b6056181fff4a
              CraftBlockState blockstate = worldData.capturedBlockStates.get(pos); // Folia - region threading
              if (blockstate == null) {
 diff --git a/net/minecraft/world/level/block/state/BlockBehaviour.java b/net/minecraft/world/level/block/state/BlockBehaviour.java
-index d4c02b9bb9bfc10484a79ede35985ba35c99bada..fd6afb7c572a370f0db4bf3937a0cff10e844a96 100644
+index 834e27ef2f7b342b074ff9e1e390e02f3ca1c399..f5765e3bbf9e735d6f959e1bf6ee1846ee11b4e9 100644
 --- a/net/minecraft/world/level/block/state/BlockBehaviour.java
 +++ b/net/minecraft/world/level/block/state/BlockBehaviour.java
 @@ -770,6 +770,14 @@ public abstract class BlockBehaviour implements FeatureElement {

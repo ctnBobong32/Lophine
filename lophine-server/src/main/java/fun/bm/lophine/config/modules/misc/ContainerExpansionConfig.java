@@ -20,11 +20,6 @@ public class ContainerExpansionConfig implements IConfigModule {
                     range: 1~64""")
     public static int shulkerCount = 1;
 
-    @ConfigInfo(baseName = "better_shulker_box", comments =
-            """
-                    Enable sneak + use to open shulker box.""")
-    public static boolean betterShulker = false;
-
     @Override
     public EnumConfigCategory getCategory() {
         return EnumConfigCategory.MISC;

@@ -96,7 +96,7 @@ public class CullTask implements Runnable {
                     lastCheckedTime = (System.currentTimeMillis() - start);
                 }
             }
-        }finally {
+        } finally {
             if (this.scheduleNext) {
                 this.worker.execute(this);
             }

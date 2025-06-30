@@ -37,7 +37,7 @@ index 5d6ed73d332722ed23b2ffa8aaef38d31274dfd8..5942f8a75343ead4ee2925f193c56ab7
          if (count > i) {
              source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", i, itemStack.getDisplayName()));
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 4ced5b334fbfe68ce8eef38eeea5af6d007cea00..a770d2c84e1dfa41cdf1a4458b62c23e3cc78113 100644
+index f4c3214306f72c27ced87624c18e12b9689b0262..e1593211d311253a6d8a6eae6b0d975053251e35 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3066,7 +3066,7 @@ public class ServerGamePacketListenerImpl
@@ -123,10 +123,10 @@ index d907e24d563e27acab2f2bf9711b1755ea9afd19..6189cb7c1745a242b610e89c859cc849
          if (min > 0) {
              other.grow(min);
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index 244996de73d75e812e27aa896cd3875a14179b74..74e207b9e173facc8279db27b2dd1dd4faf71313 100644
+index 8b318426d3aff4be920181bb8b882c43119e1571..8d67df8732f3b71eee044e535c4536930fd6e405 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
-@@ -271,10 +271,45 @@ public class ItemEntity extends Entity implements TraceableEntity {
+@@ -279,10 +279,45 @@ public class ItemEntity extends Entity implements TraceableEntity {
  
      private boolean isMergable() {
          ItemStack item = this.getItem();

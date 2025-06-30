@@ -47,9 +47,9 @@
  
  dependencies {
 -    implementation(project(":luminol-api")) // Luminol
-+    implementation(project(":lophine-api")) // Luminol // Lophine
-     implementation("com.electronwill.night-config:toml:3.8.2") // Luminol - Night config
-     // Abomination start
++    implementation(project(":lophine-api")) // Lophine
+     // Luminol start - Dependenices insert
+     implementation("com.electronwill.night-config:toml:3.8.2") // Night config
      implementation("com.github.luben:zstd-jni:1.5.4-1")
 @@ -264,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()

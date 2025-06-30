@@ -32,10 +32,10 @@ import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 /*
-* authored by: Helvetica Volubi <suisuroru@blue-millennium.fun>
-* modified by: Lumine1909 <133463833+Lumine1909@users.noreply.github.com>
-* Some of diff form Leaves
-*/
+ * authored by: Helvetica Volubi <suisuroru@blue-millennium.fun>
+ * modified by: Lumine1909 <133463833+Lumine1909@users.noreply.github.com>
+ * Some of diff form Leaves
+ */
 public class ServerI18nUtil {
 
     private static final Logger logger = Logger.getLogger("LangLoader");

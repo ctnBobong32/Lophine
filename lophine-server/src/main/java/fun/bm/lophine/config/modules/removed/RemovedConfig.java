@@ -7,6 +7,7 @@ import me.earthme.luminol.config.flags.TransformedConfig;
 
 public class RemovedConfig implements IConfigModule {
     @TransformedConfig(name = "old_nether_portal_collision", category = {"misc", "old-feature"}, transform = false)
+    @TransformedConfig(name = "better_shulker_box", category = {"misc", "container_expansion"}, transform = false)
     @ConfigInfo(baseName = "removed", comments =
             """
                     RemovedConfig redirect to here, no any function.""")
