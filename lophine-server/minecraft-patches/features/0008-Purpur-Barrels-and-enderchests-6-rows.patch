@@ -8,10 +8,10 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index b8bd7410e3d5cd8f81f41b52a3a8732134829478..7f155ab485a5157d810585074b5b9de4be6bfa4e 100644
+index 31edc8fbe861831d72d3aad271ce1682b2caa248..9347df05c7cb1b74a610bebb99e3a5411309b491 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1104,6 +1104,10 @@ public abstract class PlayerList {
+@@ -1073,6 +1073,10 @@ public abstract class PlayerList {
          player.getBukkitEntity().recalculatePermissions(); // CraftBukkit
          this.server.getCommands().sendCommands(player);
          } // Paper - Add sendOpLevel API
@@ -21,7 +21,7 @@ index b8bd7410e3d5cd8f81f41b52a3a8732134829478..7f155ab485a5157d810585074b5b9de4
 +        // Purpur end - Barrels and enderchests 6 rows
      }
  
-     public boolean isWhiteListed(GameProfile profile) {
+     // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
 index 0a114ac527026473c86f11dab564ac3c31c41f39..283991c8da3ff07359c89482a72a7238c2cb7e26 100644
 --- a/net/minecraft/world/entity/player/Player.java
