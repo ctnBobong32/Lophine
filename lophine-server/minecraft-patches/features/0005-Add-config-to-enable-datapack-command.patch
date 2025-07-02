@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Wed, 2 Jul 2025 23:36:25 +0800
+Subject: [PATCH] Add config to enable datapack command
+
+
+diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
+index 0d5ed9602492c8393088954105e9a19032067b8b..e2fc15d84fafde6847ecead23c55169449275e1b 100644
+--- a/net/minecraft/commands/Commands.java
++++ b/net/minecraft/commands/Commands.java
+@@ -192,7 +192,9 @@ public class Commands {
+         if(me.earthme.luminol.config.modules.experiment.CommandDataConfig.enabled) {
+             DataCommands.register(this.dispatcher); // Folia - region threading - TODO
+         }
+-        //DataPackCommand.register(this.dispatcher, context); // Folia - region threading - TODO
++        if (fun.bm.lophine.config.modules.experiment.CommandConfig.datapack) {
++            DataPackCommand.register(this.dispatcher, context); // Folia - region threading - TODO
++        }
+         //DebugCommand.register(this.dispatcher); // Folia - region threading - TODO
+         DefaultGameModeCommands.register(this.dispatcher);
+         //DialogCommand.register(this.dispatcher, context); // Folia - region threading - TODO
+diff --git a/net/minecraft/server/commands/DataPackCommand.java b/net/minecraft/server/commands/DataPackCommand.java
+index 3eaa9c85d06f6ecc8ed639d8befa861439390eb7..6b649bf5b00126f62801a1bfa5e205d5f9c4d071 100644
+--- a/net/minecraft/server/commands/DataPackCommand.java
++++ b/net/minecraft/server/commands/DataPackCommand.java
+@@ -238,7 +238,7 @@ public class DataPackCommand {
+         List<Pack> list = Lists.newArrayList(packRepository.getSelectedPacks());
+         priorityCallback.apply(list, pack);
+         source.sendSuccess(() -> Component.translatable("commands.datapack.modify.enable", pack.getChatLink(true)), true);
+-        ReloadCommand.reloadPacks(list.stream().map(Pack::getId).collect(Collectors.toList()), source);
++        // ReloadCommand.reloadPacks(list.stream().map(Pack::getId).collect(Collectors.toList()), source); // Lophine - region thread skip reload // TODO - add reload support
+         return list.size();
+     }
+ 

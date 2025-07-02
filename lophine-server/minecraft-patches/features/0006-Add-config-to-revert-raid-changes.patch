@@ -3,6 +3,9 @@ From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Fri, 11 Apr 2025 16:53:57 +0800
 Subject: [PATCH] Add config to revert raid changes
 
+Co-authored by: huanli233 <392352840@qq.com>
+Some of changes is a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/b5793e809b6346e16b7ea218496806a312562e27/leaves-server/minecraft-patches/features/0106-Revert-raid-changes.patch)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/effect/BadOmenMobEffect.java b/net/minecraft/world/effect/BadOmenMobEffect.java
 index 80f17f33f670018240c854df589cf90cdeab6e70..985f27d249810bf133a520d937b7006e57f553ec 100644

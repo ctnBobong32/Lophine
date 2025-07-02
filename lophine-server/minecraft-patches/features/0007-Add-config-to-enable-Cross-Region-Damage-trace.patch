@@ -134,7 +134,7 @@ index 19b44e5b5c4c0b7caee7f67420ac4732da52c375..b66d4ccaff4a3168d08b36590bd42d66
          return (float)this.getAttributeValue(Attributes.MAX_HEALTH);
      }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 510514e363f4816a6e286fb9b5488153e03c9e55..89d6e4deebba271d3a73e296cf0015f407c224b0 100644
+index 510514e363f4816a6e286fb9b5488153e03c9e55..4638af10539a316acae64fb26881c8e699c496e0 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -157,7 +157,13 @@ public abstract class Raider extends PatrollingMonster {
@@ -142,8 +142,8 @@ index 510514e363f4816a6e286fb9b5488153e03c9e55..89d6e4deebba271d3a73e296cf0015f4
  
                      if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
 -                        entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
++                        // Luminol start - Raid changes adapt DamageSource trace
 +                        if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
-+                            // Luminol start - Raid changes adapt DamageSource trace
 +                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true, true);
 +                        } else {
 +                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit

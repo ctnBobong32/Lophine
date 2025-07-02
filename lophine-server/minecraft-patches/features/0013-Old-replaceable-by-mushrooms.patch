@@ -5,24 +5,15 @@ Subject: [PATCH] Old replaceable by mushrooms
 
 
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index 93d722d437121e605cee0e168ac17ee9bef0610e..3f2755aab2c3c1715f7b6056181fff4a1c9e94b6 100644
+index 93d722d437121e605cee0e168ac17ee9bef0610e..cb2a2fbd17157726b285665fdca0ab9663e0d1de 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -11,6 +11,8 @@ import java.util.function.Consumer;
- import java.util.function.Predicate;
- import java.util.stream.Collectors;
- import javax.annotation.Nullable;
-+
-+import fun.bm.lophine.config.modules.misc.OldFeatureConfig;
- import net.minecraft.CrashReport;
- import net.minecraft.CrashReportCategory;
- import net.minecraft.ReportedException;
-@@ -1111,7 +1113,7 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
+@@ -1111,7 +1111,7 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
          if (worldData.captureTreeGeneration) { // Folia - region threading
              // Paper start - Protect Bedrock and End Portal/Frames from being destroyed
              BlockState type = getBlockState(pos);
 -            if (!type.isDestroyable()) return false;
-+            if (!type.isDestroyable() && !(OldFeatureConfig.oldReplaceableByMushrooms && flags == 3)) return false;
++            if (!type.isDestroyable() && !(fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldReplaceableByMushrooms && flags == 3)) return false;
              // Paper end - Protect Bedrock and End Portal/Frames from being destroyed
              CraftBlockState blockstate = worldData.capturedBlockStates.get(pos); // Folia - region threading
              if (blockstate == null) {

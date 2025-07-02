@@ -15,6 +15,12 @@ public class CommandConfig implements IConfigModule {
                     Allow to use tick command""")
     public static boolean tick = false;
 
+    @ConfigInfo(baseName = "datapack_command_enabled", comments =
+            """
+                    Allow to use datapack command
+                        --- datapack hot-update unsupported, please restart server""")
+    public static boolean datapack = false;
+
     @Override
     public EnumConfigCategory getCategory() {
         return EnumConfigCategory.EXPERIMENT;
