@@ -5,10 +5,10 @@ Subject: [PATCH] Purpur-Barrels-and-enderchests-6-rows
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
-index c00ddfe41439954fa0fd87c0933f274c8a752eb6..77aa23d252e429e01bc7bd8c47e23d12ca596fdb 100644
+index 2f41a92465b9da28e026297cc3528898bb1c8412..fb5300ec1bd19b3dfd6a2b4106440b9f73c48205 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
-@@ -150,9 +150,26 @@ public class CraftContainer extends AbstractContainerMenu {
+@@ -148,9 +148,26 @@ public class CraftContainer extends AbstractContainerMenu {
              case PLAYER:
              case CHEST:
              case ENDER_CHEST:
