@@ -19,16 +19,37 @@ index 0d5ed9602492c8393088954105e9a19032067b8b..e2fc15d84fafde6847ecead23c551694
          //DebugCommand.register(this.dispatcher); // Folia - region threading - TODO
          DefaultGameModeCommands.register(this.dispatcher);
          //DialogCommand.register(this.dispatcher, context); // Folia - region threading - TODO
-diff --git a/net/minecraft/server/commands/DataPackCommand.java b/net/minecraft/server/commands/DataPackCommand.java
-index 3eaa9c85d06f6ecc8ed639d8befa861439390eb7..6b649bf5b00126f62801a1bfa5e205d5f9c4d071 100644
---- a/net/minecraft/server/commands/DataPackCommand.java
-+++ b/net/minecraft/server/commands/DataPackCommand.java
-@@ -238,7 +238,7 @@ public class DataPackCommand {
-         List<Pack> list = Lists.newArrayList(packRepository.getSelectedPacks());
-         priorityCallback.apply(list, pack);
-         source.sendSuccess(() -> Component.translatable("commands.datapack.modify.enable", pack.getChatLink(true)), true);
--        ReloadCommand.reloadPacks(list.stream().map(Pack::getId).collect(Collectors.toList()), source);
-+        // ReloadCommand.reloadPacks(list.stream().map(Pack::getId).collect(Collectors.toList()), source); // Lophine - region thread skip reload // TODO - add reload support
-         return list.size();
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index c285fb3b0e6d3eeda8d4c9132dbd917f4f8ec20c..8e7c65538290b6bb3650d01652216d75ad65cd1a 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -2348,6 +2348,14 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         return this.reloadResources(selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.PLUGIN);
      }
  
++    public void saveDatapacks(Collection<String> selectedIds) {
++        this.packRepository.setSelected(selectedIds, false); // Paper - add pendingReload flag to determine required pack loading - false as this is *after* a reload (see above)
++        WorldDataConfiguration worldDataConfiguration = new WorldDataConfiguration(
++                getSelectedPacks(this.packRepository, true), this.worldData.enabledFeatures()
++        );
++        this.worldData.setDataConfiguration(worldDataConfiguration);
++    }
++
+     public CompletableFuture<Void> reloadResources(Collection<String> selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause cause) {
+         // Paper end - Add ServerResourcesReloadedEvent
+         CompletableFuture<Void> completableFuture = CompletableFuture.<ImmutableList>supplyAsync(
+diff --git a/net/minecraft/server/commands/ReloadCommand.java b/net/minecraft/server/commands/ReloadCommand.java
+index b540a3c3a02f7242578a63477e34b9063e86f1d2..d4f8cb40040dcd2a5175845b5faf3b994fc64fac 100644
+--- a/net/minecraft/server/commands/ReloadCommand.java
++++ b/net/minecraft/server/commands/ReloadCommand.java
+@@ -16,6 +16,10 @@ public class ReloadCommand {
+     private static final Logger LOGGER = LogUtils.getLogger();
+ 
+     public static void reloadPacks(Collection<String> selectedIds, CommandSourceStack source) {
++        if (true) {
++            source.getServer().saveDatapacks(selectedIds);
++            return;
++        } // Lophine - region thread skip reload // TODO - add reload support
+         source.getServer().reloadResources(selectedIds, io.papermc.paper.event.server.ServerResourcesReloadedEvent.Cause.COMMAND).exceptionally(throwable -> { // Paper - Add ServerResourcesReloadedEvent
+             LOGGER.warn("Failed to execute reload", throwable);
+             source.sendFailure(Component.translatable("commands.reload.failure"));
