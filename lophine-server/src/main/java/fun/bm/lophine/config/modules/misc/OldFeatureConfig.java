@@ -14,6 +14,9 @@ public class OldFeatureConfig implements IConfigModule {
     @ConfigInfo(baseName = "old_replaceable_by_mushrooms")
     public static boolean oldReplaceableByMushrooms = false;
 
+    @ConfigInfo(baseName = "old_explosion_damage_calculator")
+    public static boolean oldExplosionDamageCalculator = false;
+
     @Override
     public EnumConfigCategory getCategory() {
         return EnumConfigCategory.MISC;
