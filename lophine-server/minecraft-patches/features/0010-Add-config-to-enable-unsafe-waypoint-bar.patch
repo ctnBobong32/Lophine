@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 7 Jul 2025 18:19:00 +0800
+Subject: [PATCH] Add config to enable unsafe waypoint bar
+
+
+diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
+index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..36e9b027ce5213f8914728293633e78e9905c1b2 100644
+--- a/net/minecraft/server/waypoints/ServerWaypointManager.java
++++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
+@@ -22,7 +22,14 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+ 
+     @Override
+     public void trackWaypoint(WaypointTransmitter waypoint) {
+-        // Folia - region threading
++        // Lophine start - unsafe waypoint bar
++        if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
++        this.waypoints.add(waypoint);
++
++        for (ServerPlayer serverPlayer : this.players) {
++            this.createConnection(serverPlayer, waypoint);
++        }
++        // Lophine end - unsafe waypoint bar
+     }
+ 
+     @Override
+@@ -50,14 +57,48 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
+ 
+     public void addPlayer(ServerPlayer player) {
+         // Folia - region threading
++        // Lophine start - unsafe waypoint bar
++        if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
++        this.players.add(player);
++
++        for (WaypointTransmitter waypointTransmitter : this.waypoints) {
++            this.createConnection(player, waypointTransmitter);
++        }
++
++        if (player.isTransmittingWaypoint()) {
++            this.trackWaypoint((WaypointTransmitter)player);
++        }
++        // Lophine end - unsafe waypoint bar
+     }
+ 
+     public void updatePlayer(ServerPlayer player) {
+         // Folia - region threading
++        // Lophine start - unsafe waypoint bar
++        if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
++        Map<WaypointTransmitter, WaypointTransmitter.Connection> map = this.connections.row(player);
++        SetView<WaypointTransmitter> set = Sets.difference(this.waypoints, map.keySet());
++
++        for (Entry<WaypointTransmitter, WaypointTransmitter.Connection> entry : ImmutableSet.copyOf(map.entrySet())) {
++            this.updateConnection(player, entry.getKey(), entry.getValue());
++        }
++
++        for (WaypointTransmitter waypointTransmitter : set) {
++            this.createConnection(player, waypointTransmitter);
++        }
++        // Lophine end - unsafe waypoint bar
+     }
+ 
+     public void removePlayer(ServerPlayer player) {
+         // Folia - region threading
++        // Lophine start - unsafe waypoint bar
++        if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
++        this.connections.row(player).values().removeIf(connection -> {
++            connection.disconnect();
++            return true;
++        });
++        this.untrackWaypoint((WaypointTransmitter)player);
++        this.players.remove(player);
++        // Lophine end - unsafe waypoint bar
+     }
+ 
+     public void breakAllConnections() {
