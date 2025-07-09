@@ -5,18 +5,20 @@ Subject: [PATCH] Add config to allow infinite trade
 
 
 diff --git a/net/minecraft/world/item/trading/Merchant.java b/net/minecraft/world/item/trading/Merchant.java
-index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..0410d4f1405cda79eb5a5aef6f19888d3df1d1e3 100644
+index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..a876335e26daec9a9a3a2f00ee5cb23cfd913aa6 100644
 --- a/net/minecraft/world/item/trading/Merchant.java
 +++ b/net/minecraft/world/item/trading/Merchant.java
-@@ -42,7 +42,12 @@ public interface Merchant {
+@@ -42,7 +42,14 @@ public interface Merchant {
              new SimpleMenuProvider((containerId, inventory, player1) -> new MerchantMenu(containerId, inventory, this), displayName)
          );
          if (optionalInt.isPresent()) {
 -            MerchantOffers offers = this.getOffers();
 +            // Lophine start - infinite trade
 +            MerchantOffers offers = this.getOffers().copy();
-+            for (MerchantOffer merchantOffer : offers) {
-+                merchantOffer.maxUses = 16384;
++            if (fun.bm.lophine.config.modules.misc.VillagerConfig.villagerInfiniteTrade) {
++                for (MerchantOffer merchantOffer : offers) {
++                    merchantOffer.maxUses = 16384;
++                }
 +            }
 +            // Lophine end - infinite trade
              if (!offers.isEmpty()) {
