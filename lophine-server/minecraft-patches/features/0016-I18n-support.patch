@@ -5,13 +5,13 @@ Subject: [PATCH] I18n support
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 45cd92cd69bcb66b94bc6278f2897ea4a31c45b6..48057abf3c127aab0458078f891a32ec5f6b9baa 100644
+index c6c6432c2efeb7b95c2894b188cd966321ae3186..1cd9af71ee66df5f277748c0a5a59a30bd57accc 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -172,6 +172,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
          // Paper end - initialize global and world-defaults configuration
-         fun.bm.lophine.config.LophineConfig.loadConfigFiles(); // Lophine - load config file
+         me.earthme.luminol.config.ConfigManager.loadConfigFiles(); // Luminol - load config file
 +        fun.bm.lophine.utils.ServerI18nUtil.init(); // Lophine - I18n support
          if (false) this.server.spark.enableEarlyIfRequested(); // Paper - spark // Luminol - Force disable builtin spark
          // Paper start - fix converting txt to json file; convert old users earlier after PlayerList creation but before file load/save

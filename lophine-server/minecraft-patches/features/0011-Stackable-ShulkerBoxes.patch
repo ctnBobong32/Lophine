@@ -123,7 +123,7 @@ index d907e24d563e27acab2f2bf9711b1755ea9afd19..6189cb7c1745a242b610e89c859cc849
          if (min > 0) {
              other.grow(min);
 diff --git a/net/minecraft/world/entity/item/ItemEntity.java b/net/minecraft/world/entity/item/ItemEntity.java
-index 8b318426d3aff4be920181bb8b882c43119e1571..8d67df8732f3b71eee044e535c4536930fd6e405 100644
+index b745eb5d9c68547335247910ff2ae8d5fb36349c..6d8675b918f92dc3ce85825edf2b33469950ef9d 100644
 --- a/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/net/minecraft/world/entity/item/ItemEntity.java
 @@ -279,10 +279,45 @@ public class ItemEntity extends Entity implements TraceableEntity {
