@@ -18,7 +18,7 @@ index 6868b915bf3deb85783a638d4441a15fea6da2dc..70740381c6501c1a518c52b24381edd1
                      double rangeY = level.paperConfig().entities.trackingRangeY.get(this.entity, -1);
                      if (rangeY != -1) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index b936d50e8c3668783d4b8d9d65b33706787f7791..bbe96ce3b9c0634018c74dcbe77e9ac67a5edcd6 100644
+index dc3d29b7d1590ba366755fef51e4254d901d0da8..34b1597c56046f8fc5ab5fe9d8a5d3c96a4bc134 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -147,7 +147,7 @@ import net.minecraft.world.waypoints.WaypointTransmitter;
@@ -30,7 +30,7 @@ index b936d50e8c3668783d4b8d9d65b33706787f7791..bbe96ce3b9c0634018c74dcbe77e9ac6
      // CraftBukkit start
      private static final int CURRENT_LEVEL = 2;
      public boolean preserveMotion = true; // Paper - Fix Entity Teleportation and cancel velocity if teleported; keep initial motion on first snapTo
-@@ -6353,4 +6353,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+@@ -6352,4 +6352,46 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
      // Paper end - Expose entity id counter
  
      public boolean shouldTickHot() { return this.tickCount > 20 * 10 && this.isAlive(); } // KioCG
@@ -92,7 +92,7 @@ index 6f00ffa05d9597917574357e0069c9b056aa5ce2..5cc7a91e32f17d8d9585ae4844a4ed3b
      public EntityType(
          EntityType.EntityFactory<T> factory,
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 47f62fbe97c559c25ad2bc67c18f2025c78e2c69..0a114ac527026473c86f11dab564ac3c31c41f39 100644
+index 2842314c712449625e9275aff7707c916c3ea767..09b549fa9568aa1ae13b1b975db14a6268fdaa46 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -229,6 +229,25 @@ public abstract class Player extends LivingEntity {
@@ -148,7 +148,7 @@ index 47f62fbe97c559c25ad2bc67c18f2025c78e2c69..0a114ac527026473c86f11dab564ac3c
          this.noPhysics = this.isSpectator();
          if (this.isSpectator() || this.isPassenger()) {
              this.setOnGround(false);
-@@ -1427,6 +1466,7 @@ public abstract class Player extends LivingEntity {
+@@ -1426,6 +1465,7 @@ public abstract class Player extends LivingEntity {
          if (this.containerMenu != null && this.hasContainerOpen()) {
              this.doCloseContainer();
          }

@@ -8,10 +8,10 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 31edc8fbe861831d72d3aad271ce1682b2caa248..9347df05c7cb1b74a610bebb99e3a5411309b491 100644
+index a24c332a8f9cb2ebc6f9926c6dabf1238238028d..58c2a6a3304e1bea25980b04046fe7c0017bc90d 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
-@@ -1073,6 +1073,10 @@ public abstract class PlayerList {
+@@ -1086,6 +1086,10 @@ public abstract class PlayerList {
          player.getBukkitEntity().recalculatePermissions(); // CraftBukkit
          this.server.getCommands().sendCommands(player);
          } // Paper - Add sendOpLevel API
@@ -23,7 +23,7 @@ index 31edc8fbe861831d72d3aad271ce1682b2caa248..9347df05c7cb1b74a610bebb99e3a541
  
      // Paper start - whitelist verify event / login event
 diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
-index 0a114ac527026473c86f11dab564ac3c31c41f39..283991c8da3ff07359c89482a72a7238c2cb7e26 100644
+index 09b549fa9568aa1ae13b1b975db14a6268fdaa46..6c933c27ce155eb516a9ede96fb2c3bd19251bfa 100644
 --- a/net/minecraft/world/entity/player/Player.java
 +++ b/net/minecraft/world/entity/player/Player.java
 @@ -219,6 +219,7 @@ public abstract class Player extends LivingEntity {

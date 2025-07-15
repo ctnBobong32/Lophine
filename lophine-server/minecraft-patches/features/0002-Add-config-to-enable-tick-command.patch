@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable tick command
 
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8e91ec81128bdbd5f78e1f04fe17bcbd6e5dc280..acdc5dbc34071dc4342f17fab0d483d775c9044d 100644
+index e1842ab8f20271a8b20ab8462b09a4745a612a9a..8405157ec35a443e238fa6866772c839621d73d7 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
 @@ -299,6 +299,11 @@ public final class RegionizedServer {
@@ -18,9 +18,9 @@ index 8e91ec81128bdbd5f78e1f04fe17bcbd6e5dc280..acdc5dbc34071dc4342f17fab0d483d7
 +        }
 +        // Luminol end - Add a config to enable tick command
          // expire invalid click command callbacks
-         io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.CALLBACK_MANAGER.handleQueue((int)this.tickCount);
- 
-@@ -321,6 +326,13 @@ public final class RegionizedServer {
+         io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.ADVENTURE_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
+         io.papermc.paper.adventure.providers.ClickCallbackProviderImpl.DIALOG_CLICK_MANAGER.handleQueue((int)this.tickCount); // Paper // Folia - region threading - moved to global tick
+@@ -322,6 +327,13 @@ public final class RegionizedServer {
              this.globalTick(world, tickCount);
          }
  
@@ -34,7 +34,7 @@ index 8e91ec81128bdbd5f78e1f04fe17bcbd6e5dc280..acdc5dbc34071dc4342f17fab0d483d7
          // tick connections
          this.tickConnections();
  
-@@ -454,7 +466,7 @@ public final class RegionizedServer {
+@@ -455,7 +467,7 @@ public final class RegionizedServer {
      }
  
      private void tickTime(final ServerLevel world, final int tickCount) {
@@ -114,7 +114,7 @@ index 8a90aa5c145f53afbb3f2371f97cb09974f30bbb..0d5ed9602492c8393088954105e9a190
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b487adb2b104b14346bf7373f07c8d48c239feb4..c285fb3b0e6d3eeda8d4c9132dbd917f4f8ec20c 100644
+index 2ed2f4cca3a81117c0beaf7a11bbbe8156f6a9ce..6675b83c9f15d0341dcf169ec3ac20f401c5d10b 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

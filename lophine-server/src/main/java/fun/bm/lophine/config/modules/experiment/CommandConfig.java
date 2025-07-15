@@ -5,11 +5,6 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
 public class CommandConfig implements IConfigModule {
-    @ConfigInfo(baseName = "command_block_enabled", comments =
-            """
-                    Allow to use command block""")
-    public static boolean block = false;
-
     @ConfigInfo(baseName = "tick_command_enabled", comments =
             """
                     Allow to use tick command""")
