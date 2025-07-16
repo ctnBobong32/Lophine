@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     java // TODO java launcher tasks
-    id("io.papermc.paperweight.patcher") version "2.0.0-beta.17"
+    id("moe.luminolmc.hyacinthusweight.patcher") version "+" // Automatically pulls the latest
 }
 
 paperweight {
@@ -41,6 +41,7 @@ paperweight {
 }
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
+val menthaMavenPublicUrl = "https://repo.menthamc.com/repository/maven-public/";
 
 subprojects {
     apply(plugin = "java-library")
@@ -55,6 +56,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven(paperMavenPublicUrl)
+        maven(menthaMavenPublicUrl)
     }
 
     dependencies {
@@ -65,15 +67,15 @@ subprojects {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true
     }
-    tasks.withType<JavaCompile> {
+    tasks.withType<JavaCompile>().configureEach {
         options.encoding = Charsets.UTF_8.name()
         options.release = 21
         options.isFork = true
     }
-    tasks.withType<Javadoc> {
+    tasks.withType<Javadoc>().configureEach {
         options.encoding = Charsets.UTF_8.name()
     }
-    tasks.withType<ProcessResources> {
+    tasks.withType<ProcessResources>().configureEach {
         filteringCharset = Charsets.UTF_8.name()
     }
     tasks.withType<Test> {
@@ -89,14 +91,14 @@ subprojects {
             maven("https://repo.menthamc.com/repository/maven-snapshots/") {
                 name = "MenthaMC"
                 credentials(PasswordCredentials::class) {
-                    username = System.getenv("MAVEN_REPO_USER")
-                    password = System.getenv("MAVEN_REPO_PASSWORD")
+                    username = System.getenv("PRIVATE_MAVEN_REPO_USERNAME")
+                    password = System.getenv("PRIVATE_MAVEN_REPO_PASSWORD")
                 }
             }
         }
     }
 
-    tasks.withType<Javadoc> {
+    tasks.withType<Javadoc>().configureEach {
         options {
             (this as StandardJavadocDocletOptions).apply {
                 addStringOption("-add-modules", "jdk.incubator.vector")
