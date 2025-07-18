@@ -4,6 +4,23 @@ Date: Mon, 7 Jul 2025 18:19:00 +0800
 Subject: [PATCH] Add config to enable unsafe waypoint bar
 
 
+diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
+index e2fc15d84fafde6847ecead23c55169449275e1b..b0a06cdfaa49237f372ecd131d47289160476b07 100644
+--- a/net/minecraft/commands/Commands.java
++++ b/net/minecraft/commands/Commands.java
+@@ -253,7 +253,11 @@ public class Commands {
+         TimeCommand.register(this.dispatcher);
+         TitleCommand.register(this.dispatcher, context);
+         //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
+-        //WaypointCommand.register(this.dispatcher, context); // Folia - region threading - TODO later
++        // Lophine start - unsafe waypoint bar
++        if (fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) {
++            WaypointCommand.register(this.dispatcher, context); // Folia - region threading - TODO later
++        }
++        // Lophine end - unsafe waypoint bar
+         WeatherCommand.register(this.dispatcher);
+         WorldBorderCommand.register(this.dispatcher);
+         if (JvmProfiler.INSTANCE.isAvailable()) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
 index 0f8cacbb8fe55a60e2f0c98bf36c005b29f41a4b..36e9b027ce5213f8914728293633e78e9905c1b2 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java

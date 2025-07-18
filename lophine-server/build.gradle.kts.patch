@@ -51,7 +51,7 @@
      // Luminol start - Dependenices insert
      implementation("com.electronwill.night-config:toml:3.8.2") // Night config
      implementation("com.github.luben:zstd-jni:1.5.4-1")
-@@ -261,14 +_,14 @@
+@@ -264,14 +_,14 @@
          val gitBranch = git.exec(providers, "rev-parse", "--abbrev-ref", "HEAD").get().trim()
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
@@ -62,7 +62,7 @@
 -            "Specification-Title" to "Luminol",
 +            "Specification-Title" to "Lophine",
              "Specification-Version" to project.version,
-             "Specification-Vendor" to "LuminolMC org",
+             "Specification-Vendor" to "Luminol Team",
 -            "Brand-Id" to "luminolmc:luminol",
 -            "Brand-Name" to "Luminol",
 +            "Brand-Id" to "luminolmc:lophine",
