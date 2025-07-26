@@ -4,6 +4,27 @@ Date: Mon, 7 Jul 2025 16:30:54 +0800
 Subject: [PATCH] Add config to allow infinite trade
 
 
+diff --git a/net/minecraft/world/entity/npc/Villager.java b/net/minecraft/world/entity/npc/Villager.java
+index 79242037e868a140513f032e74e8594c0c6ff41c..adf4b57aeedf80128dfa03c790616f54062b33e7 100644
+--- a/net/minecraft/world/entity/npc/Villager.java
++++ b/net/minecraft/world/entity/npc/Villager.java
+@@ -490,8 +490,15 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+     }
+ 
+     private void resendOffersToTradingPlayer() {
+-        MerchantOffers offers = this.getOffers();
++        // Lophine start - infinite trade
++        MerchantOffers offers = this.getOffers().copy();
+         Player tradingPlayer = this.getTradingPlayer();
++        if (fun.bm.lophine.config.modules.misc.VillagerConfig.villagerInfiniteTrade) {
++            for (MerchantOffer merchantOffer : offers) {
++                merchantOffer.maxUses = 16384;
++            }
++        }
++        // Lophine end - infinite trade
+         if (tradingPlayer != null && !offers.isEmpty()) {
+             tradingPlayer.sendMerchantOffers(
+                 tradingPlayer.containerMenu.containerId,
 diff --git a/net/minecraft/world/item/trading/Merchant.java b/net/minecraft/world/item/trading/Merchant.java
 index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..a876335e26daec9a9a3a2f00ee5cb23cfd913aa6 100644
 --- a/net/minecraft/world/item/trading/Merchant.java
