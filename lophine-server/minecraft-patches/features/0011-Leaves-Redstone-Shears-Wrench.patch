@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/bfde470a867b74d17
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/item/ShearsItem.java b/net/minecraft/world/item/ShearsItem.java
-index 8cf3e51e12f9cf98836657e722edb23943f9e866..dc3e33223ac7b11a969ef1a8e3fa73a9b8b44696 100644
+index 8cf3e51e12f9cf98836657e722edb23943f9e866..155693a18bb641a930a000bc9b1ccfc853e1bae5 100644
 --- a/net/minecraft/world/item/ShearsItem.java
 +++ b/net/minecraft/world/item/ShearsItem.java
 @@ -24,6 +24,30 @@ import net.minecraft.world.level.block.GrowingPlantHeadBlock;
@@ -48,7 +48,7 @@ index 8cf3e51e12f9cf98836657e722edb23943f9e866..dc3e33223ac7b11a969ef1a8e3fa73a9
          } else {
 +            // Leaves start - shears wrench
 +            Block block = blockState.getBlock();
-+            if (fun.bm.lophine.config.modules.misc.RedStoneConfig.shears &&
++            if (fun.bm.lophine.config.modules.misc.RedStoneConfig.shears && (
 +                block instanceof ObserverBlock ||
 +                block instanceof DispenserBlock ||
 +                block instanceof PistonBaseBlock ||
@@ -63,7 +63,7 @@ index 8cf3e51e12f9cf98836657e722edb23943f9e866..dc3e33223ac7b11a969ef1a8e3fa73a9
 +                block instanceof LightningRodBlock ||
 +                block instanceof CalibratedSculkSensorBlock ||
 +                block instanceof BaseRailBlock
-+            ) {
++            )) {
 +                StateDefinition<Block, BlockState> blockstatelist = block.getStateDefinition();
 +                Property<?> iblockstate;
 +                if (block instanceof CrafterBlock) iblockstate = blockstatelist.getProperty("orientation");
