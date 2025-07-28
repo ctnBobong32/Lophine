@@ -7,7 +7,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 public class VillagerConfig implements IConfigModule {
     @ConfigInfo(baseName = "villager-infinite-trade", comments =
             """
-                    Allow villager infinite trade (limit of 16384 times)
+                    Allow villager infinite trade (limit of 524288 times)
                         ---- we won't edit saved data, only edit in send data to client.""")
     public static boolean villagerInfiniteTrade = false;
 
