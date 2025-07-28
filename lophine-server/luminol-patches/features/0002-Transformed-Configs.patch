@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Mon, 28 Jul 2025 23:02:47 +0800
+Subject: [PATCH] Transformed Configs
+
+
+diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
+index 531214d7ab28ece4bf84e82b39d1c9f983f0fb0c..b68fa0427bb975e91e76f73ab4cc089a424937a3 100644
+--- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
++++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
+@@ -5,6 +5,7 @@ import me.earthme.luminol.config.IConfigModule;
+ import me.earthme.luminol.config.flags.ConfigInfo;
+ 
+ public class CommandBlockExecutionConfig implements IConfigModule {
++    @me.earthme.luminol.config.flags.TransformedConfig(name = "command_block_enabled", category = {"experiment", "command"}, originInstance = "lophine")
+     @ConfigInfo(baseName = "enabled")
+     public static boolean enabled = false;
+ 

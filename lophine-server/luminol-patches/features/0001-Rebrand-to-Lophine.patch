@@ -5,28 +5,16 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index 26a812cd526acfd1edf31a5c9799fa6deeae927a..9b01cf6f066b2998a2b178321782be1c96f73b0c 100644
+index 0a3fa2756dae0eea9e2c0fa6bbaa425584763036..6c1cb2866c81a1bc861289aedb2c318f910a8498 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
 @@ -19,6 +19,7 @@ public class ConfigManager {
  
      public static void initConfigs() throws IOException {
-         configfiles.put("luminol", new ConfigsInstance(new File("luminol_config"), "luminol", "me.earthme.luminol.config.modules"));
-+        configfiles.put("lophine", new ConfigsInstance(new File("lophine_config"), "lophine", "fun.bm.lophine.config.modules")); // add lophine config to global config
+         configfiles.put("luminol", ConfigsInstance.of(new File("luminol_config"), "luminol", "me.earthme.luminol.config.modules"));
++        configfiles.put("lophine", ConfigsInstance.of(new File("lophine_config"), "lophine", "fun.bm.lophine.config.modules")); // add lophine config to global config
          preLoad();
      }
- 
-diff --git a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
-index 531214d7ab28ece4bf84e82b39d1c9f983f0fb0c..b68fa0427bb975e91e76f73ab4cc089a424937a3 100644
---- a/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
-+++ b/src/main/java/me/earthme/luminol/config/modules/experiment/CommandBlockExecutionConfig.java
-@@ -5,6 +5,7 @@ import me.earthme.luminol.config.IConfigModule;
- import me.earthme.luminol.config.flags.ConfigInfo;
- 
- public class CommandBlockExecutionConfig implements IConfigModule {
-+    @me.earthme.luminol.config.flags.TransformedConfig(name = "command_block_enabled", category = {"experiment", "command"}, originInstance = "lophine")
-     @ConfigInfo(baseName = "enabled")
-     public static boolean enabled = false;
  
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
 index ded1f0667327a70a923ebda55c41b1c9094d3e37..57ddc0832b919b115b85c81ac30f136e32f1e77e 100644
