@@ -2,7 +2,7 @@ Lophine inherits its licensing from the included upstream projects.
 
 Lophine从上游继承了许可证。
 
-As such, Lophine is licensed under the 
+As such, Lophine is licensed under the
 [GNU General Public License version 3](licenses/GPL.md); as it inherits it from Luminol,
 who in turn inherits it from the original Folia, Paper, Spigot, Bukkit and CraftBukkit projects.
 

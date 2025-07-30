@@ -1,5 +1,5 @@
 为Lophine贡献代码
-===========
+===============
 
 [English](./CONTRIBUTING_EN.md) | **中文**
 
@@ -45,17 +45,20 @@ Lophine 使用和 Folia 一样的补丁系统，并为了针对不同部分的�
 4. 进入 仓库根目录下的 `*-api` 和 `*-server` 文件夹进行修改。
 
 以下为对上述各个文件夹的简单描述，详细描述可以参考[这里](https://github.com/Toffikk/paperweight-examples/blob/18241979c88068d5b061d95ad69c98ecb201c246/README.md)：
+
 1. API部分
- - `lophine-api` ：对新增API的修改
- - `luminol-api` ：对luminol-API的修改应当在此文件夹下进行
- - `folia-api` ：对folia-API的修改应当在此文件夹下进行
- - `paper-api` ：对paper-API/spigot-API/bukkit-API的修改应该在此文件夹下进行
+
+- `lophine-api` ：对新增API的修改
+- `luminol-api` ：对luminol-API的修改应当在此文件夹下进行
+- `folia-api` ：对folia-API的修改应当在此文件夹下进行
+- `paper-api` ：对paper-API/spigot-API/bukkit-API的修改应该在此文件夹下进行
 
 2. Server部分
- - `lophine-server` ：对Minecraft原版服务器的修改和新增文件应当在此文件夹下进行
- - `luminol-server` ：对luminol-server的修改应当在此文件夹下进行
- - `folia-server` ：对folia-Server的修改应当在此文件夹下进行
- - `paper-server` ：对于paper对服务器逻辑的修改应当在此文件夹下进行
+
+- `lophine-server` ：对Minecraft原版服务器的修改和新增文件应当在此文件夹下进行
+- `luminol-server` ：对luminol-server的修改应当在此文件夹下进行
+- `folia-server` ：对folia-Server的修改应当在此文件夹下进行
+- `paper-server` ：对于paper对服务器逻辑的修改应当在此文件夹下进行
 
 顺便一提，仓库根目录下的 `*-api` 和 `*-server` 并不是正常的 git 仓库：
 
@@ -82,7 +85,7 @@ Lophine 使用和 Folia 一样的补丁系统，并为了针对不同部分的�
 
 1. 在 HEAD 上直接进行修改；
 2. 使用 `git commit -a --fixup <hash>` 来进行一个更正提交；（不要提交对在lophine新建文件的修改）
-   - 如果你想要更改提交信息，你也可以用 `--squash` 来代替 `--fixup`。
+    - 如果你想要更改提交信息，你也可以用 `--squash` 来代替 `--fixup`。
 3. 使用 `git rebase -i --autosquash base` 来进行自动变基，你只需要输入 `:q` 来关闭确认页面即可；
 4. 运行 Gradle 任务 `fixupPaperApiFilePatches` 来修改已被修改的在lophine新建文件的补丁（注意不要提交）；
 5. 运行 Gradle 任务 `rebuildAllServerPatches` 来修改已被修改的补丁；
