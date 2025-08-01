@@ -2,7 +2,7 @@
 
 # Lophine
 
-<h4>LightingLuminol is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide
+<h4>Lophine is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide
 more function for survival-usable circuit on folia</h4>
 
 [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
