@@ -58,7 +58,7 @@ index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f93
          };
      }
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index e8c9e739de35313c0212bab97a202fa362fd0887..c990e80f16d03967c9bb6fc5f48f145c01948209 100644
+index a0f1db50adf5163a671d3d9e9df7adb7de4250c6..af13707933af14171447d5ab6faacb64ddf194a7 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -305,6 +305,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -69,7 +69,7 @@ index e8c9e739de35313c0212bab97a202fa362fd0887..c990e80f16d03967c9bb6fc5f48f145c
  
      @Override
      public <V> CompletableFuture<V> submit(java.util.function.Supplier<V> task) {
-@@ -2223,9 +2224,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2226,9 +2227,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return false;
      }
  
@@ -168,7 +168,7 @@ index 714813cba67da4a737682fe9276cb0d96fea336d..9677a3d62de11dafc8b9debe7a18ee6d
          this.connection.setReadOnly();
          // CraftBukkit - Don't wait
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 5c21fc0c749973d17df690fe7e2eab597b198131..8aea58c7797940929944973380b6ab67f177fa56 100644
+index 4ef2816210f06082f2209c51d04aad6bb188232b..593dbcda4b497291eb1ecdc64b947a8d279f8be6 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -423,6 +423,8 @@ public abstract class PlayerList {
@@ -188,7 +188,7 @@ index 5c21fc0c749973d17df690fe7e2eab597b198131..8aea58c7797940929944973380b6ab67
          // Paper end - Fix kick event leave message not being sent
          ServerLevel serverLevel = player.level();
          player.awardStat(Stats.LEAVE_GAME);
-@@ -1522,6 +1525,7 @@ public abstract class PlayerList {
+@@ -1520,6 +1523,7 @@ public abstract class PlayerList {
              serverPlayer.connection.send(clientboundUpdateRecipesPacket);
              serverPlayer.getRecipeBook().sendInitialRecipeBook(serverPlayer);
          }

@@ -28,7 +28,7 @@ index 643797124fe5a4489d0b7419b7e600c04f283ef2..04b4100da96aad50f08e8c59200eec93
  
      public String serialize(HolderLookup.Provider levelRegistry) {
 diff --git a/net/minecraft/server/commands/GiveCommand.java b/net/minecraft/server/commands/GiveCommand.java
-index 5a1c21b05545a03fbb00cf734605049870d3eecb..a0459bc6b2241e7fca74bfbfce058882a8ad7f49 100644
+index f7002d6752aa03603eb06e298ba1d7130cf13826..72c87f7c0392d087440db9d267a608598f6feb6d 100644
 --- a/net/minecraft/server/commands/GiveCommand.java
 +++ b/net/minecraft/server/commands/GiveCommand.java
 @@ -55,7 +55,7 @@ public class GiveCommand {
@@ -41,10 +41,10 @@ index 5a1c21b05545a03fbb00cf734605049870d3eecb..a0459bc6b2241e7fca74bfbfce058882
          if (count > i) {
              source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", i, itemStack.getDisplayName()));
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index d017cfc5b97552388d8f9ff80ca31b0972b80a2e..a684f5edf420d9655046de872c54e0c1a89103cf 100644
+index 1d52376f034dc5690e8b399512146b47b92c3c14..4b215dc69887df9382bde4cfa2f37afadfe1bcb2 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -3078,7 +3078,7 @@ public class ServerGamePacketListenerImpl
+@@ -3079,7 +3079,7 @@ public class ServerGamePacketListenerImpl
                                              } else if (slot.mayPlace(cursor)) {
                                                  if (ItemStack.isSameItemSameComponents(clickedItem, cursor)) {
                                                      int toPlace = packet.buttonNum() == 0 ? cursor.getCount() : 1;
@@ -53,7 +53,7 @@ index d017cfc5b97552388d8f9ff80ca31b0972b80a2e..a684f5edf420d9655046de872c54e0c1
                                                      toPlace = Math.min(toPlace, slot.container.getMaxStackSize() - clickedItem.getCount());
                                                      if (toPlace == 1) {
                                                          action = InventoryAction.PLACE_ONE;
-@@ -3114,7 +3114,7 @@ public class ServerGamePacketListenerImpl
+@@ -3115,7 +3115,7 @@ public class ServerGamePacketListenerImpl
                                                  }
                                              } else if (ItemStack.isSameItemSameComponents(cursor, clickedItem)) {
                                                  if (clickedItem.getCount() >= 0) {
@@ -62,15 +62,15 @@ index d017cfc5b97552388d8f9ff80ca31b0972b80a2e..a684f5edf420d9655046de872c54e0c1
                                                          // As of 1.5, this is result slots only
                                                          action = InventoryAction.PICKUP_ALL;
                                                      }
-@@ -3325,6 +3325,7 @@ public class ServerGamePacketListenerImpl
+@@ -3326,6 +3326,7 @@ public class ServerGamePacketListenerImpl
                          this.player.containerMenu.broadcastFullState();
                      } else {
                          this.player.containerMenu.broadcastChanges();
 +                        if (org.leavesmc.leaves.util.ItemOverstackUtils.hasOverstackingItem()) this.player.containerMenu.broadcastCarriedItem(); // Leaves - item over-stack util - force send carried item
                      }
+                     if (packet.buttonNum() == Inventory.SLOT_OFFHAND && this.player.containerMenu != this.player.inventoryMenu) this.player.containerSynchronizer.sendOffHandSlotChange(); // Paper - update offhand data when the player is clicking in an inventory not their own as the sychronizer does not include offhand slots
                      if (io.papermc.paper.configuration.GlobalConfiguration.get().unsupportedSettings.updateEquipmentOnPlayerActions) this.player.detectEquipmentUpdates(); // Paper - Force update attributes.
-                 }
-@@ -3435,7 +3436,7 @@ public class ServerGamePacketListenerImpl
+@@ -3437,7 +3438,7 @@ public class ServerGamePacketListenerImpl
              }
  
              boolean flag1 = packet.slotNum() >= 1 && packet.slotNum() <= 45;
@@ -79,7 +79,7 @@ index d017cfc5b97552388d8f9ff80ca31b0972b80a2e..a684f5edf420d9655046de872c54e0c1
              if (flag || (flag1 && !ItemStack.matches(this.player.inventoryMenu.getSlot(packet.slotNum()).getItem(), packet.itemStack()))) { // Insist on valid slot
                  // CraftBukkit start - Call click event
                  org.bukkit.inventory.InventoryView inventory = this.player.inventoryMenu.getBukkitView();
-@@ -3477,6 +3478,7 @@ public class ServerGamePacketListenerImpl
+@@ -3479,6 +3480,7 @@ public class ServerGamePacketListenerImpl
                  this.player.inventoryMenu.getSlot(packet.slotNum()).setByPlayer(itemStack);
                  this.player.inventoryMenu.setRemoteSlot(packet.slotNum(), itemStack);
                  this.player.inventoryMenu.broadcastChanges();
@@ -229,7 +229,7 @@ index 02d2efef2dc0f0e12eac0c71fa290af706f7694d..99f109e2653eff10c011f380694bd77a
  
      default SlotAccess getChestVehicleSlot(final int index) {
 diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
-index 9b6cd35e4dfa894069238a1365db16050aa5542b..7e9bfb433a252bb4211e490365265d35590f2474 100644
+index 9d8ab94f84f4523a2562f9eeb3410554e4269e46..87d1cf9ddfb3124069ff3ff921f2e62589562220 100644
 --- a/net/minecraft/world/inventory/AbstractContainerMenu.java
 +++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
 @@ -295,6 +295,13 @@ public abstract class AbstractContainerMenu {
