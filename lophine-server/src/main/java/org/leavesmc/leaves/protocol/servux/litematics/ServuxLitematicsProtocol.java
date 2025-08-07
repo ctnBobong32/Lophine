@@ -146,35 +146,49 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
         if (!hasPermission(player)) {
             return;
         }
-        BlockEntity be = player.level().getBlockEntity(pos);
-        CompoundTag tag = be != null ? be.saveWithFullMetadata(MinecraftServer.getServer().registryAccess()) : new CompoundTag();
-        ServuxLitematicaPayload payload = new ServuxLitematicaPayload(ServuxLitematicaPayloadType.PACKET_S2C_BLOCK_NBT_RESPONSE_SIMPLE);
-        payload.pos = pos;
-        payload.nbt = tag;
-        encodeServerData(player, payload);
+        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                player.level(),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                () -> {
+                    BlockEntity be = player.level().getBlockEntity(pos);
+                    CompoundTag tag = be != null ? be.saveWithFullMetadata(MinecraftServer.getServer().registryAccess()) : new CompoundTag();
+                    ServuxLitematicaPayload payload = new ServuxLitematicaPayload(ServuxLitematicaPayloadType.PACKET_S2C_BLOCK_NBT_RESPONSE_SIMPLE);
+                    payload.pos = pos;
+                    payload.nbt = tag;
+                    encodeServerData(player, payload);
+                }
+        );
     }
 
     public static void onEntityRequest(ServerPlayer player, int entityId) {
         if (!hasPermission(player)) {
             return;
         }
-        Entity entity = player.level().getEntity(entityId);
-        if (entity == null) {
-            return;
-        }
-        CompoundTag tag = new CompoundTag();
-        ServuxLitematicaPayload payload = new ServuxLitematicaPayload(ServuxLitematicaPayloadType.PACKET_S2C_ENTITY_NBT_RESPONSE_SIMPLE);
-        payload.entityId = entityId;
-        if (entity instanceof net.minecraft.world.entity.player.Player) {
-            ResourceLocation loc = EntityType.getKey(entity.getType());
-            tag = TagUtil.saveEntity(entity);
-            tag.putString("id", loc.toString());
-            payload.nbt = tag;
-            encodeServerData(player, payload);
-        } else if (TagUtil.saveEntityAsPassenger(entity, tag)) {
-            payload.nbt = tag;
-            encodeServerData(player, payload);
-        }
+        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                player.level(),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                () -> {
+                    Entity entity = player.level().getEntity(entityId);
+                    if (entity == null) {
+                        return;
+                    }
+                    CompoundTag tag = new CompoundTag();
+                    ServuxLitematicaPayload payload = new ServuxLitematicaPayload(ServuxLitematicaPayloadType.PACKET_S2C_ENTITY_NBT_RESPONSE_SIMPLE);
+                    payload.entityId = entityId;
+                    if (entity instanceof net.minecraft.world.entity.player.Player) {
+                        ResourceLocation loc = EntityType.getKey(entity.getType());
+                        tag = TagUtil.saveEntity(entity);
+                        tag.putString("id", loc.toString());
+                        payload.nbt = tag;
+                        encodeServerData(player, payload);
+                    } else if (TagUtil.saveEntityAsPassenger(entity, tag)) {
+                        payload.nbt = tag;
+                        encodeServerData(player, payload);
+                    }
+                }
+        );
     }
 
     public static void onBulkEntityRequest(ServerPlayer player, ChunkPos chunkPos, CompoundTag req) {

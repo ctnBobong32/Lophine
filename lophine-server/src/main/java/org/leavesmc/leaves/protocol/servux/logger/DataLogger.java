@@ -19,6 +19,7 @@ package org.leavesmc.leaves.protocol.servux.logger;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
+import io.papermc.paper.threadedregions.TickRegionScheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -26,11 +27,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.NaturalSpawner;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.leavesmc.leaves.protocol.servux.ServuxHudDataProtocol;
 import org.leavesmc.leaves.protocol.servux.logger.data.MobCapData;
 import org.leavesmc.leaves.protocol.servux.logger.data.TickData;
 
@@ -49,7 +52,7 @@ public abstract class DataLogger<T extends Tag> {
         return this.type;
     }
 
-    public abstract T getResult(MinecraftServer server);
+    public abstract T getResult(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player);
 
     public enum Type implements StringRepresentable {
         TPS("tps", Tps::new, Tps.CODEC),
@@ -105,31 +108,36 @@ public abstract class DataLogger<T extends Tag> {
         }
 
         @Override
-        public CompoundTag getResult(MinecraftServer server) {
-            try {
-                return (CompoundTag) TickData.CODEC.encodeStart(server.registryAccess().createSerializationContext(NbtOps.INSTANCE), this.build(server)).getOrThrow();
-            } catch (Exception e) {
-                return new CompoundTag();
-            }
+        public CompoundTag getResult(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
+            this.build(server, protocol, player);
+            return null;
         }
 
-        private TickData build(MinecraftServer server) {
-            ServerTickRateManager tickManager = server.tickRateManager();
-            boolean frozen = tickManager.isFrozen();
-            boolean sprinting = tickManager.isSprinting();
-            final double mspt = server.tickTimes5s.getAverage();
-            double tps = 1000.0D / Math.max(sprinting ? 0.0 : tickManager.millisecondsPerTick(), mspt);
+        private TickData build(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
+            io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    player.level(),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                    () -> {
+                        ServerTickRateManager tickManager = server.tickRateManager();
+                        boolean frozen = tickManager.isFrozen();
+                        boolean sprinting = tickManager.isSprinting();
+                        io.papermc.paper.threadedregions.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
+                        final double tps = tickData.tpsData().segmentAll().average();
+                        final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
 
-            if (frozen) {
-                tps = 0.0d;
-            }
-
-            return new TickData(
-                    mspt, tps,
-                    tickManager.getRemainingSprintTicks(),
-                    frozen, sprinting,
-                    tickManager.isSteppingForward()
+                        TickData tk = new TickData(
+                                mspt, tps,
+                                tickManager.getRemainingSprintTicks(),
+                                frozen, sprinting,
+                                tickManager.isSteppingForward()
+                        );
+                        Tag ret = TickData.CODEC.encodeStart(server.registryAccess().createSerializationContext(NbtOps.INSTANCE), tk).getOrThrow();
+                        protocol.applyData(Type.TPS, player, ret);
+                    }
             );
+
+            return null;
         }
     }
 
@@ -142,7 +150,7 @@ public abstract class DataLogger<T extends Tag> {
         }
 
         @Override
-        public CompoundTag getResult(MinecraftServer server) {
+        public CompoundTag getResult(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
             CompoundTag nbt = new CompoundTag();
 
             for (ServerLevel world : server.getAllLevels()) {

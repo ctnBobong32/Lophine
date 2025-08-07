@@ -17,6 +17,8 @@
 
 package org.leavesmc.leaves.protocol.servux;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.mojang.serialization.DataResult;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -54,7 +56,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     private static final HashMap<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new HashMap<>();
     private static final HashMap<DataLogger.Type, DataLogger<?>> LOGGERS = new HashMap<>();
-    private static final HashMap<DataLogger.Type, Tag> DATA = new HashMap<>();
+    private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
 
     public static boolean refreshSpawnMetadata = false;
 
@@ -237,12 +239,16 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         MinecraftServer server = MinecraftServer.getServer();
 
         if (server.getTickCount() % fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.hudUpdateInterval == 0) {
-            DATA.clear();
             LOGGERS.forEach((type, logger) -> {
                 if (!isLoggerTypeEnabled(type)) {
                     return;
                 }
-                DATA.put(type, logger.getResult(server));
+                for (ServerPlayer player : players) {
+                    Tag ret = logger.getResult(server, this, player);
+                    if (ret != null) {
+                        DATA.put(type, player, ret);
+                    }
+                }
             });
         }
 
@@ -254,12 +260,18 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
             CompoundTag nbt = new CompoundTag();
             for (DataLogger.Type type : list) {
-                if (DATA.containsKey(type)) {
-                    nbt.put(type.getSerializedName(), DATA.get(type));
+                Tag data = DATA.get(type, player);
+                if (data != null) {
+                    nbt.put(type.getSerializedName(), data);
+                    DATA.remove(type, player);
                 }
             }
             sendPacket(player, new HudDataPayload(HudDataPayloadType.PACKET_S2C_DATA_LOGGER_TICK, nbt));
         }
+    }
+
+    public void applyData(DataLogger.Type type, ServerPlayer player, Tag tag) {
+        DATA.put(type, player, tag);
     }
 
     @Override

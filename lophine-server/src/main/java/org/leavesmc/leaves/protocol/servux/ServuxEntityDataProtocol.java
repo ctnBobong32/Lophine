@@ -29,8 +29,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.bukkit.Bukkit;
-import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.protocol.core.LeavesCustomPayload;
 import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
@@ -102,27 +100,37 @@ public class ServuxEntityDataProtocol implements LeavesProtocol {
     }
 
     public static void onBlockEntityRequest(ServerPlayer player, BlockPos pos) {
-        Bukkit.getGlobalRegionScheduler().run(MinecraftInternalPlugin.INSTANCE, (task) -> {
-            BlockEntity be = player.level().getBlockEntity(pos);
-            CompoundTag nbt = be != null ? be.saveWithFullMetadata(player.registryAccess()) : new CompoundTag();
+        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                player.level(),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                () -> {
+                    BlockEntity be = player.level().getBlockEntity(pos);
+                    CompoundTag nbt = be != null ? be.saveWithFullMetadata(player.registryAccess()) : new CompoundTag();
 
-            EntityDataPayload payload = new EntityDataPayload(EntityDataPayloadType.PACKET_S2C_BLOCK_NBT_RESPONSE_SIMPLE);
-            payload.pos = pos.immutable();
-            payload.nbt.merge(nbt);
-            sendPacket(player, payload);
-        });
+                    EntityDataPayload payload = new EntityDataPayload(EntityDataPayloadType.PACKET_S2C_BLOCK_NBT_RESPONSE_SIMPLE);
+                    payload.pos = pos.immutable();
+                    payload.nbt.merge(nbt);
+                    sendPacket(player, payload);
+                }
+        );
     }
 
     public static void onEntityRequest(ServerPlayer player, int entityId) {
-        Bukkit.getGlobalRegionScheduler().run(MinecraftInternalPlugin.INSTANCE, (task) -> {
-            Entity entity = player.level().getEntity(entityId);
-            CompoundTag nbt = TagUtil.saveEntityWithoutId(entity);
+        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                player.level(),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                () -> {
+                    Entity entity = player.level().getEntity(entityId);
+                    CompoundTag nbt = TagUtil.saveEntityWithoutId(entity);
 
-            EntityDataPayload payload = new EntityDataPayload(EntityDataPayloadType.PACKET_S2C_ENTITY_NBT_RESPONSE_SIMPLE);
-            payload.entityId = entityId;
-            payload.nbt.merge(nbt);
-            sendPacket(player, payload);
-        });
+                    EntityDataPayload payload = new EntityDataPayload(EntityDataPayloadType.PACKET_S2C_ENTITY_NBT_RESPONSE_SIMPLE);
+                    payload.entityId = entityId;
+                    payload.nbt.merge(nbt);
+                    sendPacket(player, payload);
+                }
+        );
     }
 
     public static void sendPacket(ServerPlayer player, EntityDataPayload payload) {
