@@ -4,6 +4,7 @@
 
 <h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的实现</h4>
 
+![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=flat-square)
 [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
 [![Issues](https://img.shields.io/github/issues/LuminolMC/Lophine?style=flat-square)](https://github.com/LuminolMC/Lophine/issues)
 ![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/Lophine?style=flat-square)
@@ -17,6 +18,8 @@
 - 支持部分Bukkit插件
 - 可配置的原版特性
 - Tpsbar 支持
+- 针对folia bug的一些修复
+- linear和b_linear(linear的重新实现)存档格式支持
 - 对单线程区域性能的优化
 - 更多有用的功能
 

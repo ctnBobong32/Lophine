@@ -5,7 +5,7 @@ Subject: [PATCH] Disable some check for operators
 
 
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index a684f5edf420d9655046de872c54e0c1a89103cf..105675bef05408bd5baf1b6129c0392065bbe79d 100644
+index 4b215dc69887df9382bde4cfa2f37afadfe1bcb2..3ce1e5a7d7095c15250b94d032587f584119824d 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -367,7 +367,7 @@ public class ServerGamePacketListenerImpl

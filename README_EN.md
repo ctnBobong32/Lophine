@@ -5,6 +5,7 @@
 <h4>Lophine is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide
 more function for survival-usable circuit on folia</h4>
 
+![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=flat-square)
 [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
 [![Issues](https://img.shields.io/github/issues/LuminolMC/Lophine?style=flat-square)](https://github.com/LuminolMC/Lophine/issues)
 ![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/Lophine?style=flat-square)
@@ -18,6 +19,8 @@ more function for survival-usable circuit on folia</h4>
 - Supported some Bukkit plugin
 - Configurable vanilla features
 - Tpsbar support
+- Useful fixes of bugs of folia
+- Linear and BufferedLinear(AKA. b_linear)(a reimplementation of linear) region format support
 - Useful optimizations to improve the performance of single threaded region
 - More functions
 
