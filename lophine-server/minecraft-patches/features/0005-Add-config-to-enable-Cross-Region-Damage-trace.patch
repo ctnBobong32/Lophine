@@ -48,7 +48,7 @@ index 11e6197dec541b28733715f0d7eaa4c7b834d632..6b7c92fdf562dfa46eee8e8acbc82b02
          AABB aabb = new AABB(this.blockPosition()).inflate(32.0, 10.0, 32.0);
          this.level()
 diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
-index d55a6989fd68f0bcf7bd05e9420fda1115afa6c0..5369a6597e48ed9f0d8f7f0b9685ce4950df4fe5 100644
+index 567d63ae589705e13403814b36e35d00c241a69e..919628d93add71d9b30cae29587a0049cce6973d 100644
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
 @@ -1216,6 +1216,29 @@ public abstract class LivingEntity extends Entity implements Attackable, Waypoin
@@ -134,7 +134,7 @@ index d55a6989fd68f0bcf7bd05e9420fda1115afa6c0..5369a6597e48ed9f0d8f7f0b9685ce49
          return (float)this.getAttributeValue(Attributes.MAX_HEALTH);
      }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 510514e363f4816a6e286fb9b5488153e03c9e55..4638af10539a316acae64fb26881c8e699c496e0 100644
+index 510514e363f4816a6e286fb9b5488153e03c9e55..ce5602283757c564b45ec0765b5f1868ffcd180b 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -157,7 +157,13 @@ public abstract class Raider extends PatrollingMonster {
@@ -142,13 +142,13 @@ index 510514e363f4816a6e286fb9b5488153e03c9e55..4638af10539a316acae64fb26881c8e6
  
                      if (!serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DISABLE_RAIDS)) {
 -                        entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
-+                        // Luminol start - Raid changes adapt DamageSource trace
++                        // Luminol start - raid revert adapt Cross Region Damage trace
 +                        if (fun.bm.lophine.config.modules.experiment.EntityDamageSourceTraceConfig.enabled) {
 +                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true, true);
 +                        } else {
 +                            entityhuman.addEffect(mobeffect1, entityhuman, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.PATROL_CAPTAIN, true); // CraftBukkit
 +                        }
-+                        // Luminol end - Raid changes adapt DamageSource trace
++                        // Luminol end - raid revert adapt Cross Region Damage trace
                      }
                      this.setPatrolLeader(false);
                  }
