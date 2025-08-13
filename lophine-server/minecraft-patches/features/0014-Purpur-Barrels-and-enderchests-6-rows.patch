@@ -115,10 +115,10 @@ index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..fe374f08b7829b846b2a1c2ac3ca500c
                  // Paper end - Fix InventoryOpenEvent cancellation - moved up;
                      player.awardStat(Stats.OPEN_ENDERCHEST);
 diff --git a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-index d679ab599dfd0bdbdc3ab5530d7fcd1c38baf7fa..6b4e2956222a0ca7f72f73032dc98878fbd257ee 100644
+index de99652629c7301a4bc0e9ec48bed9a26a338f0d..4383e87560bb05acf9c50758f38a3cb69ee5c5c7 100644
 --- a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-@@ -56,7 +56,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity {
+@@ -56,7 +56,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
      }
      // CraftBukkit end
  
@@ -137,7 +137,7 @@ index d679ab599dfd0bdbdc3ab5530d7fcd1c38baf7fa..6b4e2956222a0ca7f72f73032dc98878
      public final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
          @Override
          protected void onOpen(Level level, BlockPos pos, BlockState state) {
-@@ -108,7 +118,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity {
+@@ -108,7 +118,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
  
      @Override
      public int getContainerSize() {
@@ -155,7 +155,7 @@ index d679ab599dfd0bdbdc3ab5530d7fcd1c38baf7fa..6b4e2956222a0ca7f72f73032dc98878
      }
  
      @Override
-@@ -128,7 +147,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity {
+@@ -129,7 +148,16 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
  
      @Override
      protected AbstractContainerMenu createMenu(int id, Inventory player) {
