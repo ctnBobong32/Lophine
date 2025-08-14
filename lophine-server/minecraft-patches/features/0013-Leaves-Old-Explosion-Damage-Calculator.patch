@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Helvetica Volubi <suisuroru@blue-millennium.fun>
 Date: Mon, 7 Jul 2025 15:33:57 +0800
-Subject: [PATCH] Old Explosion Damage Calculator
+Subject: [PATCH] Leaves: Old Explosion Damage Calculator
 
 Co-authored by: MC_XiaoHei <xor7xiaohei@gmail.com>
 As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/3e96b237749a960f297f211d439ffc9ea7fd2381/leaves-server/minecraft-patches/features/0134-Old-wet-tnt-explode-behavior.patch)

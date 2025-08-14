@@ -3,6 +3,7 @@ package fun.bm.lophine.config.modules.misc;
 import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.config.flags.TransformedConfig;
 
 public class OldFeatureConfig implements IConfigModule {
     @ConfigInfo(baseName = "spawn_invulnerable_time")
@@ -13,6 +14,10 @@ public class OldFeatureConfig implements IConfigModule {
 
     @ConfigInfo(baseName = "old_explosion_damage_calculator")
     public static boolean oldExplosionDamageCalculator = false;
+
+    @TransformedConfig(name = "give_bad_omen_when_kill_raid_captain", category = {"misc", "revert_raid_changes"}, transformComments = false)
+    @ConfigInfo(baseName = "old_raid_behavior")
+    public static boolean oldRaidBehavior = false;
 
     @Override
     public EnumConfigCategory getCategory() {

@@ -12,9 +12,6 @@ public class RedStoneConfig implements IConfigModule {
                     Allows you to use the Shears to right-click to rotate the block.""")
     public static boolean shears = false;
 
-    @ConfigInfo(baseName = "vanilla_hopper")
-    public static boolean vanillaHopper = false;
-
     @Override
     public EnumConfigCategory getCategory() {
         return EnumConfigCategory.MISC;

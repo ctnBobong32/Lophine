@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.optimizations.LanguageConfig;
+import me.earthme.luminol.config.ConfigManager;
+import me.earthme.luminol.config.ConfigsInstance;
 import net.minecraft.DetectedVersion;
 import net.minecraft.locale.DeprecatedTranslationsInfo;
 import net.minecraft.locale.Language;
@@ -12,8 +15,8 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.StringDecomposer;
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +26,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.*;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.logging.Logger;
 
 /*
  * authored by: Helvetica Volubi <suisuroru@blue-millennium.fun>
@@ -37,30 +40,62 @@ import java.util.logging.Logger;
  * Some of diff form Leaves
  */
 public class ServerI18nUtil {
-
-    private static final Logger logger = Logger.getLogger("LangLoader");
+    private static final Logger logger = LogUtils.getClassLogger();
     private static final String VERSION = DetectedVersion.BUILT_IN.name();
     private static final String BASE_PATH = "cache/lophine/" + VERSION + "/";
+    private static final String defaultLophineLangPath = "/assets/lophine/lang/en_us.json";
     private static final String manifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
     private static final String resourceBaseUrl = "https://resources.download.minecraft.net/";
-
+    // pre-load
+    private static CompletableFuture<Void> preloadTask;
+    // paths
     private static String langPath;
     private static String assetsPath;
     private static String versionPath;
     private static String manifestPath;
     private static String langJsonPath;
+    private static String lophineLangPath;
 
     public static void init() {
         if (Objects.equals(LanguageConfig.lang, "en_us")) {
             return;
         }
         langPath = BASE_PATH + "lang/" + LanguageConfig.lang + ".json";
+        langJsonPath = "minecraft/lang/" + LanguageConfig.lang + ".json";
+        lophineLangPath = "/assets/Lophine/lang/" + LanguageConfig.lang + ".json";
+        logger.info("Starting load language: {}", LanguageConfig.lang);
+        preloadTask.thenAcceptAsync(v -> loadI18n(LanguageConfig.lang, 2));
+    }
+
+    public static void preInit() {
         assetsPath = BASE_PATH + "assets.json";
         versionPath = BASE_PATH + VERSION + ".json";
         manifestPath = BASE_PATH + "manifest.json";
-        langJsonPath = "minecraft/lang/" + LanguageConfig.lang + ".json";
-        logger.info("Starting load language: " + LanguageConfig.lang);
-        CompletableFuture.runAsync(() -> loadI18n(LanguageConfig.lang, 2));
+        preloadTask = CompletableFuture.runAsync(() -> preLoadI18n(2));
+    }
+
+    private static void preLoadI18n(int retryTime) {
+        try {
+            if (!Files.exists(Path.of(assetsPath))) {
+                downloadAssets(true);
+            }
+        } catch (UnsupportedLanguageException e) {
+            logger.warn("Unsupported language: {}", LanguageConfig.lang);
+            // Fallback to English
+            final ConfigsInstance configsInstance = ConfigManager.configfiles.get("lophine");
+            configsInstance.setConfig(new String[]{"optimizations", "lang"}, "en_us");
+            configsInstance.reloadAsync();
+        } catch (Exception e) {
+            if (e instanceof MalformedJsonException malformedJson) {
+                malformedJson.clean();
+            }
+            logger.warn("Failed to download language list file: ", e);
+            if (retryTime > 0) {
+                preLoadI18n(retryTime - 1);
+            } else {
+                logger.error("Failed to download language list file for many times, skip pre-load language.");
+            }
+        }
     }
 
     private static void loadI18n(String lang, int retryTime) {
@@ -69,15 +104,16 @@ public class ServerI18nUtil {
                 downloadLang(true);
             }
             Language.inject(createLangInstance());
-            logger.info("Successfully loaded language: " + lang);
+            logger.info("Successfully loaded language: {}", lang);
         } catch (Exception e) {
-            logger.warning("Failed to load language file for " + lang + "\n" + e);
+            if (e instanceof MalformedJsonException malformedJson) {
+                malformedJson.clean();
+            }
+            logger.warn("Failed to load language file for {}", lang, e);
             if (retryTime > 0) {
-                cleanCache();
                 loadI18n(lang, retryTime - 1);
             } else {
-                logger.severe("Failed to load for many times, use default lang \"en_us\" instead");
-                cleanCache();
+                logger.error("Failed to load for many times, use default lang \"en_us\" instead");
             }
         }
     }
@@ -93,6 +129,10 @@ public class ServerI18nUtil {
         }
 
         JsonObject langEntry = json.getAsJsonObject("objects").getAsJsonObject(langJsonPath);
+
+        if (langEntry == null) {
+            throw new UnsupportedLanguageException();
+        }
 
         String hash = langEntry.get("hash").getAsString();
         if (hash == null || hash.length() < 2) {
@@ -145,35 +185,29 @@ public class ServerI18nUtil {
         fetchAndSave(versionUrl, versionPath);
     }
 
-    private static String createHttpResponse(String path) throws IOException, InterruptedException {
+    private static byte[] fetch(String urlString) throws IOException, InterruptedException {
         try {
             HttpResponse<String> response;
             try (HttpClient httpClient = HttpClient.newHttpClient()) {
-
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(path))
+                        .uri(URI.create(urlString))
+                        .timeout(Duration.ofSeconds(10))
                         .build();
-
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             }
 
             int responseCode = response.statusCode();
             if (responseCode != 200) {
-                logger.info("Unexpected response code: " + responseCode);
-                logger.info("Response body: " + response.body());
+                logger.info("Unexpected response code: {}", responseCode);
+                logger.info("Response body: {}", response.body());
                 throw new UnsupportedEncodingException("Unexpected response code");
             } else {
-                return response.body();
+                return response.body().getBytes();
             }
         } catch (Exception e) {
-            logger.warning("Error in getting info: " + e.getMessage());
+            logger.warn("Error in getting info!");
             throw e;
         }
-    }
-
-    private static byte[] fetch(String urlString) throws IOException, InterruptedException {
-        String ret = createHttpResponse(urlString);
-        return ret.getBytes();
     }
 
     private static void fetchAndSave(String url, String savePath) throws IOException, InterruptedException {
@@ -183,23 +217,15 @@ public class ServerI18nUtil {
         Files.write(outputPath, data, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
     }
 
-    private static void cleanCache() {
-        try {
-            FileUtils.deleteDirectory(Path.of(BASE_PATH).toFile());
-        } catch (IOException e) {
-            logger.severe("Cache cleanup failed: " + e);
-        }
-    }
-
     private static JsonObject loadJson(String path) {
         try {
             byte[] data = Files.readAllBytes(Paths.get(path));
             return JsonParser.parseString(new String(data)).getAsJsonObject();
         } catch (JsonSyntaxException e) {
-            logger.warning("Corrupt json file: " + e);
-            throw e;
+            logger.warn("Corrupt json file!");
+            throw new MalformedJsonException(e, path);
         } catch (Exception e) {
-            logger.warning("Failed to load local JSON: " + e);
+            logger.warn("Failed to load local JSON!");
             return null;
         }
     }
@@ -208,6 +234,7 @@ public class ServerI18nUtil {
         DeprecatedTranslationsInfo deprecatedTranslationsInfo = DeprecatedTranslationsInfo.loadFromDefaultResource();
         Map<String, String> map = new HashMap<>();
         parseTranslations(map::put);
+        loadLophineI18n(map::put);
         deprecatedTranslationsInfo.applyToMap(map);
         final Map<String, String> map1 = Map.copyOf(map);
         return new Language() {
@@ -237,16 +264,52 @@ public class ServerI18nUtil {
         };
     }
 
+    private static void loadLophineI18n(BiConsumer<String, String> bi) {
+        if (Language.class.getResource(lophineLangPath) != null) {
+            Language.parseTranslations(bi, lophineLangPath);
+        } else {
+            loadLophineI18nDefault(bi);
+        }
+    }
+
+    public static void loadLophineI18nDefault(BiConsumer<String, String> bi) {
+        if (Language.class.getResource(defaultLophineLangPath) != null) {
+            Language.parseTranslations(bi, defaultLophineLangPath);
+        }
+    }
+
     private static void parseTranslations(BiConsumer<String, String> output) throws IOException {
         Path filePath = Path.of(langPath);
         try (InputStream fileStream = Files.newInputStream(filePath)) {
             Language.loadFromJson(fileStream, output);
-        } catch (NoSuchFileException noSuchFileException) {
-            logger.warning("Couldn't find language file: " + langPath);
-            throw noSuchFileException;
-        } catch (Exception e) {
-            logger.warning("Failed to load language from filesystem " + filePath + "\n" + e);
+        } catch (NoSuchFileException e) {
+            logger.warn("Couldn't find language file: {}", langPath);
             throw e;
+        } catch (JsonSyntaxException e) {
+            throw new MalformedJsonException(e, langPath);
+        } catch (Exception e) {
+            logger.warn("Failed to load language from filesystem {}", filePath);
+            throw e;
+        }
+    }
+
+    private static class UnsupportedLanguageException extends Exception {
+    }
+
+    private static class MalformedJsonException extends RuntimeException {
+        private final Path path;
+
+        protected MalformedJsonException(Throwable root, String path) {
+            super(root);
+            this.path = Path.of(path);
+        }
+
+        public void clean() {
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                logger.info("Failed to delete malformed JSON file: {}", path);
+            }
         }
     }
 }
