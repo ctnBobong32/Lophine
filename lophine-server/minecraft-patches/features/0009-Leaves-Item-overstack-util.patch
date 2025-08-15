@@ -41,7 +41,7 @@ index f7002d6752aa03603eb06e298ba1d7130cf13826..72c87f7c0392d087440db9d267a60859
          if (count > i) {
              source.sendFailure(Component.translatable("commands.give.failed.toomanyitems", i, itemStack.getDisplayName()));
 diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 1d52376f034dc5690e8b399512146b47b92c3c14..4b215dc69887df9382bde4cfa2f37afadfe1bcb2 100644
+index d74a05822c6c145971dc526a62d652d35b4f5d9d..d63d8f7523938088bf9efc1c1b8ad9f0583338bb 100644
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -3079,7 +3079,7 @@ public class ServerGamePacketListenerImpl

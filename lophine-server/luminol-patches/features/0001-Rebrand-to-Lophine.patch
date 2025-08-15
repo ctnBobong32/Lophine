@@ -5,12 +5,12 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index 0a3fa2756dae0eea9e2c0fa6bbaa425584763036..6c1cb2866c81a1bc861289aedb2c318f910a8498 100644
+index a67fc80eb3182415557b4bdf7f146aefb43103da..52fec4c88fee3c027c954365538516aaa8335c7f 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-@@ -19,6 +19,7 @@ public class ConfigManager {
+@@ -21,6 +21,7 @@ public class ConfigManager {
  
-     public static void initConfigs() throws IOException {
+     public static void initConfigs() {
          configfiles.put("luminol", ConfigsInstance.of(new File("luminol_config"), "luminol", "me.earthme.luminol.config.modules"));
 +        configfiles.put("lophine", ConfigsInstance.of(new File("lophine_config"), "lophine", "fun.bm.lophine.config.modules")); // add lophine config to global config
          preLoad();

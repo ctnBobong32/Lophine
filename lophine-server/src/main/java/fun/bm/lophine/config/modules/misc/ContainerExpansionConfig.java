@@ -20,9 +20,7 @@ public class ContainerExpansionConfig implements IConfigModule {
                     range: 1~64""")
     public static int shulkerCount = 1;
 
-    @ConfigInfo(baseName = "same_nbt_shulker_stackable", comments =
-            """
-                    range: 1~64""")
+    @ConfigInfo(baseName = "same_nbt_shulker_stackable")
     public static boolean nbtShulkerStackable = false;
 
     @Override

@@ -16,3 +16,15 @@ index 531214d7ab28ece4bf84e82b39d1c9f983f0fb0c..b68fa0427bb975e91e76f73ab4cc089a
      @ConfigInfo(baseName = "enabled")
      public static boolean enabled = false;
  
+diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
+index c269446dda05cfc848407f80f53820c8fcd0c7b4..e69ffae53aa24496a29a4c4890cdcb366d2bec12 100644
+--- a/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
++++ b/src/main/java/me/earthme/luminol/config/modules/misc/PaperPacketLimiterConfig.java
+@@ -5,6 +5,7 @@ import me.earthme.luminol.config.IConfigModule;
+ import me.earthme.luminol.config.flags.ConfigInfo;
+ 
+ public class PaperPacketLimiterConfig implements IConfigModule {
++    @me.earthme.luminol.config.flags.TransformedConfig(name = "unlimit-packet", category = {"misc", "network"}, originInstance = "lophine")
+     @ConfigInfo(baseName = "force_disable")
+     public static boolean forceDisable = false;
+ 

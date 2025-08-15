@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable datapack command
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 0d5ed9602492c8393088954105e9a19032067b8b..e2fc15d84fafde6847ecead23c55169449275e1b 100644
+index 8a90aa5c145f53afbb3f2371f97cb09974f30bbb..b6e10157c572dadb1bff18f8431166966eed46d9 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
 @@ -192,7 +192,9 @@ public class Commands {
@@ -20,7 +20,7 @@ index 0d5ed9602492c8393088954105e9a19032067b8b..e2fc15d84fafde6847ecead23c551694
          DefaultGameModeCommands.register(this.dispatcher);
          //DialogCommand.register(this.dispatcher, context); // Folia - region threading - TODO
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 86d20d884fb59d0121bdcc291af1fc97b8bf603d..a0f1db50adf5163a671d3d9e9df7adb7de4250c6 100644
+index 100e8fdc52c201d386e3c779d19f6b5abde39820..d08a5b553f4e5932d960fbcdeb6a43419730e32a 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -2352,6 +2352,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
