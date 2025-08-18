@@ -6,7 +6,7 @@ import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "old_feature")
+@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "old-feature")
 public class OldFeatureConfig implements IConfigModule {
     @ConfigInfo(baseName = "spawn_invulnerable_time")
     public static boolean spawnInvulnerableTime = false;

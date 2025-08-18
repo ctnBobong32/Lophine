@@ -7,7 +7,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 
 import java.util.List;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "survux_protocol")
+@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "survux-protocol")
 public class SurvuxProtocolConfig implements IConfigModule {
     @ConfigInfo(baseName = "entity-protocol")
     public static boolean entityProtocol = false;

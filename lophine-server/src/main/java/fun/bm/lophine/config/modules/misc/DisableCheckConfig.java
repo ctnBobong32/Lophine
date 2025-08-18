@@ -5,7 +5,7 @@ import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "disable_check")
+@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "disable-check")
 public class DisableCheckConfig implements IConfigModule {
     @ConfigInfo(baseName = "disable-op-move-check", comments = """
             Disable the check for the operator's move check""")
