@@ -43,7 +43,7 @@ For gradle:
 ```kotlin
 repositories {
     maven {
-        url = "https://repo.menthamc.com/repository/maven-public/"
+        url = "https://repo.menthamc.org/repository/maven-public/"
     }
 }
 
@@ -58,7 +58,7 @@ For maven
 <repositories>
     <repository>
         <id>menthamc</id>
-        <url>https://repo.menthamc.com/repository/maven-public/</url>
+        <url>https://repo.menthamc.org/repository/maven-public/</url>
     </repository>
 </repositories>
 
