@@ -6,6 +6,8 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 
 public class RemovedConfig implements IConfigModule {
+    @TransformedConfig(name = "disable_end_crystal_check", category = {"fixes", "end_crystal"}, transform = false)
+    @TransformedConfig(name = "disable_end_crystal_check", category = {"misc", "end_crystal"}, transform = false)
     @TransformedConfig(name = "allow_skip_cooldown", category = {"misc", "revert_raid_changes"}, transform = false)
     @TransformedConfig(name = "bad_omen_infinite", category = {"misc", "revert_raid_changes"}, transform = false)
     @TransformedConfig(name = "skip_height_check", category = {"misc", "revert_raid_changes"}, transform = false)

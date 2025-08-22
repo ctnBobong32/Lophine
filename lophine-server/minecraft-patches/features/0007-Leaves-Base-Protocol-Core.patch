@@ -88,7 +88,7 @@ index a0f1db50adf5163a671d3d9e9df7adb7de4250c6..af13707933af14171447d5ab6faacb64
      public int getSpawnProtectionRadius() {
          return 16;
 diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
-index 714813cba67da4a737682fe9276cb0d96fea336d..9677a3d62de11dafc8b9debe7a18ee6d14c7a64d 100644
+index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3ddc776bf9e 100644
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 @@ -57,6 +57,7 @@ public abstract class ServerCommonPacketListenerImpl implements ServerCommonPack

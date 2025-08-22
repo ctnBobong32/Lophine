@@ -2,7 +2,7 @@
 
 # Lophine
 
-<h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的实现</h4>
+<h4>Lophine 是一个基于Luminol的分支，具有许多有用的优化和可配置的原版特性，目标是在Folia上实现更多生电的内容（请注意，完整生电请使用Fabric）</h4>
 
 ![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=flat-square)
 [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)

@@ -31,7 +31,7 @@ index cf72cb8b418239b56c755486b03a321672e16bc3..b69c06607ca900beeebf4892a978442d
              String awtException = io.papermc.paper.util.ServerEnvironment.awtDependencyCheck();
              if (awtException != null) {
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index c6c6432c2efeb7b95c2894b188cd966321ae3186..1cd9af71ee66df5f277748c0a5a59a30bd57accc 100644
+index ec07d916ff52f5a866218c2fa4d632b83675faf2..eabaae86e4951046db5d1bae9abb92f1bece100f 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -172,6 +172,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface

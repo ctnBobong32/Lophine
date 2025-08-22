@@ -3,7 +3,7 @@
 # Lophine
 
 <h4>Lophine is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide
-more function for survival-usable circuit on folia</h4>
+more function for survival-usable circuit on folia (Please note that Fabric should be used for complete survival-usable)</h4>
 
 ![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=flat-square)
 [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
