@@ -2,8 +2,10 @@ package fun.bm.lophine.config.modules.experiment;
 
 import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
+@ConfigClassInfo(configAttribution = EnumConfigCategory.EXPERIMENT, mainName = "ray_tracking_entity_tracker")
 public class RayTrackingEntityTrackerConfig implements IConfigModule {
     @ConfigInfo(baseName = "enabled")
     public static boolean enabled = false;
@@ -15,14 +17,4 @@ public class RayTrackingEntityTrackerConfig implements IConfigModule {
     public static int tracingDistance = 48;
     @ConfigInfo(baseName = "hitbox_limit")
     public static int hitboxLimit = 50;
-
-    @Override
-    public EnumConfigCategory getCategory() {
-        return EnumConfigCategory.EXPERIMENT;
-    }
-
-    @Override
-    public String getBaseName() {
-        return "ray_tracking_entity_tracker";
-    }
 }

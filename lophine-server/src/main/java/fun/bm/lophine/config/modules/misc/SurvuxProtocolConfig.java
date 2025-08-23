@@ -2,10 +2,12 @@ package fun.bm.lophine.config.modules.misc;
 
 import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
 import java.util.List;
 
+@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "survux_protocol")
 public class SurvuxProtocolConfig implements IConfigModule {
     @ConfigInfo(baseName = "entity-protocol")
     public static boolean entityProtocol = false;
@@ -33,14 +35,4 @@ public class SurvuxProtocolConfig implements IConfigModule {
 
     @ConfigInfo(baseName = "litematics-max-nbt-size")
     public static int litematicsMaxNbtSize = 2097152;
-
-    @Override
-    public EnumConfigCategory getCategory() {
-        return EnumConfigCategory.MISC;
-    }
-
-    @Override
-    public String getBaseName() {
-        return "servux-protocol";
-    }
 }

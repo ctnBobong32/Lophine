@@ -2,8 +2,10 @@ package fun.bm.lophine.config.modules.misc;
 
 import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 
+@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "container_expansion")
 public class ContainerExpansionConfig implements IConfigModule {
     @ConfigInfo(baseName = "barrel_rows", comments =
             """
@@ -22,14 +24,4 @@ public class ContainerExpansionConfig implements IConfigModule {
 
     @ConfigInfo(baseName = "same_nbt_shulker_stackable")
     public static boolean nbtShulkerStackable = false;
-
-    @Override
-    public EnumConfigCategory getCategory() {
-        return EnumConfigCategory.MISC;
-    }
-
-    @Override
-    public String getBaseName() {
-        return "container_expansion";
-    }
 }
