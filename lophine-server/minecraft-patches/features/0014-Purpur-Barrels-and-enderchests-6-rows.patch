@@ -8,7 +8,7 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 593dbcda4b497291eb1ecdc64b947a8d279f8be6..661f797b39853104b16d75ca7ba0eda156a74af3 100644
+index 593dbcda4b497291eb1ecdc64b947a8d279f8be6..cb863a36fc67e993956ec3be655e6e4b9764c051 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -1087,6 +1087,10 @@ public abstract class PlayerList {
@@ -17,7 +17,7 @@ index 593dbcda4b497291eb1ecdc64b947a8d279f8be6..661f797b39853104b16d75ca7ba0eda1
          } // Paper - Add sendOpLevel API
 +
 +        // Purpur start - Barrels and enderchests 6 rows
-+        player.enderChestSlotCount = fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows < 7 && fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows > 0 ? 9 * fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows : 27;
++        player.enderChestSlotCount = fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows < 7 && fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows > 0 ? 9 * fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows : 27;
 +        // Purpur end - Barrels and enderchests 6 rows
      }
  
@@ -70,7 +70,7 @@ index 0fffa384f928ab84451331380968fb4650eafe26..d84a10396395939149da88bcb01be59e
          return new ChestMenu(MenuType.GENERIC_9x6, containerId, playerInventory, container, 6);
      }
 diff --git a/net/minecraft/world/inventory/PlayerEnderChestContainer.java b/net/minecraft/world/inventory/PlayerEnderChestContainer.java
-index 51148b7b95c93a9e25da70ac9275c63f1458d84c..b6bceae1ec26685af485bfe9d846f7584d5012cd 100644
+index 51148b7b95c93a9e25da70ac9275c63f1458d84c..dba8acfcacfe9a7b7e0fb9943fba49468214616e 100644
 --- a/net/minecraft/world/inventory/PlayerEnderChestContainer.java
 +++ b/net/minecraft/world/inventory/PlayerEnderChestContainer.java
 @@ -26,11 +26,18 @@ public class PlayerEnderChestContainer extends SimpleContainer {
@@ -78,7 +78,7 @@ index 51148b7b95c93a9e25da70ac9275c63f1458d84c..b6bceae1ec26685af485bfe9d846f758
  
      public PlayerEnderChestContainer(Player owner) {
 -        super(27);
-+        super(fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows < 7 && fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows > 0 ? 9 * fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows : 27);
++        super(fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows < 7 && fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows > 0 ? 9 * fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows : 27);
          this.owner = owner;
          // CraftBukkit end
      }
@@ -94,7 +94,7 @@ index 51148b7b95c93a9e25da70ac9275c63f1458d84c..b6bceae1ec26685af485bfe9d846f758
          this.activeChest = enderChestBlockEntity;
      }
 diff --git a/net/minecraft/world/level/block/EnderChestBlock.java b/net/minecraft/world/level/block/EnderChestBlock.java
-index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..fe374f08b7829b846b2a1c2ac3ca500ca3e48684 100644
+index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..cef29289b7bc7fdf9613c0cd52f2bf4f715f288d 100644
 --- a/net/minecraft/world/level/block/EnderChestBlock.java
 +++ b/net/minecraft/world/level/block/EnderChestBlock.java
 @@ -85,8 +85,14 @@ public class EnderChestBlock extends AbstractChestBlock<EnderChestBlockEntity> i
@@ -103,7 +103,7 @@ index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..fe374f08b7829b846b2a1c2ac3ca500c
                      new SimpleMenuProvider(
 -                        (containerId, playerInventory, player1) -> ChestMenu.threeRows(containerId, playerInventory, enderChestInventory), CONTAINER_TITLE
 -                    )
-+                            (containerId, playerInventory, player1) -> switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows) {
++                            (containerId, playerInventory, player1) -> switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows) {
 +                    case 6 -> ChestMenu.sixRows(containerId, playerInventory, enderChestInventory);
 +                    case 5 -> ChestMenu.fiveRows(containerId, playerInventory, enderChestInventory);
 +                    case 4 -> ChestMenu.fourRows(containerId, playerInventory, enderChestInventory);
@@ -115,7 +115,7 @@ index 5077a9ff7b78801bdc53536a37aee07b8d86ee4d..fe374f08b7829b846b2a1c2ac3ca500c
                  // Paper end - Fix InventoryOpenEvent cancellation - moved up;
                      player.awardStat(Stats.OPEN_ENDERCHEST);
 diff --git a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
-index de99652629c7301a4bc0e9ec48bed9a26a338f0d..4383e87560bb05acf9c50758f38a3cb69ee5c5c7 100644
+index de99652629c7301a4bc0e9ec48bed9a26a338f0d..b43445d8313c330a0376aaa4eb872495ebd87b5f 100644
 --- a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
 @@ -56,7 +56,17 @@ public class BarrelBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -124,7 +124,7 @@ index de99652629c7301a4bc0e9ec48bed9a26a338f0d..4383e87560bb05acf9c50758f38a3cb6
  
 -    private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
 +    // Purpur start - Barrels and enderchests 6 rows
-+    private NonNullList<ItemStack> items = NonNullList.withSize(switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
++    private NonNullList<ItemStack> items = NonNullList.withSize(switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.barrelRows) {
 +        case 6 -> 54;
 +        case 5 -> 45;
 +        case 4 -> 36;
@@ -143,7 +143,7 @@ index de99652629c7301a4bc0e9ec48bed9a26a338f0d..4383e87560bb05acf9c50758f38a3cb6
      public int getContainerSize() {
 -        return 27;
 +        // Purpur start - Barrels and enderchests 6 rows
-+        return switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
++        return switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.barrelRows) {
 +            case 6 -> 54;
 +            case 5 -> 45;
 +            case 4 -> 36;
@@ -161,7 +161,7 @@ index de99652629c7301a4bc0e9ec48bed9a26a338f0d..4383e87560bb05acf9c50758f38a3cb6
      protected AbstractContainerMenu createMenu(int id, Inventory player) {
 -        return ChestMenu.threeRows(id, player, this);
 +        // Purpur start - Barrels and enderchests 6 rows
-+        return switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
++        return switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.barrelRows) {
 +            case 6 -> ChestMenu.sixRows(id, player, this);
 +            case 5 -> ChestMenu.fiveRows(id, player, this);
 +            case 4 -> ChestMenu.fourRows(id, player, this);

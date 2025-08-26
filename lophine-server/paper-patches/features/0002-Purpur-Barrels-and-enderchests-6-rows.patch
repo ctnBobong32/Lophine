@@ -8,7 +8,7 @@ As part of: Purpur (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18
 Licensed under: MIT (https://github.com/PurpurMC/Purpur/blob/09f547de09fc5d886f18f6d99ff389289766ec9d/LICENSE)
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
-index 2f41a92465b9da28e026297cc3528898bb1c8412..fb5300ec1bd19b3dfd6a2b4106440b9f73c48205 100644
+index 2f41a92465b9da28e026297cc3528898bb1c8412..168301a2f1c3081ae15d3695c2dcc72b4538cdfb 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftContainer.java
 @@ -148,9 +148,26 @@ public class CraftContainer extends AbstractContainerMenu {
@@ -18,7 +18,7 @@ index 2f41a92465b9da28e026297cc3528898bb1c8412..fb5300ec1bd19b3dfd6a2b4106440b9f
 -            case BARREL:
 -                this.delegate = new ChestMenu(net.minecraft.world.inventory.MenuType.GENERIC_9x3, windowId, bottom, top, top.getContainerSize() / 9);
 +                // Purpur start - Barrels and enderchests 6 rows
-+                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.enderchestRows) {
++                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.enderchestRows) {
 +                    case 6 -> net.minecraft.world.inventory.MenuType.GENERIC_9x6;
 +                    case 5 -> net.minecraft.world.inventory.MenuType.GENERIC_9x5;
 +                    case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;
@@ -28,7 +28,7 @@ index 2f41a92465b9da28e026297cc3528898bb1c8412..fb5300ec1bd19b3dfd6a2b4106440b9f
 +                }, windowId, bottom, top, top.getContainerSize() / 9);
                  break;
 +            case BARREL:
-+                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.misc.ContainerExpansionConfig.barrelRows) {
++                this.delegate = new ChestMenu(switch (fun.bm.lophine.config.modules.function.ContainerExpansionConfig.barrelRows) {
 +                    case 6 -> net.minecraft.world.inventory.MenuType.GENERIC_9x6;
 +                    case 5 -> net.minecraft.world.inventory.MenuType.GENERIC_9x5;
 +                    case 4 -> net.minecraft.world.inventory.MenuType.GENERIC_9x4;

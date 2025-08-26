@@ -18,6 +18,7 @@
 package org.leavesmc.leaves.protocol.servux;
 
 import com.mojang.logging.LogUtils;
+import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -152,7 +153,7 @@ public class ServuxEntityDataProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.entityProtocol;
+        return SurvuxProtocolConfig.entityProtocol;
     }
 
     public enum EntityDataPayloadType {

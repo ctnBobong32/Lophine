@@ -1,9 +1,9 @@
 package fun.bm.lophine.config.modules.misc;
 
-import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
+import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "disable-check")
 public class DisableCheckConfig implements IConfigModule {

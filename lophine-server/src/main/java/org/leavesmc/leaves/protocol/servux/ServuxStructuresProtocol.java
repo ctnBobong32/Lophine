@@ -18,6 +18,7 @@
 package org.leavesmc.leaves.protocol.servux;
 
 import com.mojang.logging.LogUtils;
+import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -335,7 +336,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return fun.bm.lophine.config.modules.misc.SurvuxProtocolConfig.structureProtocol;
+        return SurvuxProtocolConfig.structureProtocol;
     }
 
     public enum StructuresPayloadType {

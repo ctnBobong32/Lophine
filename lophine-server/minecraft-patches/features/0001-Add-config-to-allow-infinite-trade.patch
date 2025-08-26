@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to allow infinite trade
 
 
 diff --git a/net/minecraft/world/entity/npc/Villager.java b/net/minecraft/world/entity/npc/Villager.java
-index 79242037e868a140513f032e74e8594c0c6ff41c..8570c5089b605125680f8558ae201550df2d0a47 100644
+index 79242037e868a140513f032e74e8594c0c6ff41c..050e89c3e95c7c3ef7ad98f8ef03ab206241a7e2 100644
 --- a/net/minecraft/world/entity/npc/Villager.java
 +++ b/net/minecraft/world/entity/npc/Villager.java
 @@ -490,8 +490,15 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
@@ -16,7 +16,7 @@ index 79242037e868a140513f032e74e8594c0c6ff41c..8570c5089b605125680f8558ae201550
 +        // Lophine start - infinite trade
 +        MerchantOffers offers = this.getOffers().copy();
          Player tradingPlayer = this.getTradingPlayer();
-+        if (fun.bm.lophine.config.modules.misc.VillagerConfig.villagerInfiniteTrade) {
++        if (fun.bm.lophine.config.modules.function.VillagerConfig.villagerInfiniteTrade) {
 +            for (MerchantOffer merchantOffer : offers) {
 +                merchantOffer.maxUses = 524288;
 +            }
@@ -26,7 +26,7 @@ index 79242037e868a140513f032e74e8594c0c6ff41c..8570c5089b605125680f8558ae201550
              tradingPlayer.sendMerchantOffers(
                  tradingPlayer.containerMenu.containerId,
 diff --git a/net/minecraft/world/item/trading/Merchant.java b/net/minecraft/world/item/trading/Merchant.java
-index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..28d743cc7beeb92a33683b8eea84096f94d90fb2 100644
+index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..0c7318a0ed214204f5493576c8a7b02fbe51c00b 100644
 --- a/net/minecraft/world/item/trading/Merchant.java
 +++ b/net/minecraft/world/item/trading/Merchant.java
 @@ -42,7 +42,14 @@ public interface Merchant {
@@ -36,7 +36,7 @@ index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..28d743cc7beeb92a33683b8eea84096f
 -            MerchantOffers offers = this.getOffers();
 +            // Lophine start - infinite trade
 +            MerchantOffers offers = this.getOffers().copy();
-+            if (fun.bm.lophine.config.modules.misc.VillagerConfig.villagerInfiniteTrade) {
++            if (fun.bm.lophine.config.modules.function.VillagerConfig.villagerInfiniteTrade) {
 +                for (MerchantOffer merchantOffer : offers) {
 +                    merchantOffer.maxUses = 5242884;
 +                }
@@ -46,7 +46,7 @@ index 6e2fa442ddcd4ef3c4fe789b9ebac9dd409c9de7..28d743cc7beeb92a33683b8eea84096f
                  player.sendMerchantOffers(optionalInt.getAsInt(), offers, level, this.getVillagerXp(), this.showProgressBar(), this.canRestock());
              }
 diff --git a/net/minecraft/world/item/trading/MerchantOffer.java b/net/minecraft/world/item/trading/MerchantOffer.java
-index 64c99df8ff305fa28c75dc03fc5ef8c61634ad84..21ec77d5167cfdf05043ea474165148fb2b0c2d9 100644
+index 64c99df8ff305fa28c75dc03fc5ef8c61634ad84..770f37d7158c7b4cec62783025f623a68c1f2457 100644
 --- a/net/minecraft/world/item/trading/MerchantOffer.java
 +++ b/net/minecraft/world/item/trading/MerchantOffer.java
 @@ -196,7 +196,7 @@ public class MerchantOffer {
@@ -54,7 +54,7 @@ index 64c99df8ff305fa28c75dc03fc5ef8c61634ad84..21ec77d5167cfdf05043ea474165148f
  
      public boolean isOutOfStock() {
 -        return this.uses >= this.maxUses;
-+        return (this.uses >= this.maxUses && !fun.bm.lophine.config.modules.misc.VillagerConfig.villagerInfiniteTrade); // Lophine - infinite trade
++        return (this.uses >= this.maxUses && !fun.bm.lophine.config.modules.function.VillagerConfig.villagerInfiniteTrade); // Lophine - infinite trade
      }
  
      public void setToOutOfStock() {

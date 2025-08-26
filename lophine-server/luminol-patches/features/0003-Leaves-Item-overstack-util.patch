@@ -8,14 +8,14 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/d93e9766d3797d130
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java b/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
-index 102de78be0eb82d6898b4104fad1bf5e8366f993..11891a66fe3232287238ea87289444586fbc9717 100644
+index 102de78be0eb82d6898b4104fad1bf5e8366f993..0f8c9d4932c8bbd619f21d4aa28b890e14439b46 100644
 --- a/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
 +++ b/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
 @@ -17,12 +17,173 @@
  
  package org.leavesmc.leaves.util;
  
-+import fun.bm.lophine.config.modules.misc.ContainerExpansionConfig;
++import fun.bm.lophine.config.modules.function.ContainerExpansionConfig;
 +import net.minecraft.core.component.DataComponents;
 +import net.minecraft.nbt.CompoundTag;
 +import net.minecraft.world.entity.item.ItemEntity;

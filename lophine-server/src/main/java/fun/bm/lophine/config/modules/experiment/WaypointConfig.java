@@ -1,10 +1,10 @@
 package fun.bm.lophine.config.modules.experiment;
 
-import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
+import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(configAttribution = EnumConfigCategory.EXPERIMENT, mainName = "waypoint_bar")
 public class WaypointConfig implements IConfigModule {

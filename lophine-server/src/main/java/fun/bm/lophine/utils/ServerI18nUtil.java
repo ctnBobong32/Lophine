@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.optimizations.LanguageConfig;
+import fun.bm.lophine.config.modules.function.LanguageConfig;
 import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.ConfigsInstance;
 import net.minecraft.DetectedVersion;

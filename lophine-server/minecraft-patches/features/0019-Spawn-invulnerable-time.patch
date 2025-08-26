@@ -5,7 +5,7 @@ Subject: [PATCH] Spawn invulnerable time
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 6b7c92fdf562dfa46eee8e8acbc82b02fc3226c5..144b2c9396b8162f9cce8b343d998907bf7fb5aa 100644
+index 6b7c92fdf562dfa46eee8e8acbc82b02fc3226c5..c29e9c6cb2513fe4b01a619e16433893efb44e6f 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -232,6 +232,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -29,7 +29,7 @@ index 6b7c92fdf562dfa46eee8e8acbc82b02fc3226c5..144b2c9396b8162f9cce8b343d998907
              return false;
          } else {
 +            // Lophine start - spawn invulnerable time
-+            if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.spawnInvulnerableTime) {
++            if (fun.bm.lophine.config.modules.function.OldFeatureConfig.spawnInvulnerableTime) {
 +                if (this.spawnInvulnerableTime > 0 && !damageSource.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 +                    return false;
 +                }

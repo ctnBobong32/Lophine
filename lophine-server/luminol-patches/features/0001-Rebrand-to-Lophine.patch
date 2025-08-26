@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index 136b9e9c3bcb43698c653060665dc82444e09768..cc2b7b8f897570e5d079f80375c93cf2550df6af 100644
+index 4be82092886728b7862b6e8951cf1c8ab917ca55..1b822e9576573c360b997e5cb4fa02278c88b74f 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
 @@ -21,6 +21,7 @@ public class ConfigManager {
@@ -17,10 +17,10 @@ index 136b9e9c3bcb43698c653060665dc82444e09768..cc2b7b8f897570e5d079f80375c93cf2
      }
  
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
-index 997bc00dffbf5c15fde610c95527e8013ae57660..d94e11eb9f10c9622052c7b327ccfdf24de6ae73 100644
+index f164e41975adee8b68dbcb400007681c0b66a4f8..4e76fb3b1274f2fde734089b20458f6561c39700 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
-@@ -8,7 +8,7 @@ import me.earthme.luminol.config.flags.ConfigInfo;
+@@ -8,7 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
  @ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "server_mod_name")
  public class ServerModNameConfig implements IConfigModule {
      @ConfigInfo(baseName = "name")

@@ -1,13 +1,14 @@
-package fun.bm.lophine.config.modules.misc;
+package fun.bm.lophine.config.modules.function;
 
-import me.earthme.luminol.config.EnumConfigCategory;
 import me.earthme.luminol.config.IConfigModule;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
+import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "villager")
 public class VillagerConfig implements IConfigModule {
+    @TransformedConfig(name = "villager-infinite-trade", category = {"misc", "villager"})
     @TransformedConfig(name = "villager-infinite-trade", category = {"misc", "villager-config"})
     @ConfigInfo(baseName = "villager-infinite-trade", comments =
             """

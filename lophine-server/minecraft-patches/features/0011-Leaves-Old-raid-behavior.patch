@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/79d9ef74c2684eb49
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/world/effect/BadOmenMobEffect.java b/net/minecraft/world/effect/BadOmenMobEffect.java
-index 80f17f33f670018240c854df589cf90cdeab6e70..cbfb4ae2dc30c2ee98ef37f44a95434a7968e320 100644
+index 80f17f33f670018240c854df589cf90cdeab6e70..c9af615ff9120c07787f436dbb6024e54e3a498b 100644
 --- a/net/minecraft/world/effect/BadOmenMobEffect.java
 +++ b/net/minecraft/world/effect/BadOmenMobEffect.java
 @@ -22,6 +22,11 @@ class BadOmenMobEffect extends MobEffect {
@@ -16,7 +16,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..cbfb4ae2dc30c2ee98ef37f44a95434a
              && level.getDifficulty() != Difficulty.PEACEFUL
              && level.isVillage(serverPlayer.blockPosition())) {
 +            // Leaves start - Revert raid changes
-+            if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior) {
++            if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior) {
 +                return level.getRaids().createOrExtendRaid(serverPlayer, serverPlayer.blockPosition()) == null;
 +            }
 +            // Leaves end - Revert raid changes
@@ -24,7 +24,7 @@ index 80f17f33f670018240c854df589cf90cdeab6e70..cbfb4ae2dc30c2ee98ef37f44a95434a
              if (raidAt == null || raidAt.getRaidOmenLevel() < raidAt.getMaxRaidOmenLevel()) {
                  serverPlayer.addEffect(new MobEffectInstance(MobEffects.RAID_OMEN, 600, amplifier));
 diff --git a/net/minecraft/world/entity/raid/Raid.java b/net/minecraft/world/entity/raid/Raid.java
-index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc51233b7074d4 100644
+index 1910bff3f08147bfd63703097e30b9f88c84e337..f45aa44a7a17946aeb406a447f18de34320a4fa2 100644
 --- a/net/minecraft/world/entity/raid/Raid.java
 +++ b/net/minecraft/world/entity/raid/Raid.java
 @@ -263,7 +263,7 @@ public class Raid {
@@ -32,7 +32,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
  
      public boolean absorbRaidOmen(ServerPlayer player) {
 -        MobEffectInstance effect = player.getEffect(MobEffects.RAID_OMEN);
-+        MobEffectInstance effect = player.getEffect(fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior ? MobEffects.BAD_OMEN : MobEffects.RAID_OMEN); // Leaves - old Raid Behavior
++        MobEffectInstance effect = player.getEffect(fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior ? MobEffects.BAD_OMEN : MobEffects.RAID_OMEN); // Leaves - old Raid Behavior
          if (effect == null) {
              return false;
          } else {
@@ -42,7 +42,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
                          if (flag1) {
 -                            this.waveSpawnPos = this.getValidSpawnPos(level);
 +                            // Leaves Start - old FindSpawnPosition
-+                            if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior) {
++                            if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior) {
 +                                this.waveSpawnPos = this.preCalcRavagerSpawnLocation(level, this.raidCooldownTicks < 100 ? 1 : 0);
 +                            } else {
 +                                this.waveSpawnPos = this.getValidSpawnPos(level);
@@ -58,7 +58,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
 -                    BlockPos blockPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
 +                    // Leaves Start - old FindSpawnPosition
 +                    BlockPos blockPos;
-+                    if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior) {
++                    if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior) {
 +                        blockPos = this.getRavagerSpawnLocation(level, i, 20);
 +                    } else {
 +                        blockPos = this.waveSpawnPos.orElseGet(() -> this.findRandomSpawnPos(level, 20));
@@ -72,7 +72,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
                      }
  
 -                    if (i > 5) {
-+                    if (i > (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior ? 3 : 5)) { // Leaves - old FindSpawnPosition
++                    if (i > (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior ? 3 : 5)) { // Leaves - old FindSpawnPosition
                          org.bukkit.craftbukkit.event.CraftEventFactory.callRaidStopEvent(level, this, org.bukkit.event.raid.RaidStopEvent.Reason.UNSPAWNABLE); // CraftBukkit
                          this.stop();
                          break;
@@ -81,7 +81,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
              int i3 = this.center.getZ() + Mth.floor(Mth.sin(f2) * 32.0F * f) + level.random.nextInt(3) * Mth.floor(f);
              int height = level.getHeight(Heightmap.Types.WORLD_SURFACE, i2, i3);
 -            if (Mth.abs(height - this.center.getY()) <= 96) {
-+            if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior || Mth.abs(height - this.center.getY()) <= 96) { // Leaves - skippable
++            if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior || Mth.abs(height - this.center.getY()) <= 96) { // Leaves - skippable
                  mutableBlockPos.set(i2, height, i3);
                  if (!level.isVillage(mutableBlockPos) || i <= 7) {
                      int i4 = 10;
@@ -167,7 +167,7 @@ index 1910bff3f08147bfd63703097e30b9f88c84e337..5188ae86aff3051d45fe5e7d2fcc5123
 +    // Leaves end - old FindSpawnPosition
  }
 diff --git a/net/minecraft/world/entity/raid/Raider.java b/net/minecraft/world/entity/raid/Raider.java
-index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..b1f1bcf7f5ac002550077d5e1d4efd5c67d18063 100644
+index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..2d163f3d5eb1af4d539d24c0256855bbec960de4 100644
 --- a/net/minecraft/world/entity/raid/Raider.java
 +++ b/net/minecraft/world/entity/raid/Raider.java
 @@ -128,6 +128,43 @@ public abstract class Raider extends PatrollingMonster {
@@ -177,7 +177,7 @@ index 3e30989c99cd11c8c94d6fd194d2969e3a7efda6..b1f1bcf7f5ac002550077d5e1d4efd5c
 +
 +            // Leaves start - Revert raid changes
 +            if (this.level() instanceof ServerLevel) {
-+                if (fun.bm.lophine.config.modules.misc.OldFeatureConfig.oldRaidBehavior && !this.hasRaid()) {
++                if (fun.bm.lophine.config.modules.function.OldFeatureConfig.oldRaidBehavior && !this.hasRaid()) {
 +                    ItemStack itemstack = this.getItemBySlot(EquipmentSlot.HEAD);
 +                    net.minecraft.world.entity.player.Player entityhuman = null;
 +                    if (entity instanceof net.minecraft.world.entity.player.Player player) {

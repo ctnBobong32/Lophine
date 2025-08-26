@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.util;
 
-import fun.bm.lophine.config.modules.misc.RedStoneConfig;
+import fun.bm.lophine.config.modules.function.RedStoneConfig;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
