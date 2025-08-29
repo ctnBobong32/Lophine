@@ -1,44 +1,58 @@
-<img src="public/image/lophine/lophine3.png" alt="Logo" align="right" width="250">
+<div align="center">
+  <img src="./public/image/lophine/lophine3.png" alt="Lophine Logo" width="300">
+  
+  # Lophine
+  
+  *Lophine is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide more function for survival-usable circuit on folia (Please note that Fabric should be used for complete survival-usable)*
+  
+  ![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=for-the-badge&color=blue)
+  [![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=for-the-badge&color=green)](LICENSE.md)
+  [![Issues](https://img.shields.io/github/issues/LuminolMC/Lophine?style=for-the-badge&color=orange)](https://github.com/LuminolMC/Lophine/issues)
+  
+  ![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/Lophine?style=for-the-badge&color=purple)
+  ![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/LuminolMC/Lophine?style=for-the-badge&color=yellow)
+  ![GitHub all releases](https://img.shields.io/github/downloads/LuminolMC/Lophine/total?style=for-the-badge&color=red)
+  
+  ![Repo contributors](https://img.shields.io/github/contributors/LuminolMC/Lophine?style=for-the-badge&color=brightgreen)
+  
+  **English** | [中文](./README.md)
+</div>
 
-# Lophine
+---
 
-<h4>Lophine is a Luminol fork with many useful optimizations and configurable vanilla features, aims to provide
-more function for survival-usable circuit on folia (Please note that Fabric should be used for complete survival-usable)</h4>
+## ✨ Core Features
 
-![Created At](https://img.shields.io/github/created-at/LuminolMC/Lophine?style=flat-square)
-[![License](https://img.shields.io/github/license/LuminolMC/Lophine?style=flat-square)](LICENSE.md)
-[![Issues](https://img.shields.io/github/issues/LuminolMC/Lophine?style=flat-square)](https://github.com/LuminolMC/Lophine/issues)
-![Commit Activity](https://img.shields.io/github/commit-activity/w/LuminolMC/Lophine?style=flat-square)
-![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/LuminolMC/Lophine?style=flat-square)
-![GitHub all releases](https://img.shields.io/github/downloads/LuminolMC/Lophine/total?style=flat-square)
+- 🔧 **Configurable Vanilla Features** - Flexibly adjust game mechanics to suit different server needs
+- 📊 **Tpsbar Support** - Real-time TPS status display
+- 🐛 **Folia Bug Fixes** - Targeted fixes for known Folia issues
+- 💾 **Multiple World Format Support** - Support for linear and b_linear (linear reimplementation) world formats
+- 🔬 **Redstone Enhancement** - More redstone functionality on Folia (use Fabric for complete redstone features)
+- 🛠️ **More Useful Functions** - Continuously adding useful server features
 
-**English** | [中文](./README.md)
+## 📥 Download
 
-## Features
+### Stable Releases
+All release versions can be found on the [Releases](https://github.com/LuminolMC/Lophine/releases) page.
 
-- Supported some Bukkit plugin
-- Configurable vanilla features
-- Tpsbar support
-- Useful fixes of bugs of folia
-- Linear and BufferedLinear(AKA. b_linear)(a reimplementation of linear) region format support
-- Useful optimizations to improve the performance of single threaded region
-- More functions
+### Development Builds
+If you want to experience the latest features, you can build it yourself following the steps below.
 
-## Download
+### Build Steps
 
-Any versions are available in the [release](https://github.com/LuminolMC/Lophine/releases), also you can build it by yourself through [the following steps](./README_EN.md#Build).
+```bash
+# Clone the project
+git clone https://github.com/LuminolMC/Lophine.git
+cd Lophine
 
-## Build
-
-To build a paperclip jar, you need to run the following command. You can find the jar in lophine-server/build/libs(Note: `JDK21` is needed)
-
- ```shell
- ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
+# Apply patches and build Paperclip JAR
+./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```
 
-## Using API
+After building, you can find the generated JAR file in the `build/libs` directory.
 
-For gradle:
+## 🔌 API Usage
+
+### Gradle Configuration
 
 ```kotlin
 repositories {
@@ -50,9 +64,9 @@ repositories {
 dependencies {
     compileOnly("me.earthme.luminol:luminol-api:$VERSION")
 }
- ```
+```
 
-For maven
+### Maven Configuration
 
 ```xml
 <repositories>
@@ -63,39 +77,73 @@ For maven
 </repositories>
 
 <dependencies>
-<dependency>
-    <groupId>me.earthme.luminol</groupId>
-    <artifactId>luminol-api</artifactId>
-    <version>$VERSION</version>
-</dependency>
+    <dependency>
+        <groupId>me.earthme.luminol</groupId>
+        <artifactId>luminol-api</artifactId>
+        <version>$VERSION</version>
+        <scope>provided</scope>
+    </dependency>
 </dependencies>
 ```
 
-## Contact
+## 💬 Community & Support
 
-> If you are interested in this project or have any issue, feel free to ask us.
+> If you're interested in this project or have any questions, feel free to ask us.
 
-**QQ Group: [1015048616](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=hTPlI5j6XB8pgk4sdx6RkjhBPGG1r4IR&authKey=pnu6uCKQP7Sja2CJWC15Qi3BeI%2FAsh8tU4m5muufMBjbB3zz%2BwHBZCTRRdSNKhld&noverify=0&group_code=1015048616)** | QQ Channel: [Click To Join](https://pd.qq.com/s/eq9krf9j) | Telegram: [Click To Join](https://t.me/LuminolMinecraft) | Discord: [Click To Join](https://discord.gg/Qd7m3V6eDx)
+### Join Our Community
 
-## About Issue
+- **QQ Group**: [1015048616](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=QML5kIVsniPi1PlZvnjHQT_02EHsZ5Jc&authKey=%2FTCJsZC7JFQ9sxAroPCKuYnlV57Z5fyqp36ewXZk3Sn4iJ9p4MB1JKdc%2FFcX3HOM&noverify=0&group_code=1015048616)
+- **QQ Channel**: [Join Here](https://pd.qq.com/s/eq9krf9j)
+- **Telegram**: [Join Here](https://t.me/LuminolMinecraft)
+- **Discord**: [Join Here](https://discord.gg/Qd7m3V6eDx)
 
-When you meet any problems, just ask us, we will do our best to solve it, but remember to state your problem clear and provide enough logs etc.</br>
+### Get Help
 
-## Pull Requests
+- 📋 [Submit Issues](https://github.com/LuminolMC/Lophine/issues)
+- 💬 [GitHub Discussions](https://github.com/LuminolMC/Lophine/discussions)
+- 📖 [Project Documentation](./docs/)
 
-See [Contributing](./docs/CONTRIBUTING_EN.md)
+## 🐛 Bug Reports
 
-## BStats
+When you encounter any issues, please ask us and we'll do our best to resolve them. Please remember to:
+
+- 📝 **Describe the problem clearly** - Provide detailed information about the specific issue
+- 📋 **Provide complete logs** - Include error logs and relevant configuration information
+- 🔍 **Environment details** - Specify server version, plugin list, and other environment details
+- 🔄 **Reproduction steps** - If possible, provide specific steps to reproduce the issue
+
+## 🤝 Contributing
+
+We welcome community contributions! For detailed contribution guidelines, please see:
+
+- 📖 [Contributing Guide (English)](./docs/CONTRIBUTING_EN.md)
+- 📖 [贡献指南 (中文)](./docs/CONTRIBUTING.md)
+
+## 📊 Project Statistics
+
+### BStats Data
 
 ![bStats](https://bstats.org/signatures/server-implementation/Lophine.svg "bStats")
 
-## Special Thanks
+## 🎉 Special Thanks
 
-Thanks [LegacyLands](https://github.com/LegacyLands) for sponsoring this project.If you want to develop some crossing folia/non-folia platform plugins, [legacy-lands-library](https://github.com/LegacyLands/legacy-lands-library/) will be a nice choice for you
+### Project Sponsors
 
-![legacy-lands-logo](public/image/legacy-lands-logo.png)
+<div align="center">
+  <b>Thanks to <a href="https://github.com/LegacyLands">LegacyLands</a> for sponsoring this project</b>
+  <br>
+  <i>If you want to develop cross-Folia/non-Folia platform plugins, <a href="https://github.com/LegacyLands/legacy-lands-library/">legacy-lands-library</a> would be a great choice</i>
+  <br><br>
+  <img src="public/image/legacy-lands-logo.png" alt="LegacyLands Logo" width="200">
+</div>
 
-## Please ⭐star us!
+---
+
+## ⭐ Give Us a Star!
+
+> Every free ⭐Star you give is the motivation for our every step forward.
+
+### Star History
 
 <a href="https://star-history.com/#LuminolMC/Luminol&LuminolMC/LightingLuminol&LuminolMC/Lophine&Date">
   <picture>
@@ -104,3 +152,7 @@ Thanks [LegacyLands](https://github.com/LegacyLands) for sponsoring this project
     <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=LuminolMC/Luminol%2CLuminolMC/LightingLuminol%2CLuminolMC/Lophine&type=Date" />
   </picture>
 </a>
+
+<div align="center">
+  <b>If this project helps you, please don't forget to give us a ⭐Star!</b>
+</div>
