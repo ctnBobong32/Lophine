@@ -19,6 +19,7 @@ package org.leavesmc.leaves.protocol.servux.logger;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
+import io.papermc.paper.threadedregions.RegionizedWorldData;
 import io.papermc.paper.threadedregions.TickRegionScheduler;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +27,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.MobCategory;
@@ -152,27 +152,31 @@ public abstract class DataLogger<T extends Tag> {
         @Override
         public CompoundTag getResult(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
             CompoundTag nbt = new CompoundTag();
+            io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    player.level(),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
+                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
+                    () -> {
+                        final RegionizedWorldData data = player.level().getCurrentWorldData();
+                        if (data == null) return;
 
-            for (ServerLevel world : server.getAllLevels()) {
-                NaturalSpawner.SpawnState info = world.getChunkSource().getLastSpawnState();
-                if (info == null) {
-                    continue;
-                }
+                        final NaturalSpawner.SpawnState info = data.lastSpawnState;
+                        if (info == null) return;
 
-                int chunks = info.getSpawnableChunkCount();
-                Object2IntMap<MobCategory> counts = info.getMobCategoryCounts();
-                MobCapData mobCapData = new MobCapData(new ArrayList<>(), world.getGameTime());
-                for (MobCategory category : MobCategory.values()) {
-                    mobCapData.data().add(new MobCapData.Cap(counts.getOrDefault(category, 0), NaturalSpawner.globalLimitForCategory(world, category, chunks)));
-                }
+                        int chunks = info.getSpawnableChunkCount();
+                        Object2IntMap<MobCategory> counts = info.getMobCategoryCounts();
+                        MobCapData mobCapData = new MobCapData(new ArrayList<>(), player.level().getGameTime());
+                        for (MobCategory category : MobCategory.values()) {
+                            mobCapData.data().add(new MobCapData.Cap(counts.getOrDefault(category, 0), NaturalSpawner.globalLimitForCategory(player.level(), category, chunks)));
+                        }
 
-                try {
-                    nbt.put(world.dimension().location().toString(), MobCapData.CODEC.encodeStart(world.registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
-                } catch (Exception ignored) {
-                }
-            }
-
-            return nbt;
+                        try {
+                            nbt.put(player.level().dimension().location().toString(), MobCapData.CODEC.encodeStart(player.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
+                            protocol.applyData(Type.MOB_CAPS, player, nbt);
+                        } catch (Exception ignored) {
+                        }
+                    });
+            return null;
         }
     }
 }
