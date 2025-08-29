@@ -48,7 +48,7 @@ cd Lophine
 ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```
 
-构建完成后，您可以在 `build/libs` 目录中找到生成的 JAR 文件。
+构建完成后，您可以在 `lophine-server/build/libs` 目录中找到生成的 JAR 文件。
 
 ## 🔌 API 使用
 

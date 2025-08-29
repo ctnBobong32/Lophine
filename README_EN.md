@@ -48,7 +48,7 @@ cd Lophine
 ./gradlew applyAllPatches && ./gradlew createMojmapPaperclipJar
 ```
 
-After building, you can find the generated JAR file in the `build/libs` directory.
+After building, you can find the generated JAR file in the `lophine-server/build/libs` directory.
 
 ## 🔌 API Usage
 
