@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Bacteriawa <A3167717663@hotmail.com>
 Date: Sat, 30 Aug 2025 17:16:32 +0800
-Subject: [PATCH] Leaves Fakeplayer
+Subject: [PATCH] Leaves: Leaves Fakeplayer
 
+Co-authored by: violetc <58360096+s-yh-china@users.noreply.github.com>
+As a part of : Leaves (https://github.com/LeavesMC/Leaves)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java b/net/minecraft/advancements/critereon/SimpleCriterionTrigger.java
 index a82d84283632342bd30bc3449983431ba43583e0..f59526f6bfa1b4af5b474f0b438513c96afb491c 100644
@@ -316,7 +319,7 @@ index 576dde41a4b48aac9079cca902f4371a31470af3..952b92c55d7192791a19ecebe80894f6
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c29e9c6cb2513fe4b01a619e16433893efb44e6f..58ffb996e0f8dce56c4def265dc51ed49ee31df4 100644
+index c29e9c6cb2513fe4b01a619e16433893efb44e6f..ff803b5f73f7d2cfe9351add12c3fde69a1642b1 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -219,7 +219,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -370,7 +373,7 @@ index c29e9c6cb2513fe4b01a619e16433893efb44e6f..58ffb996e0f8dce56c4def265dc51ed4
                  this.lastSentFood = -1;
                  this.teleportSpectators(teleportTransition, serverLevel);
 +                // Leaves start - bot support
-+                if (fun.bm.lophine.config.modules.misc.FakeplayerConfig.enable) {
++                if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +                    this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(this, true)); // Leaves - render bot
 +                }
 +                // Leaves end - bot support
@@ -427,7 +430,7 @@ index 144a2644c15f276f02bb3be859dc5d05a677ac55..c6a89e8936cffa49b3de153ed3c40e3c
          boolean stateLocked = true; try { this.stateLock.lock(); // Paper - Fix GameProfileCache concurrency
          GameProfileCache.GameProfileInfo gameProfileInfo = this.profilesByName.get(string);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index cb863a36fc67e993956ec3be655e6e4b9764c051..cd50b39a910f6a4bc07a4065cc4e6a84ab1e8750 100644
+index cb863a36fc67e993956ec3be655e6e4b9764c051..908ec29a6e285122d1a8a43dc547b74af2697442 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -425,6 +425,19 @@ public abstract class PlayerList {
@@ -435,7 +438,7 @@ index cb863a36fc67e993956ec3be655e6e4b9764c051..cd50b39a910f6a4bc07a4065cc4e6a84
              org.leavesmc.leaves.protocol.core.LeavesProtocolManager.handlePlayerJoin(player);
  
 +            // Leaves start - bot support
-+            if (fun.bm.lophine.config.modules.misc.FakeplayerConfig.enable) {
++            if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +                org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
 +                if (bot != null) {
 +                    this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false);
@@ -455,7 +458,7 @@ index cb863a36fc67e993956ec3be655e6e4b9764c051..cd50b39a910f6a4bc07a4065cc4e6a84
          // Paper end - Add PlayerPostRespawnEvent
  
 +        // Leaves start - bot support
-+        if (fun.bm.lophine.config.modules.misc.FakeplayerConfig.enable) {
++        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +            this.server.getBotList().bots.forEach(bot -> bot.sendFakeDataIfNeed(serverPlayer, true)); // Leaves - render bot
 +        }
 +        // Leaves end - bot support

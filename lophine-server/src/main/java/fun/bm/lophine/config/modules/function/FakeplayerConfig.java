@@ -1,4 +1,4 @@
-package fun.bm.lophine.config.modules.misc;
+package fun.bm.lophine.config.modules.function;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.earthme.luminol.config.IConfigModule;
@@ -14,7 +14,7 @@ import org.leavesmc.leaves.bot.agent.Actions;
 import java.util.List;
 import java.util.Locale;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "fakeplayer")
+@ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "fakeplayer")
 public class FakeplayerConfig implements IConfigModule {
     @ConfigInfo(baseName = "enable", comments = """
             Enable fakeplayer functionality""")
