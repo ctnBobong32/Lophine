@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Bacteriawa <A3167717663@hotmail.com>
+Date: Sat, 30 Aug 2025 16:51:26 +0800
+Subject: [PATCH] Add fakeplayer api
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 85b778980e762835ac278528087e91b2e3effb43..89f00f4b6ff64305fa44ebb71f22a113c1296d26 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -3052,4 +3052,15 @@ public final class Bukkit {
+     public static void restart() {
+         server.restart();
+     }
++
++    // Leaves start - Bot API
++    /**
++     * Returns a bot manager.
++     *
++     * @return Bot Manager
++     */
++    public static @NotNull org.leavesmc.leaves.entity.bot.BotManager getBotManager() {
++        return server.getBotManager();
++    }
++    // Leaves end - Bot API
+ }
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index a0540d7de5c2536aed5231f9e67b73345817921d..c7ae463fb166750bbd0638a2ccf81753b293a381 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -2753,4 +2753,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+      */
+     double @Nullable [] getRegionTPS(@NotNull World world, int chunkX, int chunkZ);
+     // Folia end - region TPS API
++
++    // Leaves start - Bot API
++    /**
++     * Returns a bot manager.
++     *
++     * @return Bot Manager
++     */
++    @NotNull org.leavesmc.leaves.entity.bot.BotManager getBotManager();
++    // Leaves end - Bot API
+ }
