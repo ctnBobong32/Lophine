@@ -49,13 +49,7 @@ import org.jetbrains.annotations.Nullable;
 import org.leavesmc.leaves.event.bot.*;
 import org.slf4j.Logger;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BotList {
@@ -189,8 +183,8 @@ public class BotList {
         bot.renderData();
         bot.initInventoryMenu();
         botsNameByWorldUuid
-            .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
-            .add(bot.getBukkitEntity().getRealName());
+                .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
+                .add(bot.getBukkitEntity().getRealName());
         BotList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", bot.getName().getString(), "Local", bot.getId(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
         return bot;
     }
@@ -253,11 +247,11 @@ public class BotList {
             level.removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
         } else {
             io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                level, chunkX, chunkZ, () -> {
-                    level.removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
-                });
+                    level, chunkX, chunkZ, () -> {
+                        level.removePlayerImmediately(bot, Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+                    });
         }
-        
+
         this.bots.remove(bot);
         this.botsByName.remove(bot.getScoreboardName().toLowerCase(Locale.ROOT));
 
@@ -314,8 +308,8 @@ public class BotList {
                 continue;
             }
             this.botsNameByWorldUuid
-                .computeIfAbsent(levelUuid.toString(), (k) -> new HashSet<>())
-                .add(realName);
+                    .computeIfAbsent(levelUuid.toString(), (k) -> new HashSet<>())
+                    .add(realName);
         }
     }
 
@@ -335,11 +329,11 @@ public class BotList {
         String prevUuid = bot.level().uuid.toString();
         String newUuid = level.uuid.toString();
         this.botsNameByWorldUuid
-            .computeIfAbsent(newUuid, (k) -> new HashSet<>())
-            .add(bot.getBukkitEntity().getRealName());
+                .computeIfAbsent(newUuid, (k) -> new HashSet<>())
+                .add(bot.getBukkitEntity().getRealName());
         this.botsNameByWorldUuid
-            .computeIfAbsent(prevUuid, (k) -> new HashSet<>())
-            .remove(bot.getBukkitEntity().getRealName());
+                .computeIfAbsent(prevUuid, (k) -> new HashSet<>())
+                .remove(bot.getBukkitEntity().getRealName());
     }
 
     public void networkTick() {

@@ -38,9 +38,9 @@ public class BotInventoryContainer extends Inventory {
         customData.putBoolean("Leaves.Gui.Placeholder", true);
 
         DataComponentPatch patch = DataComponentPatch.builder()
-            .set(DataComponents.CUSTOM_NAME, Component.empty())
-            .set(DataComponents.CUSTOM_DATA, CustomData.of(customData))
-            .build();
+                .set(DataComponents.CUSTOM_NAME, Component.empty())
+                .set(DataComponents.CUSTOM_DATA, CustomData.of(customData))
+                .build();
 
         button = new ItemStack(Items.STRUCTURE_VOID);
         button.applyComponents(patch);

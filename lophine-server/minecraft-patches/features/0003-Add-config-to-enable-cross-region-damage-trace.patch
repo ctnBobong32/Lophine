@@ -5,7 +5,7 @@ Subject: [PATCH] Add config to enable cross region damage trace
 
 
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index 11e6197dec541b28733715f0d7eaa4c7b834d632..6b7c92fdf562dfa46eee8e8acbc82b02fc3226c5 100644
+index 11e6197dec541b28733715f0d7eaa4c7b834d632..de1263404395c28209234a556347284fa557f81c 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -1345,6 +1345,13 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -40,7 +40,7 @@ index 11e6197dec541b28733715f0d7eaa4c7b834d632..6b7c92fdf562dfa46eee8e8acbc82b02
 +            } catch (Throwable ex) {
 +                LOGGER.error(ex.getMessage(), ex);
 +            }
-+        }, null, 1L );
++        }, null, 1L);
 +    }
 +    // Luminol End - Cross Region Damage trace
 +

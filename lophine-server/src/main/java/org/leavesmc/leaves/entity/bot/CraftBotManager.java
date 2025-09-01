@@ -1,7 +1,3 @@
-package org.leavesmc.leaves.entity.bot;
-
-import com.google.common.collect.Lists;
-import net.minecraft.server.MinecraftServer;
 /*
  * This file is part of Leaves (https://github.com/LeavesMC/Leaves)
  *
@@ -19,6 +15,10 @@ import net.minecraft.server.MinecraftServer;
  * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
  */
 
+package org.leavesmc.leaves.entity.bot;
+
+import com.google.common.collect.Lists;
+import net.minecraft.server.MinecraftServer;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

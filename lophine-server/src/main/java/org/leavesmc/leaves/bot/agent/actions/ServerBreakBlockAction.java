@@ -60,8 +60,8 @@ public class ServerBreakBlockAction extends ServerTimerBotAction<ServerBreakBloc
                 if (!iblockdata.isAir()) {
                     bot.swing(InteractionHand.MAIN_HAND);
                     EnchantmentHelper.onHitBlock(
-                        bot.level(), bot.getMainHandItem(), bot, bot, EquipmentSlot.MAINHAND, Vec3.atCenterOf(pos), iblockdata,
-                        item -> bot.onEquippedItemBroken(item, EquipmentSlot.MAINHAND)
+                            bot.level(), bot.getMainHandItem(), bot, bot, EquipmentSlot.MAINHAND, Vec3.atCenterOf(pos), iblockdata,
+                            item -> bot.onEquippedItemBroken(item, EquipmentSlot.MAINHAND)
                     );
                     iblockdata.attack(bot.level(), pos, bot);
                     float f = iblockdata.getDestroyProgress(bot, bot.level(), pos);

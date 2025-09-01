@@ -50,6 +50,7 @@ import static net.kyori.adventure.text.Component.text;
 
 public class BotCommand extends Command {
     private static final Logger LOGGER = LogUtils.getLogger();
+
     public BotCommand() {
         super("bot");
         this.setPermission("lophine.bot");
@@ -115,8 +116,8 @@ public class BotCommand extends Command {
         String fullName = BotUtil.getFullName(botName);
         if (this.canCreate(sender, fullName)) {
             BotCreateState.Builder builder = BotCreateState.builder(botName, Bukkit.getWorlds().getFirst().getSpawnLocation())
-                .createReason(BotCreateEvent.CreateReason.COMMAND)
-                .creator(sender);
+                    .createReason(BotCreateEvent.CreateReason.COMMAND)
+                    .creator(sender);
 
             if (args.length >= 3) {
                 builder.skinName(args[2]);
@@ -154,7 +155,7 @@ public class BotCommand extends Command {
         String botName = args[1];
         BotList botList = BotList.INSTANCE;
         ServerBot bot = botList.getBotByName(BotUtil.getFullName(botName));
-        
+
         if (bot == null) {
             sender.sendMessage(text("This fakeplayer is not in server", NamedTextColor.RED));
             return true;
@@ -223,7 +224,7 @@ public class BotCommand extends Command {
 
     private boolean handleList(CommandSender sender, String[] args) {
         BotList botList = BotList.INSTANCE;
-        
+
         if (args.length < 2) {
             Map<World, List<String>> botMap = new HashMap<>();
             for (World world : Bukkit.getWorlds()) {
@@ -265,7 +266,7 @@ public class BotCommand extends Command {
             sender.sendMessage(text("Bot action feature is disabled!", NamedTextColor.RED));
             return true;
         }
-        
+
         if (args.length < 3) {
             sender.sendMessage(text("Use /bot action <name> <action> to make fakeplayer do action", NamedTextColor.RED));
             return true;
@@ -336,7 +337,7 @@ public class BotCommand extends Command {
             for (int i = 0; i < bot.getBotActions().size(); i++) {
                 ServerBotAction<?> action = bot.getBotActions().get(i);
                 BotActionStopEvent event = new BotActionStopEvent(
-                    bot.getBukkitEntity(), action.getName(), action.getUUID(), BotActionStopEvent.Reason.COMMAND, sender
+                        bot.getBukkitEntity(), action.getName(), action.getUUID(), BotActionStopEvent.Reason.COMMAND, sender
                 );
                 event.callEvent();
                 if (!event.isCancelled()) {
@@ -357,7 +358,7 @@ public class BotCommand extends Command {
 
             ServerBotAction<?> action = bot.getBotActions().get(i);
             BotActionStopEvent event = new BotActionStopEvent(
-                bot.getBukkitEntity(), action.getName(), action.getUUID(), BotActionStopEvent.Reason.COMMAND, sender
+                    bot.getBukkitEntity(), action.getName(), action.getUUID(), BotActionStopEvent.Reason.COMMAND, sender
             );
             event.callEvent();
             if (!event.isCancelled()) {
@@ -375,7 +376,7 @@ public class BotCommand extends Command {
             sender.sendMessage(text("Bot config feature is disabled!", NamedTextColor.RED));
             return true;
         }
-        
+
         if (args.length < 3) {
             sender.sendMessage(text("Use /bot config <name> <config> to modify fakeplayer's config", NamedTextColor.RED));
             return true;
@@ -421,7 +422,7 @@ public class BotCommand extends Command {
             sender.sendMessage(text("Bot save/load feature is disabled!", NamedTextColor.RED));
             return true;
         }
-        
+
         if (args.length < 2) {
             sender.sendMessage(text("Use /bot save <name> to save a fakeplayer", NamedTextColor.RED));
             return true;
@@ -446,7 +447,7 @@ public class BotCommand extends Command {
             sender.sendMessage(text("Bot save/load feature is disabled!", NamedTextColor.RED));
             return true;
         }
-        
+
         if (args.length < 2) {
             sender.sendMessage(text("Use /bot load <name> to load a fakeplayer", NamedTextColor.RED));
             return true;

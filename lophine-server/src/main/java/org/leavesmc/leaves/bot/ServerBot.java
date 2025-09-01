@@ -62,11 +62,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -83,13 +79,7 @@ import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import org.leavesmc.leaves.util.MathUtils;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ServerBot extends ServerPlayer {
@@ -175,15 +165,15 @@ public class ServerBot extends ServerPlayer {
 
         Input input = this.getLastClientInput();
         this.setLastClientInput(
-            new Input(
-                this.zza > 0,
-                this.zza < 0,
-                this.xxa > 0,
-                this.xxa < 0,
-                input.jump(),
-                input.shift(),
-                input.sprint()
-            )
+                new Input(
+                        this.zza > 0,
+                        this.zza < 0,
+                        this.xxa > 0,
+                        this.xxa < 0,
+                        input.jump(),
+                        input.shift(),
+                        input.sprint()
+                )
         );
     }
 
@@ -226,11 +216,11 @@ public class ServerBot extends ServerPlayer {
         if (this.getConfigValue(Configs.TICK_TYPE) == TickType.NETWORK) {
             try {
                 Bukkit.getRegionScheduler().execute(
-                    MinecraftInternalPlugin.INSTANCE,
-                    this.level().getWorld(),
-                    this.getBlockX() >> 4,
-                    this.getBlockZ() >> 4,
-                    this::runAction
+                        MinecraftInternalPlugin.INSTANCE,
+                        this.level().getWorld(),
+                        this.getBlockX() >> 4,
+                        this.getBlockZ() >> 4,
+                        this::runAction
                 );
             } catch (Exception e) {
                 this.runAction();
@@ -495,7 +485,7 @@ public class ServerBot extends ServerPlayer {
 
     public void renderData() {
         this.getServer().getPlayerList().getPlayers().forEach(
-            player -> this.sendFakeDataIfNeed(player, false)
+                player -> this.sendFakeDataIfNeed(player, false)
         );
     }
 

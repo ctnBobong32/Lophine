@@ -29,6 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.NaturalSpawner;
 import org.jetbrains.annotations.NotNull;
@@ -114,28 +115,23 @@ public abstract class DataLogger<T extends Tag> {
         }
 
         private TickData build(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
-            io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                    player.level(),
-                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
-                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
-                    () -> {
-                        ServerTickRateManager tickManager = server.tickRateManager();
-                        boolean frozen = tickManager.isFrozen();
-                        boolean sprinting = tickManager.isSprinting();
-                        io.papermc.paper.threadedregions.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
-                        final double tps = tickData.tpsData().segmentAll().average();
-                        final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
+            player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+                ServerTickRateManager tickManager = server.tickRateManager();
+                boolean frozen = tickManager.isFrozen();
+                boolean sprinting = tickManager.isSprinting();
+                io.papermc.paper.threadedregions.TickData.TickReportData tickData = TickRegionScheduler.getCurrentRegion().getData().getRegionSchedulingHandle().getTickReport5s(System.nanoTime());
+                final double tps = tickData.tpsData().segmentAll().average();
+                final double mspt = tickData.timePerTickData().segmentAll().average() / 1.0E6;
 
-                        TickData tk = new TickData(
-                                mspt, tps,
-                                tickManager.getRemainingSprintTicks(),
-                                frozen, sprinting,
-                                tickManager.isSteppingForward()
-                        );
-                        Tag ret = TickData.CODEC.encodeStart(server.registryAccess().createSerializationContext(NbtOps.INSTANCE), tk).getOrThrow();
-                        protocol.applyData(Type.TPS, player, ret);
-                    }
-            );
+                TickData tk = new TickData(
+                        mspt, tps,
+                        tickManager.getRemainingSprintTicks(),
+                        frozen, sprinting,
+                        tickManager.isSteppingForward()
+                );
+                Tag ret = TickData.CODEC.encodeStart(server.registryAccess().createSerializationContext(NbtOps.INSTANCE), tk).getOrThrow();
+                protocol.applyData(Type.TPS, (ServerPlayer) nmsEntity, ret);
+            }, null, 1L);
 
             return null;
         }
@@ -152,30 +148,26 @@ public abstract class DataLogger<T extends Tag> {
         @Override
         public CompoundTag getResult(MinecraftServer server, ServuxHudDataProtocol protocol, ServerPlayer player) {
             CompoundTag nbt = new CompoundTag();
-            io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                    player.level(),
-                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkX(player.position()),
-                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkZ(player.position()),
-                    () -> {
-                        final RegionizedWorldData data = player.level().getCurrentWorldData();
-                        if (data == null) return;
+            player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+                final RegionizedWorldData data = nmsEntity.level().getCurrentWorldData();
+                if (data == null) return;
 
-                        final NaturalSpawner.SpawnState info = data.lastSpawnState;
-                        if (info == null) return;
+                final NaturalSpawner.SpawnState info = data.lastSpawnState;
+                if (info == null) return;
 
-                        int chunks = info.getSpawnableChunkCount();
-                        Object2IntMap<MobCategory> counts = info.getMobCategoryCounts();
-                        MobCapData mobCapData = new MobCapData(new ArrayList<>(), player.level().getGameTime());
-                        for (MobCategory category : MobCategory.values()) {
-                            mobCapData.data().add(new MobCapData.Cap(counts.getOrDefault(category, 0), NaturalSpawner.globalLimitForCategory(player.level(), category, chunks)));
-                        }
+                int chunks = info.getSpawnableChunkCount();
+                Object2IntMap<MobCategory> counts = info.getMobCategoryCounts();
+                MobCapData mobCapData = new MobCapData(new ArrayList<>(), nmsEntity.level().getGameTime());
+                for (MobCategory category : MobCategory.values()) {
+                    mobCapData.data().add(new MobCapData.Cap(counts.getOrDefault(category, 0), NaturalSpawner.globalLimitForCategory(player.level(), category, chunks)));
+                }
 
-                        try {
-                            nbt.put(player.level().dimension().location().toString(), MobCapData.CODEC.encodeStart(player.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
-                            protocol.applyData(Type.MOB_CAPS, player, nbt);
-                        } catch (Exception ignored) {
-                        }
-                    });
+                try {
+                    nbt.put(nmsEntity.level().dimension().location().toString(), MobCapData.CODEC.encodeStart(player.level().registryAccess().createSerializationContext(NbtOps.INSTANCE), mobCapData).getPartialOrThrow());
+                    protocol.applyData(Type.MOB_CAPS, (ServerPlayer) nmsEntity, nbt);
+                } catch (Exception ignored) {
+                }
+            }, null, 1L);
             return null;
         }
     }

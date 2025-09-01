@@ -46,8 +46,8 @@ public class ServerLookAction extends ServerBotAction<ServerLookAction> {
     public ServerLookAction() {
         super("look", CommandArgument.of(CommandArgumentType.STRING, CommandArgumentType.DOUBLE, CommandArgumentType.DOUBLE), ServerLookAction::new);
         this.setSuggestion(0, (sender, arg) -> sender instanceof Player player ?
-            Pair.of(Stream.concat(Arrays.stream(MinecraftServer.getServer().getPlayerNames()), Stream.of(DF.format(player.getX()))).toList(), "<Player>|<X>") :
-            Pair.of(Stream.concat(Arrays.stream(MinecraftServer.getServer().getPlayerNames()), Stream.of("0")).toList(), "<Player>|<X>")
+                Pair.of(Stream.concat(Arrays.stream(MinecraftServer.getServer().getPlayerNames()), Stream.of(DF.format(player.getX()))).toList(), "<Player>|<X>") :
+                Pair.of(Stream.concat(Arrays.stream(MinecraftServer.getServer().getPlayerNames()), Stream.of("0")).toList(), "<Player>|<X>")
         );
         this.setSuggestion(1, (sender, arg) -> sender instanceof Player player ? Pair.of(List.of(DF.format(player.getY())), "<Y>") : Pair.of(List.of("0"), "<Y>"));
         this.setSuggestion(2, (sender, arg) -> sender instanceof Player player ? Pair.of(List.of(DF.format(player.getZ())), "<Z>") : Pair.of(List.of("0"), "<Z>"));
@@ -72,9 +72,9 @@ public class ServerLookAction extends ServerBotAction<ServerLookAction> {
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         this.setPos(new Vector(
-            nbt.getDouble("x").orElse(0.0),
-            nbt.getDouble("y").orElse(0.0),
-            nbt.getDouble("z").orElse(0.0)
+                nbt.getDouble("x").orElse(0.0),
+                nbt.getDouble("y").orElse(0.0),
+                nbt.getDouble("z").orElse(0.0)
         ));
     }
 

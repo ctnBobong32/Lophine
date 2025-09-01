@@ -33,7 +33,8 @@ import org.leavesmc.leaves.plugin.MinecraftInternalPlugin;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public record BotCreateState(String realName, String name, String skinName, String[] skin, Location location, BotCreateEvent.CreateReason createReason, CommandSender creator) {
+public record BotCreateState(String realName, String name, String skinName, String[] skin, Location location,
+                             BotCreateEvent.CreateReason createReason, CommandSender creator) {
 
     private static final MinecraftServer server = MinecraftServer.getServer();
 
@@ -117,25 +118,25 @@ public record BotCreateState(String realName, String name, String skinName, Stri
 
         public void spawnWithSkin(Consumer<Bot> consumer) {
             Bukkit.getRegionScheduler().execute(
-                MinecraftInternalPlugin.INSTANCE, 
-                location.getWorld(), 
-                location.getBlockX() >> 4, 
-                location.getBlockZ() >> 4, 
-                () -> {
-                    this.mojangAPISkin();
-                    Bukkit.getRegionScheduler().execute(
-                        MinecraftInternalPlugin.INSTANCE,
-                        location.getWorld(),
-                        location.getBlockX() >> 4,
-                        location.getBlockZ() >> 4,
-                        () -> {
-                            CraftBot bot = this.spawn();
-                            if (bot != null && consumer != null) {
-                                consumer.accept(bot);
-                            }
-                        }
-                    );
-                }
+                    MinecraftInternalPlugin.INSTANCE,
+                    location.getWorld(),
+                    location.getBlockX() >> 4,
+                    location.getBlockZ() >> 4,
+                    () -> {
+                        this.mojangAPISkin();
+                        Bukkit.getRegionScheduler().execute(
+                                MinecraftInternalPlugin.INSTANCE,
+                                location.getWorld(),
+                                location.getBlockX() >> 4,
+                                location.getBlockZ() >> 4,
+                                () -> {
+                                    CraftBot bot = this.spawn();
+                                    if (bot != null && consumer != null) {
+                                        consumer.accept(bot);
+                                    }
+                                }
+                        );
+                    }
             );
         }
 

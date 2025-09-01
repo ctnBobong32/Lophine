@@ -10,15 +10,15 @@ import java.util.List;
 
 @ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "survux-protocol")
 public class SurvuxProtocolConfig implements IConfigModule {
-    @TransformedConfig(name =  "entity-protocol", category = {"misc", "survux-protocol"})
+    @TransformedConfig(name = "entity-protocol", category = {"misc", "survux-protocol"})
     @ConfigInfo(baseName = "entity-protocol")
     public static boolean entityProtocol = false;
 
-    @TransformedConfig(name =  "hud-logger-protocol", category = {"misc", "survux-protocol"})
+    @TransformedConfig(name = "hud-logger-protocol", category = {"misc", "survux-protocol"})
     @ConfigInfo(baseName = "hud-logger-protocol")
     public static boolean hudLoggerProtocol = false;
 
-    @TransformedConfig(name =  "hud-metadata-protocol", category = {"misc", "survux-protocol"})
+    @TransformedConfig(name = "hud-metadata-protocol", category = {"misc", "survux-protocol"})
     @ConfigInfo(baseName = "hud-metadata-protocol")
     public static boolean hudMetadataProtocol = false;
 
@@ -26,7 +26,7 @@ public class SurvuxProtocolConfig implements IConfigModule {
     @ConfigInfo(baseName = "hud-metadata-share-seed")
     public static boolean hudMetadataShareSeed = false;
 
-    @TransformedConfig(name ="structure-protocol", category = {"misc", "survux-protocol"})
+    @TransformedConfig(name = "structure-protocol", category = {"misc", "survux-protocol"})
     @ConfigInfo(baseName = "structure-protocol")
     public static boolean structureProtocol = false;
 
