@@ -319,7 +319,7 @@ index 576dde41a4b48aac9079cca902f4371a31470af3..952b92c55d7192791a19ecebe80894f6
                  ServerLevel.this.updateSleepingPlayerList();
              }
 diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
-index c29e9c6cb2513fe4b01a619e16433893efb44e6f..ff803b5f73f7d2cfe9351add12c3fde69a1642b1 100644
+index 44f0e3a675c612e9ca2bc40cc3898bdbca0f6718..4b2dba8b30b72fb3acc00957b3e19d6fc178c99e 100644
 --- a/net/minecraft/server/level/ServerPlayer.java
 +++ b/net/minecraft/server/level/ServerPlayer.java
 @@ -219,7 +219,7 @@ public class ServerPlayer extends Player implements ca.spottedleaf.moonrise.patc
@@ -516,33 +516,33 @@ index cb863a36fc67e993956ec3be655e6e4b9764c051..908ec29a6e285122d1a8a43dc547b74a
  
      public boolean canBypassPlayerLimit(GameProfile profile) {
 diff --git a/net/minecraft/server/waypoints/ServerWaypointManager.java b/net/minecraft/server/waypoints/ServerWaypointManager.java
-index 36e9b027ce5213f8914728293633e78e9905c1b2..a8c2a93cc12bd5aa6760bed91baa680f3801ee5e 100644
+index 52fd730998535ea071bfc99b7cc2c254b9b656d7..0abf6f0265fcb916f2c2c76fb1313bd13444f4ad 100644
 --- a/net/minecraft/server/waypoints/ServerWaypointManager.java
 +++ b/net/minecraft/server/waypoints/ServerWaypointManager.java
-@@ -22,6 +22,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
- 
-     @Override
+@@ -24,6 +24,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
      public void trackWaypoint(WaypointTransmitter waypoint) {
+         // Lophine start - unsafe waypoint bar
+         if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
 +        // Leaves start - fakeplayer
 +        if (waypoint instanceof org.leavesmc.leaves.bot.ServerBot bot && !bot.getConfigValue(org.leavesmc.leaves.bot.agent.Configs.ENABLE_LOCATOR_BAR)) {
 +            return;
 +        }
 +        // Leaves end - fakeplayer
-         // Lophine start - unsafe waypoint bar
-         if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
          this.waypoints.add(waypoint);
-@@ -57,6 +62,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
  
-     public void addPlayer(ServerPlayer player) {
+         for (ServerPlayer serverPlayer : this.players) {
+@@ -59,6 +64,11 @@ public class ServerWaypointManager implements WaypointManager<WaypointTransmitte
          // Folia - region threading
+         // Lophine start - unsafe waypoint bar
+         if (!fun.bm.lophine.config.modules.experiment.CommandConfig.waypoint) return;
 +        // Leaves start - fakeplayer
 +        if (player instanceof org.leavesmc.leaves.bot.ServerBot) {
 +            return;
 +        }
 +        // Leaves end - fakeplayer
-         // Lophine start - unsafe waypoint bar
-         if (!fun.bm.lophine.config.modules.experiment.WaypointConfig.forceEnableWaypointUnsafe) return;
          this.players.add(player);
+ 
+         for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
 index ee4a459700d75676eae3422d4a0e10be73c45871..16c323ead67a9a4ef48d25670b89297a15457849 100644
 --- a/net/minecraft/world/entity/Entity.java

@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.bot.agent.configs;
 
-import fun.bm.lophine.config.modules.experiment.WaypointConfig;
+import fun.bm.lophine.config.modules.experiment.CommandConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.waypoints.ServerWaypointManager;
@@ -36,7 +36,7 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean> {
 
     public LocatorBarConfig() {
         super(NAME, CommandArgument.of(CommandArgumentType.BOOLEAN).setSuggestion(0, List.of("true", "false")));
-        this.value = FakeplayerConfig.enableLocatorBar && WaypointConfig.forceEnableWaypointUnsafe;
+        this.value = FakeplayerConfig.enableLocatorBar && CommandConfig.waypoint;
     }
 
     @Override

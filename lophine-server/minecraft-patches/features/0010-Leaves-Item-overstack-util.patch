@@ -446,7 +446,7 @@ index 10b2cc20bbf3b70e4e09dbbe14b90506e6366158..1535bb8cec8692e8d26eaff090288f1b
      }
  
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index accbf3256db42b1ce15ea022fcfe1c61e8cb1c7a..8b7d885ae0ec48039dc1573a5227c322454e46ab 100644
+index 4b634dbb45dfb0823e7b21cf2354f89e5a6331e9..ef32bf1351aa28953bfc625d7a7d5175181a7acc 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -145,7 +145,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -458,7 +458,7 @@ index accbf3256db42b1ce15ea022fcfe1c61e8cb1c7a..8b7d885ae0ec48039dc1573a5227c322
      }
  
      @Override
-@@ -759,9 +759,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -770,9 +770,9 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
              if (item.isEmpty()) {
                  // Spigot start - SPIGOT-6693, SimpleContainer#setItem
                  ItemStack leftover = ItemStack.EMPTY; // Paper - Make hoppers respect inventory max stack size
