@@ -33,7 +33,7 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..04ae8de63af0a8abe578f14c8ef85fd4
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 0b7c014114f1f8648824fe7c9b75fde3ea79162a..55d3b9a612943fda29716b9e7969b82e43947669 100644
+index 0b7c014114f1f8648824fe7c9b75fde3ea79162a..384b121df8bfc72b21b607e8fa4ae90efcc6f3e8 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -348,6 +348,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -45,14 +45,14 @@ index 0b7c014114f1f8648824fe7c9b75fde3ea79162a..55d3b9a612943fda29716b9e7969b82e
      public static <S extends MinecraftServer> S spin(Function<Thread, S> threadFunction) {
          ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry.init(); // Paper - rewrite data converter system
          AtomicReference<S> atomicReference = new AtomicReference<>();
-@@ -1066,6 +1068,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1039,6 +1041,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     // Folia end - region threading
  
-         LOGGER.info("Stopping server");
-         Commands.COMMAND_SENDING_POOL.shutdownNow(); // Paper - Perf: Async command map building; Shutdown and don't bother finishing
+     public void stopServer() {
 +        this.getBotList().removeAll(); // Leaves - save or remove bot
-         // CraftBukkit start
-         if (this.server != null) {
-             if (false) this.server.spark.disable(); // Paper - spark // Luminol - Force disable builtin spark
+         // Folia start - region threading
+         // halt scheduler
+         // don't wait, we may be on a scheduler thread
 @@ -1589,7 +1592,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int i = this.pauseWhileEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
