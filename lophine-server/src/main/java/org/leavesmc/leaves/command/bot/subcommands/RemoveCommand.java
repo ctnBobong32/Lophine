@@ -20,6 +20,7 @@ package org.leavesmc.leaves.command.bot.subcommands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.papermc.paper.adventure.PaperAdventure;
+import net.minecraft.world.entity.LivingEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +51,21 @@ public class RemoveCommand extends BotSubcommand {
     }
 
     private static boolean removeBot(@NotNull ServerBot bot, @Nullable CommandSender sender) {
+        return removeBot(bot, sender, true);
+    }
+
+    private static boolean removeBot(@NotNull ServerBot bot, @Nullable CommandSender sender, boolean taskQueue) {
+        if (taskQueue) {
+            bot.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+                removeBotOrigin(bot, sender);
+            }, null, 1L);
+        } else {
+            return removeBotOrigin(bot, sender);
+        }
+        return true;
+    }
+
+    private static boolean removeBotOrigin(@NotNull ServerBot bot, @Nullable CommandSender sender) {
         boolean success = BotList.INSTANCE.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, false);
         if (!success) {
             sender = sender == null ? Bukkit.getConsoleSender() : sender;
