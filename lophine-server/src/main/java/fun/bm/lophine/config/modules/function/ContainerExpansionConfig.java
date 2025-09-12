@@ -1,6 +1,7 @@
 package fun.bm.lophine.config.modules.function;
 
 import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.CommandSuggestions;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
@@ -9,18 +10,21 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 @ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "container_expansion")
 public class ContainerExpansionConfig implements IConfigModule {
     @TransformedConfig(name = "barrel_rows", category = {"misc", "container_expansion"})
+    @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
     @ConfigInfo(baseName = "barrel_rows", comments =
             """
                     range: 1~6""")
     public static int barrelRows = 3;
 
     @TransformedConfig(name = "enderchest_rows", category = {"misc", "container_expansion"})
+    @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
     @ConfigInfo(baseName = "enderchest_rows", comments =
             """
                     range: 1~6""")
     public static int enderchestRows = 3;
 
     @TransformedConfig(name = "shulker_stackable_count", category = {"misc", "container_expansion"})
+    @CommandSuggestions(suggest = {"1", "2", "32", "64"})
     @ConfigInfo(baseName = "shulker_stackable_count", comments =
             """
                     range: 1~64""")

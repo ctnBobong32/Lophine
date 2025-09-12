@@ -1,6 +1,7 @@
 package fun.bm.lophine.config.modules.function;
 
 import me.earthme.luminol.config.IConfigModule;
+import me.earthme.luminol.config.flags.CommandSuggestions;
 import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
@@ -43,6 +44,7 @@ public class SurvuxProtocolConfig implements IConfigModule {
     public static boolean litematicsEnabled = false;
 
     @TransformedConfig(name = "litematics-max-nbt-size", category = {"misc", "survux-protocol"})
+    @CommandSuggestions(suggest = {"-1", "2097152"})
     @ConfigInfo(baseName = "litematics-max-nbt-size")
     public static int litematicsMaxNbtSize = 2097152;
 }

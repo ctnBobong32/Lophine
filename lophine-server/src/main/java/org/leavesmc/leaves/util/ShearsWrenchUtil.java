@@ -1,20 +1,3 @@
-/*
- * This file is part of Leaves (https://github.com/LeavesMC/Leaves)
- *
- * Leaves is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Leaves is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package org.leavesmc.leaves.util;
 
 import fun.bm.lophine.config.modules.function.RedStoneConfig;
@@ -25,8 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -45,6 +26,9 @@ public class ShearsWrenchUtil {
         BlockPos clickedPos = context.getClickedPos();
         Block block = blockState.getBlock();
         if (!RedStoneConfig.shears || !(block instanceof ObserverBlock || block instanceof DispenserBlock || block instanceof PistonBaseBlock || block instanceof HopperBlock || block instanceof RepeaterBlock || block instanceof ComparatorBlock || block instanceof CrafterBlock || block instanceof LeverBlock || block instanceof CocoaBlock || block instanceof TrapDoorBlock || block instanceof FenceGateBlock || block instanceof LightningRodBlock || block instanceof CalibratedSculkSensorBlock || block instanceof BaseRailBlock)) {
+            return null;
+        }
+        if (context.getPlayer() == null || !context.getPlayer().getItemInHand(invert(context.getHand())).isEmpty()) {
             return null;
         }
         StateDefinition<Block, BlockState> blockstatelist = block.getStateDefinition();
@@ -106,10 +90,8 @@ public class ShearsWrenchUtil {
         return InteractionResult.CONSUME;
     }
 
-    public static boolean shouldSkipPlace(BlockPlaceContext context) {
-        return RedStoneConfig.shears &&
-                context.getPlayer() != null &&
-                context.getPlayer().getItemInHand(InteractionHand.MAIN_HAND).is(Items.SHEARS);
+    private static InteractionHand invert(InteractionHand original) {
+        return original == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
     }
 
     private static <T extends Comparable<T>> BlockState cycleState(BlockState state, Property<T> property, boolean inverse) {
