@@ -18,15 +18,23 @@
 package org.leavesmc.leaves.protocol.servux.litematics.placement;
 
 import com.google.common.collect.ImmutableMap;
+import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
+import io.papermc.paper.threadedregions.RegionizedServer;
+import me.earthme.luminol.utils.NullPlugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.BlockBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.AABB;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.protocol.servux.ServuxProtocol;
 import org.leavesmc.leaves.protocol.servux.litematics.LitematicaSchematic;
@@ -35,6 +43,7 @@ import org.leavesmc.leaves.protocol.servux.litematics.utils.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class SchematicPlacement {
@@ -283,14 +292,52 @@ public class SchematicPlacement {
         return ChunkPos.rangeClosed(new ChunkPos(i, j), new ChunkPos(k, l));
     }
 
-    public void pasteTo(ServerLevel serverWorld, ReplaceBehavior replaceBehavior) {
+    public void pasteTo(ServerLevel serverWorld, ReplaceBehavior replaceBehavior, ServerPlayer player, long timeStart) {
         Box enclosingBox = this.getEnclosingBox();
         if (enclosingBox == null || enclosingBox.pos1() == null || enclosingBox.pos2() == null) {
             ServuxProtocol.LOGGER.error("receiver a null enclosing box");
             return;
         }
-        streamChunkPos(Objects.requireNonNull(enclosingBox.toVanilla())).forEach(chunkPos ->
-                SchematicPlacingUtils.placeToWorldWithinChunk(serverWorld, chunkPos, this, replaceBehavior, false)
+
+        AtomicInteger count_full = new AtomicInteger();
+        AtomicInteger count = new AtomicInteger();
+
+        streamChunkPos(Objects.requireNonNull(enclosingBox.toVanilla())).forEach(chunkPos -> {
+                    RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                            serverWorld,
+                            chunkPos.x,
+                            chunkPos.z,
+                            () -> {
+                                SchematicPlacingUtils.placeToWorldWithinChunk(serverWorld, chunkPos, this, replaceBehavior, false);
+                                count.getAndIncrement();
+                            });
+                    count_full.getAndIncrement();
+                }
         );
+
+        final NullPlugin nullPlugin = new NullPlugin();
+        scheduleTask(nullPlugin, serverWorld, count, count_full, player, timeStart, SurvuxProtocolConfig.maxDelay);
+    }
+
+    private void scheduleTask(Plugin plugin, ServerLevel serverWorld, AtomicInteger count1, AtomicInteger count2, ServerPlayer player, long timeStart, int retryCount) {
+        Bukkit.getGlobalRegionScheduler().runDelayed(plugin,
+                (unused) -> {
+                    if (count1.get() >= count2.get()) {
+                        long timeElapsed = System.currentTimeMillis() - timeStart;
+                        player.getBukkitEntity().sendActionBar(
+                                Component.text("Pasted ")
+                                        .append(Component.text(this.getName(), NamedTextColor.AQUA))
+                                        .append(Component.text(" to world "))
+                                        .append(Component.text(serverWorld.serverLevelData.getLevelName(), NamedTextColor.LIGHT_PURPLE))
+                                        .append(Component.text(" in "))
+                                        .append(Component.text(timeElapsed, NamedTextColor.GREEN))
+                                        .append(Component.text("ms"))
+                        );
+                    } else {
+                        if (retryCount >= 0 || retryCount == -1) {
+                            scheduleTask(plugin, serverWorld, count1, count2, player, timeStart, retryCount - 1);
+                        }
+                    }
+                }, 1);
     }
 }
