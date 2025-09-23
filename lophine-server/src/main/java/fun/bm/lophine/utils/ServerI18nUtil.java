@@ -83,8 +83,8 @@ public class ServerI18nUtil {
             logger.warn("Unsupported language: {}", LanguageConfig.lang);
             // Fallback to English
             final ConfigsInstance configsInstance = ConfigManager.configfiles.get("lophine");
-            configsInstance.setConfig(new String[]{"optimizations", "lang"}, "en_us");
-            configsInstance.reloadAsync();
+            configsInstance.setConfig(new String[]{"function", "language", "lang"}, "en_us");
+            configsInstance.reloadAsync(true);
         } catch (Exception e) {
             if (e instanceof MalformedJsonException malformedJson) {
                 malformedJson.clean();

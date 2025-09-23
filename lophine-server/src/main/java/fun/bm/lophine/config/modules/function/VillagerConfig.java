@@ -13,6 +13,7 @@ public class VillagerConfig implements IConfigModule {
     @ConfigInfo(baseName = "villager-infinite-trade", comments =
             """
                     Allow villager infinite trade (limit of 524288 times)
-                        ---- we won't edit saved data, only edit in send data to client.""")
+                        ---- we won't edit saved data, only edit in send data to client.
+                        (after we fixed void trade, this config will drop to void trade)""")
     public static boolean villagerInfiniteTrade = false;
 }

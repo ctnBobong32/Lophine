@@ -48,6 +48,7 @@ public class SurvuxProtocolConfig implements IConfigModule {
     @ConfigInfo(baseName = "litematics-max-nbt-size")
     public static int litematicsMaxNbtSize = 2097152;
 
+    @CommandSuggestions(suggest = {"-1", "1200"})
     @ConfigInfo(baseName = "litematics-print-max-delay-ticks", comments = "The max delay ticks for printing litematics, -1 to disable")
     public static int maxDelay = 1200;
 }
