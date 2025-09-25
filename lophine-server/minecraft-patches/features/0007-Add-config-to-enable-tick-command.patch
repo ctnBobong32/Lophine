@@ -114,7 +114,7 @@ index e0e9fcf3224f55f2ef31c8afca3154a5992f761b..a5b59eb79c014ef7a48ff305ed554fc3
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index d08a5b553f4e5932d960fbcdeb6a43419730e32a..a0f1db50adf5163a671d3d9e9df7adb7de4250c6 100644
+index b4b3ff86f7c4afb94fc4da5133746391a078a7fb..b156b5c635f931a3d4abc0584591f90476d011a6 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

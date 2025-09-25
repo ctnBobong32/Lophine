@@ -544,7 +544,7 @@ index 52fd730998535ea071bfc99b7cc2c254b9b656d7..0abf6f0265fcb916f2c2c76fb1313bd1
  
          for (WaypointTransmitter waypointTransmitter : this.waypoints) {
 diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
-index bfd29fc6a5af3cd28a462ce97bbc04634402b74c..319789f635b8b6bba2e8843c7fb38ef1fdf51677 100644
+index a720d8db40ca56c997a4eeae14ebbc6fe764892c..118a21e7ba82832560fb0d8fb8d6b21beeb14000 100644
 --- a/net/minecraft/world/entity/Entity.java
 +++ b/net/minecraft/world/entity/Entity.java
 @@ -1225,7 +1225,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
