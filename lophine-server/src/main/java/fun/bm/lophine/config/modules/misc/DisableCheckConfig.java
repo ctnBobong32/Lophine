@@ -5,13 +5,13 @@ import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "disable-check")
+@ConfigClassInfo(category = EnumConfigCategory.MISC, name = "disable-check")
 public class DisableCheckConfig implements IConfigModule {
-    @ConfigInfo(baseName = "disable-op-move-check", comments = """
+    @ConfigInfo(name = "disable-op-move-check", comments = """
             Disable the check for the operator's move check""")
     public static boolean disableOpMoveCheck = false;
 
-    @ConfigInfo(baseName = "disable-op-fly-check", comments = """
+    @ConfigInfo(name = "disable-op-fly-check", comments = """
             Disable the check for the operator's fly check""")
     public static boolean disableOpFlyCheck = false;
 }

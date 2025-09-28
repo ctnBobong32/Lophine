@@ -7,30 +7,30 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "container_expansion")
+@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "container_expansion")
 public class ContainerExpansionConfig implements IConfigModule {
-    @TransformedConfig(name = "barrel_rows", category = {"misc", "container_expansion"})
+    @TransformedConfig(name = "barrel_rows", directory = {"misc", "container_expansion"})
     @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
-    @ConfigInfo(baseName = "barrel_rows", comments =
+    @ConfigInfo(name = "barrel_rows", comments =
             """
                     range: 1~6""")
     public static int barrelRows = 3;
 
-    @TransformedConfig(name = "enderchest_rows", category = {"misc", "container_expansion"})
+    @TransformedConfig(name = "enderchest_rows", directory = {"misc", "container_expansion"})
     @CommandSuggestions(suggest = {"1", "2", "3", "4", "5", "6"})
-    @ConfigInfo(baseName = "enderchest_rows", comments =
+    @ConfigInfo(name = "enderchest_rows", comments =
             """
                     range: 1~6""")
     public static int enderchestRows = 3;
 
-    @TransformedConfig(name = "shulker_stackable_count", category = {"misc", "container_expansion"})
+    @TransformedConfig(name = "shulker_stackable_count", directory = {"misc", "container_expansion"})
     @CommandSuggestions(suggest = {"1", "2", "32", "64"})
-    @ConfigInfo(baseName = "shulker_stackable_count", comments =
+    @ConfigInfo(name = "shulker_stackable_count", comments =
             """
                     range: 1~64""")
     public static int shulkerCount = 1;
 
-    @TransformedConfig(name = "same_nbt_shulker_stackable", category = {"misc", "container_expansion"})
-    @ConfigInfo(baseName = "same_nbt_shulker_stackable")
+    @TransformedConfig(name = "same_nbt_shulker_stackable", directory = {"misc", "container_expansion"})
+    @ConfigInfo(name = "same_nbt_shulker_stackable")
     public static boolean nbtShulkerStackable = false;
 }

@@ -5,9 +5,9 @@ import me.earthme.luminol.config.flags.ConfigClassInfo;
 import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.EXPERIMENT, mainName = "entity_damage_source_trace")
+@ConfigClassInfo(category = EnumConfigCategory.EXPERIMENT, name = "entity_damage_source_trace")
 public class EntityDamageSourceTraceConfig implements IConfigModule {
-    @ConfigInfo(baseName = "enabled", comments =
+    @ConfigInfo(name = "enabled", comments =
             """
                     Allow trace damage source cross different Region Scheduler.""")
     public static boolean enabled = false;

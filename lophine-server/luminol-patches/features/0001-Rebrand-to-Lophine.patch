@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand to Lophine
 
 
 diff --git a/src/main/java/me/earthme/luminol/config/ConfigManager.java b/src/main/java/me/earthme/luminol/config/ConfigManager.java
-index 5e341cdc1c6ff75552140ab16bc9ccd237d896d0..a780214137d10f2faa92042b2f32c77a6598fa8d 100644
+index 6f294437d8791487d559e52a23a859c0572c0034..4d7e7d7a9c16d416d0ba4c77be061718c9793cb1 100644
 --- a/src/main/java/me/earthme/luminol/config/ConfigManager.java
 +++ b/src/main/java/me/earthme/luminol/config/ConfigManager.java
 @@ -22,6 +22,7 @@ public class ConfigManager {
@@ -17,15 +17,15 @@ index 5e341cdc1c6ff75552140ab16bc9ccd237d896d0..a780214137d10f2faa92042b2f32c77a
      }
  
 diff --git a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
-index f164e41975adee8b68dbcb400007681c0b66a4f8..4e76fb3b1274f2fde734089b20458f6561c39700 100644
+index df5d926fb4401dd93d658fe14ae4d9d58cff68f9..b6d84fea596cfa78032151ab2f206b6b3d5dd197 100644
 --- a/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
 +++ b/src/main/java/me/earthme/luminol/config/modules/misc/ServerModNameConfig.java
 @@ -8,7 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
- @ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "server_mod_name")
+ @ConfigClassInfo(category = EnumConfigCategory.MISC, name = "server_mod_name")
  public class ServerModNameConfig implements IConfigModule {
-     @ConfigInfo(baseName = "name")
+     @ConfigInfo(name = "name")
 -    public static String serverModName = "Luminol";
 +    public static String serverModName = "Lophine";
  
-     @ConfigInfo(baseName = "vanilla_spoof")
+     @ConfigInfo(name = "vanilla_spoof")
      public static boolean fakeVanilla = false;

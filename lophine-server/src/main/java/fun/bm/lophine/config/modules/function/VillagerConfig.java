@@ -6,11 +6,11 @@ import me.earthme.luminol.config.flags.ConfigInfo;
 import me.earthme.luminol.config.flags.TransformedConfig;
 import me.earthme.luminol.enums.EnumConfigCategory;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.MISC, mainName = "villager")
+@ConfigClassInfo(category = EnumConfigCategory.MISC, name = "villager")
 public class VillagerConfig implements IConfigModule {
-    @TransformedConfig(name = "villager-infinite-trade", category = {"misc", "villager"})
-    @TransformedConfig(name = "villager-infinite-trade", category = {"misc", "villager-config"})
-    @ConfigInfo(baseName = "villager-infinite-trade", comments =
+    @TransformedConfig(name = "villager-infinite-trade", directory = {"misc", "villager"})
+    @TransformedConfig(name = "villager-infinite-trade", directory = {"misc", "villager-config"})
+    @ConfigInfo(name = "villager-infinite-trade", comments =
             """
                     Allow villager infinite trade (limit of 524288 times)
                         ---- we won't edit saved data, only edit in send data to client.

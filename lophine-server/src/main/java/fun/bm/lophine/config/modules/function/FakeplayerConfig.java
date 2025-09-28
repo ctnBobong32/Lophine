@@ -10,73 +10,73 @@ import org.leavesmc.leaves.command.bot.BotCommand;
 
 import java.util.List;
 
-@ConfigClassInfo(configAttribution = EnumConfigCategory.FUNCTION, mainName = "fakeplayer")
+@ConfigClassInfo(category = EnumConfigCategory.FUNCTION, name = "fakeplayer")
 public class FakeplayerConfig implements IConfigModule {
-    @ConfigInfo(baseName = "enable", comments = """
+    @ConfigInfo(name = "enable", comments = """
             Enable fakeplayer functionality""")
     public static boolean enable = true;
 
-    @ConfigInfo(baseName = "unable-fakeplayer-names", comments = """
+    @ConfigInfo(name = "unable-fakeplayer-names", comments = """
             List of names that cannot be used for fakeplayers""")
     public static List<String> unableNames = List.of("player-name");
 
-    @ConfigInfo(baseName = "limit", comments = """
+    @ConfigInfo(name = "limit", comments = """
             Maximum number of fakeplayers allowed""")
     public static int limit = 10;
 
-    @ConfigInfo(baseName = "prefix", comments = """
+    @ConfigInfo(name = "prefix", comments = """
             Prefix for fakeplayer names""")
     public static String prefix = "";
 
-    @ConfigInfo(baseName = "suffix", comments = """
+    @ConfigInfo(name = "suffix", comments = """
             Suffix for fakeplayer names""")
     public static String suffix = "";
 
-    @ConfigInfo(baseName = "regen-amount", comments = """
+    @ConfigInfo(name = "regen-amount", comments = """
             Regeneration amount for fakeplayers""")
     public static double regenAmount = 0.0;
 
-    @ConfigInfo(baseName = "resident-fakeplayer", comments = """
+    @ConfigInfo(name = "resident-fakeplayer", comments = """
             Allow fakeplayers to be resident""")
     public static boolean canResident = false;
 
-    @ConfigInfo(baseName = "open-fakeplayer-inventory", comments = """
+    @ConfigInfo(name = "open-fakeplayer-inventory", comments = """
             Allow opening fakeplayer inventory""")
     public static boolean canOpenInventory = false;
 
-    @ConfigInfo(baseName = "use-action", comments = """
+    @ConfigInfo(name = "use-action", comments = """
             Allow fakeplayers to use actions""")
     public static boolean canUseAction = true;
 
-    @ConfigInfo(baseName = "modify-config", comments = """
+    @ConfigInfo(name = "modify-config", comments = """
             Allow modifying fakeplayer config""")
     public static boolean canModifyConfig = false;
 
-    @ConfigInfo(baseName = "manual-save-and-load", comments = """
+    @ConfigInfo(name = "manual-save-and-load", comments = """
             Allow manual save and load of fakeplayers""")
     public static boolean canManualSaveAndLoad = false;
 
-    @ConfigInfo(baseName = "cache-skin", comments = """
+    @ConfigInfo(name = "cache-skin", comments = """
             Use skin cache for fakeplayers""")
     public static boolean useSkinCache = false;
 
-    @ConfigInfo(baseName = "always-send-data", comments = """
+    @ConfigInfo(name = "always-send-data", comments = """
             Always send data for fakeplayers""")
     public static boolean canSendDataAlways = true;
 
-    @ConfigInfo(baseName = "skip-sleep-check", comments = """
+    @ConfigInfo(name = "skip-sleep-check", comments = """
             Skip sleep check for fakeplayers""")
     public static boolean canSkipSleep = false;
 
-    @ConfigInfo(baseName = "spawn-phantom", comments = """
+    @ConfigInfo(name = "spawn-phantom", comments = """
             Allow phantoms to spawn for fakeplayers""")
     public static boolean canSpawnPhantom = false;
 
-    @ConfigInfo(baseName = "simulation-distance", comments = """
+    @ConfigInfo(name = "simulation-distance", comments = """
             Simulation distance for fakeplayers (-1 for default)""")
     public static int simulationDistance = -1;
 
-    @ConfigInfo(baseName = "enable-locator-bar", comments = """
+    @ConfigInfo(name = "enable-locator-bar", comments = """
             Enable locator bar for fakeplayers""")
     public static boolean enableLocatorBar = false;
 

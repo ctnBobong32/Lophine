@@ -8,7 +8,7 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/d93e9766d3797d130
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java b/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
-index 102de78be0eb82d6898b4104fad1bf5e8366f993..0f8c9d4932c8bbd619f21d4aa28b890e14439b46 100644
+index 3a6314ed7f62c6473ce9ddc9deeee2a32b9d2893..23a0f8100eb3162331161635e8051981c4e34aed 100644
 --- a/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
 +++ b/src/main/java/org/leavesmc/leaves/util/ItemOverstackUtils.java
 @@ -17,12 +17,173 @@
@@ -185,4 +185,3 @@ index 102de78be0eb82d6898b4104fad1bf5e8366f993..0f8c9d4932c8bbd619f21d4aa28b890e
 +        }
 +    }
  }
-\ No newline at end of file
