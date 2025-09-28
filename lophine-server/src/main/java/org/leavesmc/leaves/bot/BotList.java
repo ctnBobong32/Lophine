@@ -172,30 +172,36 @@ public class BotList {
         this.botsByUUID.put(bot.getUUID(), bot);
 
         bot.supressTrackerForLogin = true;
-        world.addNewPlayer(bot);
+
+        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4,
+                () -> {
+                    world.addNewPlayer(bot);
+
+                    BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
+                    this.server.server.getPluginManager().callEvent(event1);
+
+                    net.kyori.adventure.text.Component joinMessage = event1.joinMessage();
+                    if (joinMessage != null && !joinMessage.equals(net.kyori.adventure.text.Component.empty())) {
+                        this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(joinMessage), false);
+                    }
+
+                    bot.renderInfo();
+                    bot.supressTrackerForLogin = false;
+
+                    bot.level().getChunkSource().chunkMap.addEntity(bot);
+                    bot.renderData();
+                    bot.initInventoryMenu();
+                    botsNameByWorldUuid
+                            .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
+                            .add(bot.getBukkitEntity().getRealName());
+                    BotList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", bot.getName().getString(), "Local", bot.getId(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
+                },
+                ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
         optional.ifPresent(nbt -> {
             bot.loadAndSpawnEnderPearls(nbt);
             bot.loadAndSpawnParentVehicle(nbt);
         });
-
-        BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
-        this.server.server.getPluginManager().callEvent(event1);
-
-        net.kyori.adventure.text.Component joinMessage = event1.joinMessage();
-        if (joinMessage != null && !joinMessage.equals(net.kyori.adventure.text.Component.empty())) {
-            this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(joinMessage), false);
-        }
-
-        bot.renderInfo();
-        bot.supressTrackerForLogin = false;
-
-        bot.level().getChunkSource().chunkMap.addEntity(bot);
-        bot.renderData();
-        bot.initInventoryMenu();
-        botsNameByWorldUuid
-                .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
-                .add(bot.getBukkitEntity().getRealName());
-        BotList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", bot.getName().getString(), "Local", bot.getId(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
         return bot;
     }
 

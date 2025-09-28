@@ -20,9 +20,12 @@ package org.leavesmc.leaves.bot.agent.configs;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import fun.bm.lophine.config.modules.experiment.CommandConfig;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.waypoints.ServerWaypointManager;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.command.CommandContext;
 
 public class LocatorBarConfig extends AbstractBotConfig<Boolean, Boolean, LocatorBarConfig> {
@@ -40,12 +43,20 @@ public class LocatorBarConfig extends AbstractBotConfig<Boolean, Boolean, Locato
 
     @Override
     public void setValue(@NotNull Boolean value) throws IllegalArgumentException {
-        this.value = value;
-        ServerWaypointManager manager = this.bot.level().getWaypointManager();
-        if (value) {
-            manager.trackWaypoint(this.bot);
+        if (bot == null) {
+            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task) -> setValue(value), 20);
         } else {
-            manager.untrackWaypoint(this.bot);
+            setValue(value, this.bot);
+        }
+    }
+
+    public void setValue(@NotNull Boolean value, ServerBot bot) throws IllegalArgumentException {
+        this.value = value;
+        ServerWaypointManager manager = bot.level().getWaypointManager();
+        if (value) {
+            manager.trackWaypoint(bot);
+        } else {
+            manager.untrackWaypoint(bot);
         }
     }
 

@@ -20,7 +20,9 @@ package org.leavesmc.leaves.bot.agent.configs;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.CommandContext;
 
@@ -66,6 +68,10 @@ public class SimulationDistanceConfig extends AbstractBotConfig<Integer, Integer
 
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        this.setValue(nbt.getIntOr(getName(), FakeplayerConfig.getSimulationDistance(this.bot)));
+        if (this.bot == null) {
+            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task) -> load(nbt), 20);
+        } else {
+            this.setValue(nbt.getIntOr(getName(), FakeplayerConfig.getSimulationDistance(this.bot)));
+        }
     }
 }

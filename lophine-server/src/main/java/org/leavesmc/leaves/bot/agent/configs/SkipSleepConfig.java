@@ -19,8 +19,11 @@ package org.leavesmc.leaves.bot.agent.configs;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
+import me.earthme.luminol.utils.NullPlugin;
 import net.minecraft.nbt.CompoundTag;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.leavesmc.leaves.bot.ServerBot;
 import org.leavesmc.leaves.command.CommandContext;
 
 public class SkipSleepConfig extends AbstractBotConfig<Boolean, Boolean, SkipSleepConfig> {
@@ -35,7 +38,15 @@ public class SkipSleepConfig extends AbstractBotConfig<Boolean, Boolean, SkipSle
     }
 
     @Override
-    public void setValue(Boolean value) throws IllegalArgumentException {
+    public void setValue(@NotNull Boolean value) throws IllegalArgumentException {
+        if (bot == null) {
+            Bukkit.getGlobalRegionScheduler().runDelayed(new NullPlugin(), (task) -> setValue(value), 20);
+        } else {
+            setValue(value, this.bot);
+        }
+    }
+
+    public void setValue(@NotNull Boolean value, ServerBot bot) throws IllegalArgumentException {
         bot.fauxSleeping = value;
     }
 

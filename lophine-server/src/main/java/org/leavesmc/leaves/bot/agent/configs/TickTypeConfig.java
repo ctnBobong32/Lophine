@@ -71,7 +71,7 @@ public class TickTypeConfig extends AbstractBotConfig<ServerBot.TickType, String
     @Override
     public void load(@NotNull CompoundTag nbt) {
         String raw = nbt.getStringOr(getName(), FakeplayerConfig.tickType.name());
-        this.setValue(switch (raw) {
+        this.setValue(switch (raw.toLowerCase()) {
             case "network" -> ServerBot.TickType.NETWORK;
             case "entity_list" -> ServerBot.TickType.ENTITY_LIST;
             default -> throw new IllegalStateException("Unexpected bot tick type value: " + raw);

@@ -8,19 +8,13 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves)
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
-index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..cc8686b791f4c559e51bb06b52b02e295b6e0547 100644
+index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..e1f456b31ffda9370b63e51f343847d6f9f62263 100644
 --- a/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
 +++ b/src/main/java/io/papermc/paper/plugin/manager/PaperEventManager.java
-@@ -47,6 +47,23 @@ class PaperEventManager {
-             throw new IllegalStateException(event.getEventName() + " may only be triggered synchronously.");
-         }
+@@ -36,6 +36,15 @@ class PaperEventManager {
  
-+        // Leaves start - skip bot
-+        if (event instanceof org.bukkit.event.player.PlayerEvent playerEvent && playerEvent.getPlayer() instanceof org.leavesmc.leaves.entity.bot.Bot) {
-+            return;
-+        }
-+        // Leaves end - skip bot
-+
+     // SimplePluginManager
+     public void callEvent(@NotNull Event event) {
 +        // Leaves start - process bot load/save
 +        if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable && fun.bm.lophine.config.modules.function.FakeplayerConfig.canResident) {
 +            if (event instanceof org.bukkit.event.world.WorldLoadEvent worldLoadEvent) {
@@ -30,7 +24,18 @@ index 9180f23529a31b6b0a5b38bb7cda3e32d487f691..cc8686b791f4c559e51bb06b52b02e29
 +            }
 +        }
 +        // Leaves end - process bot load/save
-+
+         // Leaf start - Skip event if no listeners
+         RegisteredListener[] listeners = event.getHandlers().getRegisteredListeners();
+         if (listeners.length == 0) return;
+@@ -47,6 +56,12 @@ class PaperEventManager {
+             throw new IllegalStateException(event.getEventName() + " may only be triggered synchronously.");
+         }
+ 
++        // Leaves start - skip bot
++        if (event instanceof org.bukkit.event.player.PlayerEvent playerEvent && playerEvent.getPlayer() instanceof org.leavesmc.leaves.entity.bot.Bot) {
++            return;
++        }
++        // Leaves end - skip bot
 +
          for (RegisteredListener registration : listeners) {
              if (!registration.getPlugin().isEnabled()) {
