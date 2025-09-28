@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index 8405157ec35a443e238fa6866772c839621d73d7..4edb6e6e6287f232f7eef45c747554264ec05319 100644
+index c39a114c2f5dfef15e18478281106e6abc4fef42..71a26b3a47a7c5798bf2d2902313b74fefa1cfb8 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -334,6 +334,8 @@ public final class RegionizedServer {
+@@ -333,6 +333,8 @@ public final class RegionizedServer {
          }
          // Luminol end - Add a config to enable tick command
  
@@ -19,15 +19,6 @@ index 8405157ec35a443e238fa6866772c839621d73d7..4edb6e6e6287f232f7eef45c74755426
 +
          // tick connections
          this.tickConnections();
- 
-@@ -443,6 +445,8 @@ public final class RegionizedServer {
- 
-         world.updateTickData();
- 
-+        MinecraftServer.getServer().handleTickCount(tickCount); // Lophine - reuse tick count
-+
-         world.moonrise$getChunkTaskScheduler().chunkHolderManager.processTicketUpdates(); // required to eventually process ticket updates
-     }
  
 diff --git a/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java b/net/minecraft/network/protocol/common/custom/CustomPacketPayload.java
 index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f934939d563 100644
@@ -57,36 +48,6 @@ index fb263fa1f30a7dfcb7ec2656abfb38e5fe88eac9..56fd1ed7ccaf96e7eedea60fbdbf7f93
              }
          };
      }
-diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b156b5c635f931a3d4abc0584591f90476d011a6..0b7c014114f1f8648824fe7c9b75fde3ea79162a 100644
---- a/net/minecraft/server/MinecraftServer.java
-+++ b/net/minecraft/server/MinecraftServer.java
-@@ -305,6 +305,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
- 
-     // Folia start - regionised ticking
-     public final io.papermc.paper.threadedregions.RegionizedServer regionizedServer = new io.papermc.paper.threadedregions.RegionizedServer();
-+    private int tickCount;
- 
-     @Override
-     public <V> CompletableFuture<V> submit(java.util.function.Supplier<V> task) {
-@@ -2227,9 +2228,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-         return false;
-     }
- 
-+    // Lophine start - reuse tick count
-     public int getTickCount() {
--        throw new UnsupportedOperationException(); // Folia - region threading
-+        if (false) throw new UnsupportedOperationException(); // Folia - region threading
-+        return this.tickCount;
-+    }
-+
-+    public void handleTickCount(int tickCount1) {
-+        tickCount = tickCount1;
-     }
-+    // Lophine end - reuse tick count
- 
-     public int getSpawnProtectionRadius() {
-         return 16;
 diff --git a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java b/net/minecraft/server/network/ServerCommonPacketListenerImpl.java
 index 8150b16c196edcb226be9268ea6e0012e44517fa..c54bf0429c0ca3a35a730658c7b1b3ddc776bf9e 100644
 --- a/net/minecraft/server/network/ServerCommonPacketListenerImpl.java

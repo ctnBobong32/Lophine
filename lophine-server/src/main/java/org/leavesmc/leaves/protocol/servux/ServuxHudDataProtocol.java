@@ -20,7 +20,7 @@ package org.leavesmc.leaves.protocol.servux;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.serialization.DataResult;
-import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -104,7 +104,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         metadata.putString("id", HudDataPayload.CHANNEL.toString());
         metadata.putInt("version", PROTOCOL_VERSION);
         metadata.putString("servux", ServuxProtocol.SERVUX_STRING);
-        if (SurvuxProtocolConfig.hudLoggerProtocol) {
+        if (ServuxProtocolConfig.hudLoggerProtocol) {
             CompoundTag nbt = new CompoundTag();
             for (DataLogger.Type type : DataLogger.Type.VALUES) {
                 nbt.putBoolean(type.getSerializedName(), isLoggerTypeEnabled(type));
@@ -185,7 +185,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
         metadata.putInt("spawnPosZ", spawnPos.getZ());
         metadata.putInt("spawnChunkRadius", level.getGameRules().getInt(GameRules.RULE_SPAWN_CHUNK_RADIUS));
 
-        if (SurvuxProtocolConfig.hudMetadataShareSeed) {
+        if (ServuxProtocolConfig.hudMetadataShareSeed) {
             metadata.putLong("worldSeed", level.getSeed());
         }
     }
@@ -217,7 +217,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     }
 
     private static boolean isLoggerTypeEnabled(DataLogger.Type type) {
-        return SurvuxProtocolConfig.hudEnabledLoggers.contains(type.getSerializedName());
+        return ServuxProtocolConfig.hudEnabledLoggers.contains(type.getSerializedName());
     }
 
     @ProtocolHandler.Ticker
@@ -233,13 +233,13 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     @ProtocolHandler.Ticker(tickerId = "logger")
     public void loggerTick() {
-        if (!SurvuxProtocolConfig.hudLoggerProtocol) {
+        if (!ServuxProtocolConfig.hudLoggerProtocol) {
             return;
         }
 
         MinecraftServer server = MinecraftServer.getServer();
 
-        if (server.getTickCount() % SurvuxProtocolConfig.hudUpdateInterval == 0) {
+        if (server.checkTickCount(ServuxProtocolConfig.hudUpdateInterval)) {
             LOGGERS.forEach((type, logger) -> {
                 if (!isLoggerTypeEnabled(type)) {
                     return;
@@ -277,7 +277,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return SurvuxProtocolConfig.hudMetadataProtocol;
+        return ServuxProtocolConfig.hudMetadataProtocol;
     }
 
     @Override

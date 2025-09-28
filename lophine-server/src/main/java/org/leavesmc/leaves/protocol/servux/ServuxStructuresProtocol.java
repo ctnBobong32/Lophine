@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.protocol.servux;
 
 import com.mojang.logging.LogUtils;
-import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -57,7 +57,6 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
     private static final int updateInterval = 40;
-    private static final int timeout = 30 * 20;
     private static final Map<Integer, ServerPlayer> players = new ConcurrentHashMap<>();
     private static final Map<UUID, Map<ChunkPos, Timeout>> timeouts = new HashMap<>();
     private static int retainDistance;
@@ -105,7 +104,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
 
         if (chunkHasStructureReferences(pos.x, pos.z, chunk.getLevel())) {
             final Map<ChunkPos, Timeout> map = timeouts.computeIfAbsent(uuid, (u) -> new HashMap<>());
-            map.computeIfAbsent(pos, (p) -> new Timeout(tickCounter - timeout));
+            map.computeIfAbsent(pos, (p) -> new Timeout(tickCounter - ServuxProtocolConfig.maxDelay));
         }
     }
 
@@ -145,7 +144,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         tag.putString("id", StructuresPayload.CHANNEL.toString());
         tag.putInt("version", PROTOCOL_VERSION);
         tag.putString("servux", ServuxProtocol.SERVUX_STRING);
-        tag.putInt("timeout", timeout);
+        tag.putInt("timeout", ServuxProtocolConfig.maxDelay);
 
         sendPacket(player, new StructuresPayload(StructuresPayloadType.PACKET_S2C_METADATA, tag));
     }
@@ -270,7 +269,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         for (Map.Entry<ChunkPos, Timeout> entry : map.entrySet()) {
             Timeout out = entry.getValue();
 
-            if (out.needsUpdate(tickCounter, timeout)) {
+            if (out.needsUpdate(ServuxProtocolConfig.maxDelay, tickCounter)) {
                 positionsToUpdate.add(entry.getKey());
             }
         }
@@ -336,7 +335,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return SurvuxProtocolConfig.structureProtocol;
+        return ServuxProtocolConfig.structureProtocol;
     }
 
     public enum StructuresPayloadType {
@@ -410,7 +409,8 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         }
 
         public boolean needsUpdate(int currentTick, int timeout) {
-            return currentTick - this.lastSync >= timeout;
+            if (timeout == -1 || currentTick - this.lastSync >= timeout) return true;
+            return MinecraftServer.getServer().checkTickCount(timeout);
         }
 
         public void setLastSync(int tickCounter) {

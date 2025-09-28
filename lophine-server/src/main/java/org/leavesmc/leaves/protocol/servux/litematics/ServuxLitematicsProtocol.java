@@ -17,7 +17,7 @@
 
 package org.leavesmc.leaves.protocol.servux.litematics;
 
-import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
 import io.netty.buffer.Unpooled;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -133,7 +133,7 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
                 }
                 playerSession.remove(uuid);
                 fullPacket.readVarInt();
-                Tag tag = FriendlyByteBuf.readNbt(fullPacket, new NbtAccounter(SurvuxProtocolConfig.litematicsMaxNbtSize == -1 ? Long.MAX_VALUE : SurvuxProtocolConfig.litematicsMaxNbtSize, 512));
+                Tag tag = FriendlyByteBuf.readNbt(fullPacket, new NbtAccounter(ServuxProtocolConfig.litematicsMaxNbtSize == -1 ? Long.MAX_VALUE : ServuxProtocolConfig.litematicsMaxNbtSize, 512));
                 if (!(tag instanceof CompoundTag)) {
                     ServuxProtocol.LOGGER.error("cannot read nbt tag from packet");
                     return;
@@ -275,7 +275,7 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
 
     @Override
     public boolean isActive() {
-        return SurvuxProtocolConfig.litematicsEnabled;
+        return ServuxProtocolConfig.litematicsEnabled;
     }
 
     public enum ServuxLitematicaPayloadType {

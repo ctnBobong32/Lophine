@@ -18,7 +18,7 @@
 package org.leavesmc.leaves.protocol.servux.litematics.placement;
 
 import com.google.common.collect.ImmutableMap;
-import fun.bm.lophine.config.modules.function.SurvuxProtocolConfig;
+import fun.bm.lophine.config.modules.function.ServuxProtocolConfig;
 import io.papermc.paper.threadedregions.RegionizedServer;
 import me.earthme.luminol.utils.NullPlugin;
 import net.kyori.adventure.text.Component;
@@ -316,7 +316,7 @@ public class SchematicPlacement {
         );
 
         final NullPlugin nullPlugin = new NullPlugin();
-        scheduleTask(nullPlugin, serverWorld, count, count_full, player, timeStart, SurvuxProtocolConfig.maxDelay);
+        scheduleTask(nullPlugin, serverWorld, count, count_full, player, timeStart, ServuxProtocolConfig.maxDelay);
     }
 
     private void scheduleTask(Plugin plugin, ServerLevel serverWorld, AtomicInteger count1, AtomicInteger count2, ServerPlayer player, long timeStart, int retryCount) {

@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Helvetica Volubi <suisuroru@blue-millennium.fun>
+Date: Sun, 28 Sep 2025 13:21:30 +0800
+Subject: [PATCH] Re-add tick count support
+
+
+diff --git a/io/papermc/paper/threadedregions/TickRegionScheduler.java b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+index b957585cf7cf7f845e20f59c7b355722880f3b4e..9b279d003eb9f780ed2723c98b28d9f4d6e3a281 100644
+--- a/io/papermc/paper/threadedregions/TickRegionScheduler.java
++++ b/io/papermc/paper/threadedregions/TickRegionScheduler.java
+@@ -412,6 +412,8 @@ public final class TickRegionScheduler {
+             }
+             // Luminol end - Add tick command support
+ 
++            MinecraftServer.getServer().handleTickCount(tickCount); // Lophine - reuse tick count
++
+             if (!this.tryMarkTicking()) {
+                 if (!this.cancelled.get()) {
+                     throw new IllegalStateException("Scheduled region should be acquirable");
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index b156b5c635f931a3d4abc0584591f90476d011a6..ef0b401affa58077e8dd32b52063202a1c7e0bb6 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -305,6 +305,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     // Folia start - regionised ticking
+     public final io.papermc.paper.threadedregions.RegionizedServer regionizedServer = new io.papermc.paper.threadedregions.RegionizedServer();
++    private int tickCount; // Lophine - reuse tick count
++    private int lastTickCount;
+ 
+     @Override
+     public <V> CompletableFuture<V> submit(java.util.function.Supplier<V> task) {
+@@ -2227,9 +2229,25 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         return false;
+     }
+ 
++    // Lophine start - reuse tick count
+     public int getTickCount() {
+-        throw new UnsupportedOperationException(); // Folia - region threading
++        return tickCount;
++    }
++
++    public boolean checkTickCount(int period) {
++        if (tickCount % period == 0) {
++            return true;
++        }
++
++        int nextPeriodTick = ((lastTickCount / period) + 1) * period;
++        return nextPeriodTick < tickCount;
++    }
++
++    public void handleTickCount(int tickCount) {
++        this.lastTickCount = this.tickCount;
++        this.tickCount += tickCount;
+     }
++    // Lophine end - reuse tick count
+ 
+     public int getSpawnProtectionRadius() {
+         return 16;
