@@ -8,10 +8,10 @@ As a part of : Leaves (https://github.com/LeavesMC/Leaves/blob/ea91106ae57fc4cc1
 Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
 
 diff --git a/io/papermc/paper/threadedregions/RegionizedServer.java b/io/papermc/paper/threadedregions/RegionizedServer.java
-index c39a114c2f5dfef15e18478281106e6abc4fef42..71a26b3a47a7c5798bf2d2902313b74fefa1cfb8 100644
+index 8405157ec35a443e238fa6866772c839621d73d7..a261f66c29412039bbbaed4758bcade2e076da56 100644
 --- a/io/papermc/paper/threadedregions/RegionizedServer.java
 +++ b/io/papermc/paper/threadedregions/RegionizedServer.java
-@@ -333,6 +333,8 @@ public final class RegionizedServer {
+@@ -334,6 +334,8 @@ public final class RegionizedServer {
          }
          // Luminol end - Add a config to enable tick command
  

@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.bot;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.entity.EntityRemoveEvent;
@@ -51,6 +53,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BotList {
 
@@ -66,6 +69,8 @@ public class BotList {
     private final Map<UUID, ServerBot> botsByUUID = Maps.newHashMap();
     private final Map<String, ServerBot> botsByName = Maps.newHashMap();
     private final Map<String, Set<String>> botsNameByWorldUuid = Maps.newHashMap();
+
+    public boolean forceShutdown = false;
 
     public BotList(MinecraftServer server) {
         this.server = server;
@@ -129,7 +134,7 @@ public class BotList {
 
         ResourceKey<Level> resourcekey = null;
         if (nbt.getLong("WorldUUIDMost").isPresent() && nbt.getLong("WorldUUIDLeast").isPresent()) {
-            org.bukkit.World bWorld = Bukkit.getServer().getWorld(new UUID(nbt.getLong("WorldUUIDMost").orElseThrow(), nbt.getLong("WorldUUIDLeast").orElseThrow()));
+            World bWorld = Bukkit.getServer().getWorld(new UUID(nbt.getLong("WorldUUIDMost").orElseThrow(), nbt.getLong("WorldUUIDLeast").orElseThrow()));
             if (bWorld != null) {
                 resourcekey = ((CraftWorld) bWorld).getHandle().dimension();
             }
@@ -225,7 +230,7 @@ public class BotList {
             if (entity.hasExactlyOnePlayerPassenger()) {
                 bot.stopRiding();
                 entity.getPassengersAndSelf().forEach((entity1) -> {
-                    if (!false && entity1 instanceof AbstractVillager villager) {
+                    if (entity1 instanceof AbstractVillager villager) {
                         final Player human = villager.getTradingPlayer();
                         if (human != null) {
                             villager.setTradingPlayer(null);
@@ -279,11 +284,28 @@ public class BotList {
         }
     }
 
-    public void removeAll() {
+    public boolean removeAll() {
+        boolean finished = true;
+        AtomicInteger check = new AtomicInteger();
+        AtomicInteger received = new AtomicInteger();
         for (ServerBot bot : this.bots) {
             bot.resume = FakeplayerConfig.canResident;
-            this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
+            if (TickThread.isTickThreadFor(bot)) {
+                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
+            } else {
+                finished = false;
+                check.getAndIncrement();
+                bot.getBukkitEntity().taskScheduler.schedule((Entity unused) -> {
+                    BotList.this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
+                    received.getAndIncrement();
+                    if (received.get() >= check.get()) {
+                        this.forceShutdown = true;
+                        MinecraftServer.getServer().stopServer();
+                    }
+                }, null, 1L);
+            }
         }
+        return finished;
     }
 
     public void loadBotInfo() {
