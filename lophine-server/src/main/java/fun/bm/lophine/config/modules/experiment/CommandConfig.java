@@ -26,8 +26,13 @@ public class CommandConfig implements IConfigModule {
 
     @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint bar"})
     @TransformedConfig(name = "enable-waypoint", directory = {"experiment", "waypoint_bar"})
-    @ConfigInfo(name = "waypoint_command_enabled", comments = """
-                    Allow to use waypoint command
-            """)
+    @ConfigInfo(name = "waypoint_command_enabled", comments =
+            """
+                    Allow to use waypoint command""")
     public static boolean waypoint = false;
+    
+    @ConfigInfo(name = "scoreboard_command_enabled", comments =
+            """
+                    Allow to use scoreboard command""")
+    public static boolean scoreboard = false;
 }

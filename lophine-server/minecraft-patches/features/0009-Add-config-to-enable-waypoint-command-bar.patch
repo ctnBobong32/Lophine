@@ -5,10 +5,10 @@ Subject: [PATCH] Add config to enable waypoint command & bar
 
 
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index a5b59eb79c014ef7a48ff305ed554fc33a184d87..e8c7cc10f10fc013100fa66f3489ac98b3a29227 100644
+index dc5a558c72a5a7ab8a650262c6a1a2dc5142b8fc..9eee09ecc18abcc5972f65938ba8607dfeede026 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -255,7 +255,11 @@ public class Commands {
+@@ -259,7 +259,11 @@ public class Commands {
          TimeCommand.register(this.dispatcher);
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
