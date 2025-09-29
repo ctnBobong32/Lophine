@@ -24,6 +24,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.leavesmc.leaves.protocol.core.invoker.*;
 import org.slf4j.Logger;
@@ -251,9 +252,9 @@ public class LeavesProtocolManager {
         return false;
     }
 
-    public static void handleTick(long tickCount) {
+    public static void handleTick() {
         for (var tickerInfo : TICKERS) {
-            if (tickCount % tickerInfo.owner().tickerInterval(tickerInfo.handler().tickerId()) == 0) {
+            if (MinecraftServer.getServer().checkTickCount(tickerInfo.owner().tickerInterval(tickerInfo.handler().tickerId()))) {
                 tickerInfo.invoke();
             }
         }
