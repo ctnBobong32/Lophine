@@ -30,7 +30,7 @@ public class CommandConfig implements IConfigModule {
             """
                     Allow to use waypoint command""")
     public static boolean waypoint = false;
-    
+
     @ConfigInfo(name = "scoreboard_command_enabled", comments =
             """
                     Allow to use scoreboard command""")
