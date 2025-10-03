@@ -5,10 +5,18 @@ Subject: [PATCH] I18n support
 
 
 diff --git a/net/minecraft/locale/Language.java b/net/minecraft/locale/Language.java
-index 7b9e2a1a208b46a69c16e6afd8b502259893574f..db46a31ea8a36562e548eb07f0c4cf9b9e8c3360 100644
+index 7b9e2a1a208b46a69c16e6afd8b502259893574f..c300ae4363298fecef8fa9bf739f01c0a11e145f 100644
 --- a/net/minecraft/locale/Language.java
 +++ b/net/minecraft/locale/Language.java
-@@ -65,7 +65,7 @@ public abstract class Language {
+@@ -36,6 +36,7 @@ public abstract class Language {
+         Map<String, String> map = new HashMap<>();
+         BiConsumer<String, String> biConsumer = map::put;
+         parseTranslations(biConsumer, "/assets/minecraft/lang/en_us.json");
++        fun.bm.lophine.utils.ServerI18nUtil.loadLophineI18nDefault(biConsumer);
+         deprecatedTranslationsInfo.applyToMap(map);
+         final Map<String, String> map1 = Map.copyOf(map);
+         return new Language() {
+@@ -65,7 +66,7 @@ public abstract class Language {
          };
      }
  

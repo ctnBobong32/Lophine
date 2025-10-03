@@ -6,9 +6,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.LanguageConfig;
+import io.papermc.paper.ServerBuildInfo;
 import me.earthme.luminol.config.ConfigManager;
 import me.earthme.luminol.config.ConfigsInstance;
-import net.minecraft.SharedConstants;
 import net.minecraft.locale.DeprecatedTranslationsInfo;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
@@ -41,7 +41,7 @@ import java.util.function.BiConsumer;
  */
 public class ServerI18nUtil {
     private static final Logger logger = LogUtils.getClassLogger();
-    private static final String VERSION = SharedConstants.getCurrentVersion().name();
+    private static final String VERSION = ServerBuildInfo.buildInfo().minecraftVersionId();
     private static final String BASE_PATH = "cache/lophine/" + VERSION + "/";
     private static final String defaultLophineLangPath = "/assets/lophine/lang/en_us.json";
     private static final String manifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
