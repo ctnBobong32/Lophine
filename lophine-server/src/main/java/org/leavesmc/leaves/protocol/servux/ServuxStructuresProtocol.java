@@ -58,7 +58,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     public static final int PROTOCOL_VERSION = 2;
     private static final int updateInterval = 40;
     private static final Map<Integer, ServerPlayer> players = new ConcurrentHashMap<>();
-    private static final Map<UUID, Map<ChunkPos, Timeout>> timeouts = new HashMap<>();
+    private static final Map<UUID, Map<ChunkPos, Timeout>> timeouts = new ConcurrentHashMap<>();
     private static int retainDistance;
 
     @ProtocolHandler.PlayerJoin

@@ -54,6 +54,7 @@ import org.leavesmc.leaves.protocol.servux.litematics.utils.ReplaceBehavior;
 import org.leavesmc.leaves.util.TagUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @LeavesProtocol.Register(namespace = "servux")
 public class ServuxLitematicsProtocol implements LeavesProtocol {
@@ -61,7 +62,7 @@ public class ServuxLitematicsProtocol implements LeavesProtocol {
     public static final int PROTOCOL_VERSION = 1;
 
     private static final CompoundTag metadata = new CompoundTag();
-    private static final Map<UUID, Long> playerSession = new HashMap<>();
+    private static final Map<UUID, Long> playerSession = new ConcurrentHashMap<>();
 
     @ProtocolHandler.Init
     public static void init() {

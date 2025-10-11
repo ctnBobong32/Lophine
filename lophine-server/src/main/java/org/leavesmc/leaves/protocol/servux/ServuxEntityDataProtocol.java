@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 // Powered by Servux(https://github.com/sakura-ryoko/servux)
 
@@ -50,7 +51,7 @@ public class ServuxEntityDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 1;
 
-    private static final Map<UUID, Long> readingSessionKeys = new HashMap<>();
+    private static final Map<UUID, Long> readingSessionKeys = new ConcurrentHashMap<>();
 
     @ProtocolHandler.PlayerJoin
     public static void onPlayerJoin(ServerPlayer player) {

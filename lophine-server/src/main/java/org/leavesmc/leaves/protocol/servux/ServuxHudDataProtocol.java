@@ -46,17 +46,18 @@ import org.leavesmc.leaves.protocol.servux.logger.DataLogger;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @LeavesProtocol.Register(namespace = "servux")
 public class ServuxHudDataProtocol implements LeavesProtocol {
 
     public static final int PROTOCOL_VERSION = 2;
 
-    private static final List<ServerPlayer> players = new ArrayList<>();
+    private static final List<ServerPlayer> players = Collections.synchronizedList(new ArrayList<>());
     private static final int updateInterval = 80;
 
-    private static final HashMap<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new HashMap<>();
-    private static final HashMap<DataLogger.Type, DataLogger<?>> LOGGERS = new HashMap<>();
+    private static final ConcurrentHashMap<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<DataLogger.Type, DataLogger<?>> LOGGERS = new ConcurrentHashMap<>();
     private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
 
     public static boolean refreshSpawnMetadata = false;
