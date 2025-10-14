@@ -24,6 +24,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.threadedregions.RegionizedServer;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.minecraft.nbt.CompoundTag;
@@ -173,35 +174,42 @@ public class BotList {
 
         bot.supressTrackerForLogin = true;
 
-        io.papermc.paper.threadedregions.RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
-                world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4,
-                () -> {
-                    world.addNewPlayer(bot);
-
-                    BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
-                    this.server.server.getPluginManager().callEvent(event1);
-
-                    net.kyori.adventure.text.Component joinMessage = event1.joinMessage();
-                    if (joinMessage != null && !joinMessage.equals(net.kyori.adventure.text.Component.empty())) {
-                        this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(joinMessage), false);
-                    }
-
-                    bot.renderInfo();
-                    bot.supressTrackerForLogin = false;
-
-                    bot.level().getChunkSource().chunkMap.addEntity(bot);
-                    bot.renderData();
-                    bot.initInventoryMenu();
-                    botsNameByWorldUuid
-                            .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
-                            .add(bot.getBukkitEntity().getRealName());
-                    BotList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", bot.getName().getString(), "Local", bot.getId(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
-                },
-                ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
+        if (TickThread.isTickThreadFor(world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4)) {
+            summonBot(bot, world);
+        } else {
+            RegionizedServer.getInstance().taskQueue.queueTickTaskQueue(
+                    world, net.minecraft.util.Mth.floor(location.getX()) >> 4, net.minecraft.util.Mth.floor(location.getZ()) >> 4,
+                    () -> summonBot(bot, world),
+                    ca.spottedleaf.concurrentutil.util.Priority.HIGHER);
+        }
         optional.ifPresent(nbt -> {
             bot.loadAndSpawnEnderPearls(nbt);
             bot.loadAndSpawnParentVehicle(nbt);
         });
+        return bot;
+    }
+
+    private ServerBot summonBot(ServerBot bot, ServerLevel world) {
+        world.addNewPlayer(bot);
+
+        BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
+        this.server.server.getPluginManager().callEvent(event1);
+
+        net.kyori.adventure.text.Component joinMessage = event1.joinMessage();
+        if (joinMessage != null && !joinMessage.equals(net.kyori.adventure.text.Component.empty())) {
+            this.server.getPlayerList().broadcastSystemMessage(PaperAdventure.asVanilla(joinMessage), false);
+        }
+
+        bot.renderInfo();
+        bot.supressTrackerForLogin = false;
+
+        bot.level().getChunkSource().chunkMap.addEntity(bot);
+        bot.renderData();
+        bot.initInventoryMenu();
+        botsNameByWorldUuid
+                .computeIfAbsent(bot.level().uuid.toString(), (k) -> new HashSet<>())
+                .add(bot.getBukkitEntity().getRealName());
+        BotList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", bot.getName().getString(), "Local", bot.getId(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
         return bot;
     }
 
@@ -301,17 +309,25 @@ public class BotList {
             } else {
                 finished = false;
                 check.getAndIncrement();
-                bot.getBukkitEntity().taskScheduler.schedule((Entity unused) -> {
-                    BotList.this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
-                    received.getAndIncrement();
-                    if (received.get() >= check.get()) {
-                        this.forceShutdown = true;
-                        MinecraftServer.getServer().stopServer();
-                    }
-                }, null, 1L);
+                removeBot(bot, check, received, new AtomicInteger());
             }
         }
         return finished;
+    }
+
+    private void removeBot(ServerBot bot, AtomicInteger check, AtomicInteger received, AtomicInteger counter) {
+        bot.getBukkitEntity().taskScheduler.schedule((Entity unused) -> {
+            if (counter.get() >= 20) {
+                BotList.LOGGER.info("Try to remove bot {} located in [{}]{},{},{} too many times!", bot.getName().getString(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
+            }
+            counter.getAndIncrement();
+            this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
+            received.getAndIncrement();
+            if (received.get() >= check.get()) {
+                this.forceShutdown = true;
+                MinecraftServer.getServer().stopServer();
+            }
+        }, (Entity unused) -> removeBot(bot, check, received, counter), 1L);
     }
 
     public void loadBotInfo() {
