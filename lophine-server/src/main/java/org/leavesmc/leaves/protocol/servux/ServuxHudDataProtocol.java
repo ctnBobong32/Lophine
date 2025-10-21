@@ -245,17 +245,16 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
                 if (!isLoggerTypeEnabled(type)) {
                     return;
                 }
-                for (ServerPlayer player : players) {
+                players.forEach(player -> {
                     Tag ret = logger.getResult(server, this, player);
                     if (ret != null) {
                         DATA.put(type, player, ret);
                     }
-                }
+                });
             });
         }
 
-        for (ServerPlayer player : loggerPlayers.keySet()) {
-            List<DataLogger.Type> list = loggerPlayers.get(player);
+        loggerPlayers.forEach((player, list) -> {
             if (list.isEmpty()) {
                 return;
             }
@@ -269,7 +268,7 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
                 }
             }
             sendPacket(player, new HudDataPayload(HudDataPayloadType.PACKET_S2C_DATA_LOGGER_TICK, nbt));
-        }
+        });
     }
 
     public void applyData(DataLogger.Type type, ServerPlayer player, Tag tag) {
