@@ -309,7 +309,7 @@ public class BotList {
             } else {
                 finished = false;
                 check.getAndIncrement();
-                removeBot(bot, check, received, new AtomicInteger());
+                this.removeBot(bot, check, received, new AtomicInteger());
             }
         }
         return finished;
@@ -321,13 +321,17 @@ public class BotList {
                 BotList.LOGGER.info("Try to remove bot {} located in [{}]{},{},{} too many times!", bot.getName().getString(), bot.level().serverLevelData.getLevelName(), bot.getX(), bot.getY(), bot.getZ());
             }
             counter.getAndIncrement();
-            this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
-            received.getAndIncrement();
+            try {
+                this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
+                received.getAndIncrement();
+            } catch (Exception e) {
+                this.removeBot(bot, check, received, counter);
+            }
             if (received.get() >= check.get()) {
                 this.forceShutdown = true;
                 MinecraftServer.getServer().stopServer();
             }
-        }, (Entity unused) -> removeBot(bot, check, received, counter), 1L);
+        }, null, 1L);
     }
 
     public void loadBotInfo() {
