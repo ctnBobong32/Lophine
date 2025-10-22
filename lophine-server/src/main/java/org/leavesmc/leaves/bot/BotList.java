@@ -304,7 +304,7 @@ public class BotList {
         AtomicInteger received = new AtomicInteger();
         for (ServerBot bot : this.bots) {
             bot.resume = FakeplayerConfig.canResident;
-            if (TickThread.isTickThreadFor(bot)) {
+            if (TickThread.isTickThreadFor(bot.level(), bot.getX(), bot.getZ())) {
                 this.removeBot(bot, BotRemoveEvent.RemoveReason.INTERNAL, null, FakeplayerConfig.canResident);
             } else {
                 finished = false;
