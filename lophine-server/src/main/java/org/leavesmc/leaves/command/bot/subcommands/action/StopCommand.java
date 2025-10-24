@@ -93,13 +93,13 @@ public class StopCommand extends LiteralNode {
                 action.stop(bot, BotActionStopEvent.Reason.COMMAND);
                 bot.getBotActions().remove(index);
                 sender.sendMessage(join(spaces(),
-                        text("Already stopped", GRAY),
+                        text("已停止", GRAY),
                         asAdventure(bot.getDisplayName()).append(text("'s", GRAY)),
                         text("action", GRAY),
                         text(action.getName(), AQUA).hoverEvent(showText(text(action.getActionDataString())))
                 ));
             } else {
-                sender.sendMessage(text("Action stop cancelled by a plugin", RED));
+                sender.sendMessage(text("插件取消了操作停止", RED));
             }
             return true;
         }
@@ -118,7 +118,7 @@ public class StopCommand extends LiteralNode {
             List<AbstractBotAction<?>> actions = bot.getBotActions();
             CommandSender sender = context.getSender();
             if (actions.isEmpty()) {
-                sender.sendMessage(text("This bot has no active actions", GRAY));
+                sender.sendMessage(text("此机器人没有活动动作", GRAY));
                 return true;
             }
 
@@ -141,13 +141,13 @@ public class StopCommand extends LiteralNode {
             if (canceled.isEmpty()) {
                 sender.sendMessage(join(spaces(),
                         asAdventure(bot.getDisplayName()).append(text("'s", GRAY)),
-                        text("'s action list cleared", GRAY)
+                        text("'操作列表已清除", GRAY)
                 ));
             } else {
                 sender.sendMessage(join(spaces(),
-                        text("Tried to clear", GRAY),
+                        text("试图清除", GRAY),
                         asAdventure(bot.getDisplayName()).append(text("'s", GRAY)),
-                        text("'s action list, but following actions' stop was canceled by plugin:", GRAY)
+                        text("'操作列表，但以下操作的停止已被插件取消:", GRAY)
                 ));
                 for (AbstractBotAction<?> action : canceled) {
                     context.getSender().sendMessage(

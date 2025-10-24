@@ -60,7 +60,7 @@ public class CraftBot extends CraftPlayer implements Bot {
         if (action instanceof CraftBotAction<?, ?> act) {
             this.getHandle().addBotAction(act.getHandle(), null);
         } else {
-            throw new IllegalArgumentException("Action " + action.getClass().getName() + " is not a valid BotAction type!");
+            throw new IllegalArgumentException("Action " + action.getClass().getName() + " 不是有效的BotAction类型!");
         }
     }
 
@@ -97,8 +97,8 @@ public class CraftBot extends CraftPlayer implements Bot {
 
     @Override
     public boolean teleport(Location location, PlayerTeleportEvent.@NotNull TeleportCause cause, io.papermc.paper.entity.TeleportFlag @NotNull ... flags) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
-        Preconditions.checkState(location.getWorld().equals(this.getWorld()), "[Leaves] Fakeplayers do not support changing world, Please use leaves fakeplayer-api instead!");
+        Preconditions.checkArgument(location != null, "位置不能为空");
+        Preconditions.checkState(location.getWorld().equals(this.getWorld()), "[Leaves]Fakeplayers不支持改变世界，请改用Leaves fakeplayer api!");
         return super.teleport(location, cause, flags);
     }
 

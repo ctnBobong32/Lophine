@@ -65,7 +65,7 @@ public class CreateCommand extends BotSubcommand {
             world = getDimension(context.getMojangContext(), "world").getWorld();
         } catch (IllegalArgumentException e) {
             if (!(sender instanceof Entity entity)) {
-                sender.sendMessage(text("Must specify world and location when executed by console", NamedTextColor.RED));
+                sender.sendMessage(text("控制台执行时必须指定世界和位置", NamedTextColor.RED));
                 return false;
             }
             world = entity.getWorld();
@@ -93,22 +93,22 @@ public class CreateCommand extends BotSubcommand {
     private static boolean canCreate(CommandSender sender, @NotNull String name) {
         BotList botList = BotList.INSTANCE;
         if (!name.matches("^[a-zA-Z0-9_]{4,16}$")) {
-            sender.sendMessage(text("This name is illegal, bot name must be 4-16 characters and contain only letters, numbers, and underscores.", NamedTextColor.RED));
+            sender.sendMessage(text("此名称非法，机器人名称必须为4-16个字符，并且只能包含字母、数字和下划线.", NamedTextColor.RED));
             return false;
         }
 
         if (Bukkit.getPlayerExact(name) != null || botList.getBotByName(name) != null) {
-            sender.sendMessage(text("This bot is already in server", NamedTextColor.RED));
+            sender.sendMessage(text("此机器人已在服务器中", NamedTextColor.RED));
             return false;
         }
 
         if (FakeplayerConfig.unableNames.contains(name)) {
-            sender.sendMessage(text("This name is not allowed in this server", NamedTextColor.RED));
+            sender.sendMessage(text("此服务器中不允许使用此名称", NamedTextColor.RED));
             return false;
         }
 
         if (botList.bots.size() >= FakeplayerConfig.limit) {
-            sender.sendMessage(text("Bot number limit exceeded", NamedTextColor.RED));
+            sender.sendMessage(text("超出机器人数量限制", NamedTextColor.RED));
             return false;
         }
 

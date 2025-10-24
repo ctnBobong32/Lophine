@@ -69,12 +69,12 @@ public class LoadCommand extends BotSubcommand {
 
             ServerBot bot = botList.loadNewBot(botName);
             if (bot == null) {
-                sender.sendMessage(text("Failed to load bot, please check log", NamedTextColor.RED));
+                sender.sendMessage(text("加载机器人失败，请检查日志", NamedTextColor.RED));
                 return false;
             }
             sender.sendMessage(join(
                     spaces(),
-                    text("Successfully loaded bot", NamedTextColor.GRAY),
+                    text("已成功加载机器人程序", NamedTextColor.GRAY),
                     asAdventure(bot.getDisplayName())
             ));
             return true;
@@ -86,7 +86,7 @@ public class LoadCommand extends BotSubcommand {
             Set<String> bots = botList.getSavedBotList().keySet();
             if (bots.isEmpty()) {
                 return builder
-                        .suggest("<NO SAVED BOT EXISTS>", net.minecraft.network.chat.Component.literal("There are no bots saved before, save one first."))
+                        .suggest("<NO SAVED BOT EXISTS>", net.minecraft.network.chat.Component.literal("之前没有保存机器人，请先保存一个."))
                         .buildFuture();
             }
             bots.forEach(builder::suggest);

@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.protocol.jade;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.protocol.JadeProtocolConfig;
 import net.minecraft.core.BlockPos;
@@ -64,6 +65,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Jade协议实现 - 提供方块和实体信息显示功能
+ * Jade protocol implementation - Provides block and entity information display functionality
+ */
 @LeavesProtocol.Register(namespace = "jade")
 public class JadeProtocol implements LeavesProtocol {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -74,6 +79,10 @@ public class JadeProtocol implements LeavesProtocol {
     public static final PairHierarchyLookup<IServerDataProvider<BlockAccessor>> blockDataProviders = new PairHierarchyLookup<>(new HierarchyLookup<>(Block.class), new HierarchyLookup<>(BlockEntity.class));
     public static final WrappedHierarchyLookup<IServerExtensionProvider<ItemStack>> itemStorageProviders = WrappedHierarchyLookup.forAccessor();
     private static final Set<ServerPlayer> enabledPlayers = new HashSet<>();
+
+    // 汉化消息
+    public static final Component PLAYER_VERSION_MISMATCH = Component.literal("您使用的Jade版本与服务器不一致。请更新Jade模组或联系服务器管理员").withColor(0xff0000);
+    public static final Component THREAD_SAFETY_WARNING = Component.literal("线程安全检查警告");
 
     public static PriorityStore<ResourceLocation, IJadeProvider> priorities;
     private static List<Block> shearableBlocks = null;
@@ -92,17 +101,20 @@ public class JadeProtocol implements LeavesProtocol {
     public static void init() {
         priorities = new PriorityStore<>(IJadeProvider::getDefaultPriority, IJadeProvider::getUid);
 
-        // core plugin
+        // 核心插件
+        // Core plugin
         blockDataProviders.register(BlockEntity.class, BlockNameProvider.INSTANCE);
 
-        // universal plugin
+        // 通用插件
+        // Universal plugin
         entityDataProviders.register(Entity.class, ItemStorageProvider.getEntity());
         blockDataProviders.register(Block.class, ItemStorageProvider.getBlock());
 
         itemStorageProviders.register(Object.class, ItemStorageExtensionProvider.INSTANCE);
         itemStorageProviders.register(Block.class, ItemStorageExtensionProvider.INSTANCE);
 
-        // vanilla plugin
+        // 原版插件
+        // Vanilla plugin
         entityDataProviders.register(Entity.class, AnimalOwnerProvider.INSTANCE);
         entityDataProviders.register(LivingEntity.class, StatusEffectsProvider.INSTANCE);
         entityDataProviders.register(AgeableMob.class, MobGrowthProvider.INSTANCE);
@@ -146,7 +158,7 @@ public class JadeProtocol implements LeavesProtocol {
     @ProtocolHandler.PayloadReceiver(payload = ClientHandshakePayload.class)
     public static void clientHandshake(ServerPlayer player, ClientHandshakePayload payload) {
         if (!payload.protocolVersion().equals(PROTOCOL_VERSION)) {
-            player.sendSystemMessage(Component.literal("You are using a different version of Jade than the server. Please update Jade or report to the server operator").withColor(0xff0000));
+            player.sendSystemMessage(PLAYER_VERSION_MISMATCH);
             return;
         }
         ProtocolUtils.sendPayloadPacket(player, new ServerHandshakePayload(Collections.emptyMap(), shearableBlocks, blockDataProviders.mappedIds(), entityDataProviders.mappedIds()));
@@ -185,7 +197,7 @@ public class JadeProtocol implements LeavesProtocol {
                 try {
                     provider.appendServerData(tag, accessor);
                 } catch (Exception e) {
-                    LOGGER.warn("Error while saving data for entity " + entity);
+                    LOGGER.warn("为实体 {} 保存数据时出错", entity);
                 }
             }
             tag.putInt("EntityId", entity.getId());
@@ -197,16 +209,23 @@ public class JadeProtocol implements LeavesProtocol {
     @ProtocolHandler.PayloadReceiver(payload = RequestBlockPayload.class)
     public static void requestBlockData(ServerPlayer player, RequestBlockPayload payload) {
         player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
+            // 检查是否在正确的线程中执行 - 修复线程安全问题
+            BlockPos pos = payload.data().hit().getBlockPos();
+            if (!TickThread.isTickThreadFor(player.level(), pos)) {
+                LOGGER.debug("[Jade] 请求方块数据在错误的线程中，位置: {}", pos);
+                return;
+            }
+            
             BlockAccessor accessor = payload.data().unpack(player);
             if (accessor == null) {
                 return;
             }
 
-            BlockPos pos = accessor.getPosition();
+            BlockPos accessorPos = accessor.getPosition();
             Block block = accessor.getBlock();
             BlockEntity blockEntity = accessor.getBlockEntity();
             double maxDistance = Mth.square(player.blockInteractionRange() + 21);
-            if (pos.distSqr(player.blockPosition()) > maxDistance || !accessor.getLevel().isLoaded(pos)) {
+            if (accessorPos.distSqr(player.blockPosition()) > maxDistance || !accessor.getLevel().isLoaded(accessorPos)) {
                 return;
             }
 
@@ -229,10 +248,10 @@ public class JadeProtocol implements LeavesProtocol {
                 try {
                     provider.appendServerData(tag, accessor);
                 } catch (Exception e) {
-                    LOGGER.warn("Error while saving data for block " + accessor.getBlockState());
+                    LOGGER.warn("为方块 {} 保存数据时出错", BuiltInRegistries.BLOCK.getKey(block).toString());
                 }
             }
-            NbtUtils.writeBlockPosToTag(pos, tag);
+            NbtUtils.writeBlockPosToTag(accessorPos, tag);
             tag.putString("BlockId", BuiltInRegistries.BLOCK.getKey(block).toString());
 
             ProtocolUtils.sendPayloadPacket(player, new ReceiveDataPayload(tag));
@@ -255,7 +274,7 @@ public class JadeProtocol implements LeavesProtocol {
             ));
         } catch (Throwable ignore) {
             shearableBlocks = List.of();
-            LOGGER.warn("Failed to collect shearable blocks");
+            LOGGER.warn("无法收集可剪切的方块列表");
         }
     }
 

@@ -61,12 +61,12 @@ public class ListCommand extends BotSubcommand {
                 .map(ListCommand::getBotListMessage)
                 .filter(Objects::nonNull)
                 .reduce((a, b) -> a.append(text("\n")).append(b))
-                .orElseGet(() -> text("No bots on the server", GRAY));
+                .orElseGet(() -> text("服务器上没有机器人", GRAY));
         context.getSender().sendMessage(join(noSeparators(),
-                text("Total bot number: ", GRAY),
-                text(BotList.INSTANCE.bots.size(), AQUA).hoverEvent(showText(text("current bot count"))),
+                text("机器人总数: ", GRAY),
+                text(BotList.INSTANCE.bots.size(), AQUA).hoverEvent(showText(text("当前机器人计数"))),
                 text("/", GRAY),
-                text(FakeplayerConfig.limit, AQUA).hoverEvent(showText(text("bot count limit")))
+                text(FakeplayerConfig.limit, AQUA).hoverEvent(showText(text("机器人计数限制")))
         ));
         context.getSender().sendMessage(msg);
         return true;
@@ -105,9 +105,9 @@ public class ListCommand extends BotSubcommand {
             Component botListMessage = getBotListMessage(dimension.getWorld());
             CommandSender sender = context.getSender();
             if (botListMessage == null) {
-                sender.sendMessage(text("No bots in that world", RED));
+                sender.sendMessage(text("世界上没有机器人", RED));
             } else {
-                sender.sendMessage(text("Bot in ").append(botListMessage));
+                sender.sendMessage(text("机器人在").append(botListMessage));
             }
             return true;
         }

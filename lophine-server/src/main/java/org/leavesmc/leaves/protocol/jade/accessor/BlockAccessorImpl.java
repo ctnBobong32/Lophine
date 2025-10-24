@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.protocol.jade.accessor;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.google.common.base.Suppliers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,14 +34,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Supplier;
 
 /**
+ * 用于获取方块目标和上下文信息的类
  * Class to get information of block target and context.
  */
 public class BlockAccessorImpl extends AccessorImpl<BlockHitResult> implements BlockAccessor {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlockAccessorImpl.class);
+    
     private final BlockState blockState;
     @Nullable
     private final Supplier<BlockEntity> blockEntity;
@@ -146,7 +152,30 @@ public class BlockAccessorImpl extends AccessorImpl<BlockHitResult> implements B
         public BlockAccessor unpack(ServerPlayer player) {
             Supplier<BlockEntity> blockEntity = null;
             if (blockState.hasBlockEntity()) {
-                blockEntity = Suppliers.memoize(() -> player.level().getBlockEntity(hit.getBlockPos()));
+                blockEntity = Suppliers.memoize(() -> {
+                    // 线程安全检查 - 修复崩溃问题的关键
+                    ServerLevel level = player.level();
+                    BlockPos pos = hit.getBlockPos();
+                    
+                    // 检查是否在正确的线程中
+                    if (!TickThread.isTickThreadFor(level, pos)) {
+                        LOGGER.debug("[Jade] 线程安全检查失败: 试图在区域线程中获取方块实体, 位置: {}", pos);
+                        return null;
+                    }
+                    
+                    // 检查区块是否已加载
+                    if (!level.isLoaded(pos)) {
+                        LOGGER.debug("[Jade] 区块未加载: {}", pos);
+                        return null;
+                    }
+                    
+                    try {
+                        return level.getBlockEntity(pos);
+                    } catch (Exception e) {
+                        LOGGER.warn("[Jade] 获取方块实体时出错, 位置 {}: {}", pos, e.getMessage());
+                        return null;
+                    }
+                });
             }
             return new Builder()
                     .level(player.level())

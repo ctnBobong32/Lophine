@@ -74,12 +74,12 @@ public class CraftBotManager implements BotManager {
     public <T extends BotAction<T>> T newAction(@NotNull Class<T> type) {
         AbstractBotAction<?> action = Actions.getForClass(type);
         if (action == null) {
-            throw new IllegalArgumentException("No action registered for type: " + type.getName());
+            throw new IllegalArgumentException("没有为类型注册任何操作: " + type.getName());
         } else {
             try {
                 return (T) action.create().asCraft();
             } catch (Exception e) {
-                throw new RuntimeException("Failed to create action of type: " + type.getName(), e);
+                throw new RuntimeException("创建类型为的操作失败: " + type.getName(), e);
             }
         }
     }

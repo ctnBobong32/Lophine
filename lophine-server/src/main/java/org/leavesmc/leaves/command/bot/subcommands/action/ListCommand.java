@@ -49,13 +49,13 @@ public class ListCommand extends LiteralNode {
         CommandSender sender = context.getSender();
         List<AbstractBotAction<?>> actions = bot.getBotActions();
         if (actions.isEmpty()) {
-            sender.sendMessage(text("This bot has no active actions", GRAY));
+            sender.sendMessage(text("此机器人没有活动动作", GRAY));
             return true;
         }
 
         sender.sendMessage(
                 asAdventure(bot.getDisplayName())
-                        .append(text("'s action list:", GRAY))
+                        .append(text("'行动列表:", GRAY))
         );
         for (int i = 0; i < actions.size(); i++) {
             AbstractBotAction<?> action = actions.get(i);

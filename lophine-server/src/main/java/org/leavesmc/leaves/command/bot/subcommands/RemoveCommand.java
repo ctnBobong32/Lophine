@@ -67,7 +67,7 @@ public class RemoveCommand extends BotSubcommand {
         boolean success = BotList.INSTANCE.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, false);
         if (!success) {
             sender = sender == null ? Bukkit.getConsoleSender() : sender;
-            sender.sendMessage(text("Bot remove canceled by a plugin", RED));
+            sender.sendMessage(text("机器人删除被插件取消", RED));
         }
         return success;
     }
@@ -112,9 +112,9 @@ public class RemoveCommand extends BotSubcommand {
             sender.sendMessage(join(spaces(),
                     text("Bot", GRAY),
                     PaperAdventure.asAdventure(bot.getDisplayName()),
-                    text("scheduled for removal in", GRAY),
+                    text("计划移除时间：", GRAY),
                     text(formatSeconds(removeTimeSeconds), AQUA),
-                    text(isReschedule ? "(rescheduled)" : "", GRAY)
+                    text(isReschedule ? "（已重新安排）" : "", GRAY)
             ));
             return true;
         }
@@ -127,7 +127,7 @@ public class RemoveCommand extends BotSubcommand {
             if (!timeStr.matches("^[\\d\\shmsHMS]+$")) {
                 throw new CommandSyntaxException(
                         CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
-                        literal("Invalid time format: " + timeStr)
+                        literal("时间格式无效: " + timeStr)
                 );
             }
 
@@ -135,7 +135,7 @@ public class RemoveCommand extends BotSubcommand {
             if (!remaining.isEmpty() && remaining.matches(".*\\d+.*")) {
                 throw new CommandSyntaxException(
                         CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
-                        literal("Found trailing numbers without unit: " + timeStr)
+                        literal("找到没有单位的尾随数字: " + timeStr)
                 );
             }
 
@@ -162,7 +162,7 @@ public class RemoveCommand extends BotSubcommand {
             if (!foundMatch) {
                 throw new CommandSyntaxException(
                         CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException(),
-                        literal("No valid time units found in: " + timeStr)
+                        literal("在中找不到有效的时间单位: " + timeStr)
                 );
             }
 

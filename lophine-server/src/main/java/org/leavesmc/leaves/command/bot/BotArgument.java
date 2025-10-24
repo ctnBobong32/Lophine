@@ -26,7 +26,7 @@ public class BotArgument implements CustomArgumentType<ServerBot, String> {
         if (bot == null) {
             throw new CommandSyntaxException(
                     CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument(),
-                    Component.literal("Bot with name '" + value + "' does not exist")
+                    Component.literal("机器人名称 '" + value + "' 不存在")
             );
         }
         return bot;
@@ -37,7 +37,7 @@ public class BotArgument implements CustomArgumentType<ServerBot, String> {
         Collection<ServerBot> bots = BotList.INSTANCE.bots;
         if (bots.isEmpty()) {
             return builder
-                    .suggest("<NO BOT EXISTS>", Component.literal("There are no bots in the server, create one first."))
+                    .suggest("<NO BOT EXISTS>", Component.literal("服务器中没有机器人，请先创建一个."))
                     .buildFuture();
         }
         bots.stream().map(ServerBot::getScoreboardName).forEach(builder::suggest);

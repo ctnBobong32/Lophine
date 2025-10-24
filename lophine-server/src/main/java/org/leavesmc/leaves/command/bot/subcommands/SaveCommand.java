@@ -79,12 +79,12 @@ public class SaveCommand extends BotSubcommand {
             boolean success = botList.removeBot(bot, BotRemoveEvent.RemoveReason.COMMAND, sender, true);
             if (success) {
                 sender.sendMessage(join(spaces(),
-                        text("Successfully saved bot", NamedTextColor.GRAY),
+                        text("已成功保存机器人", NamedTextColor.GRAY),
                         asAdventure(bot.getDisplayName()),
                         text("as " + bot.createState.realName(), NamedTextColor.GRAY)
                 ));
             } else {
-                sender.sendMessage(text("Bot save canceled by a plugin", NamedTextColor.RED));
+                sender.sendMessage(text("机器人保存被插件取消", NamedTextColor.RED));
             }
             return success;
         }
