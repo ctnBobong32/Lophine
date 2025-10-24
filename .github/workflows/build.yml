@@ -1,4 +1,4 @@
-name: Lophine CI
+name: Lophine_CTN
 
 on:
   push:
@@ -10,15 +10,15 @@ on:
   workflow_dispatch:
     inputs:
       force-release:
-        description: "Force disable release if you enter 2, force release if you enter 1, default release if not released else skip release"
+        description: "输入2强制禁用发布，输入1强制发布，默认如果未发布则发布否则跳过发布"
         required: false
         default: ""
       force-push:
-        description: "Force disable push to repo if you enter 2, push to repo if you enter 1, default push if not released else skip push repo"
+        description: "输入2强制禁用推送到仓库，输入1强制推送到仓库，默认如果未发布则推送否则跳过推送仓库"
         required: false
         default: ""
       comments:
-        description: "Add comments to release"
+        description: "为发布添加注释"
         required: false
         default: ""
 
@@ -29,49 +29,49 @@ jobs:
     runs-on: ubuntu-latest
     environment: default
     steps:
-      - name: Checkout Git Repository
+      - name: 检出 Git 仓库
         uses: actions/checkout@v5
 
-      - name: Set Up JDK
+      - name: 设置 JDK 环境
         uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: 21
 
-      - name: Setup Gradle
+      - name: 设置 Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: Grant execute permission for gradlew
+      - name: 授予 gradlew 执行权限
         run: chmod +x gradlew
 
-      - name: Configure Git User Details
-        run: git config --global user.email "ci@luminolmc.com" && git config --global user.name "LuminolMC CI"
+      - name: 配置 Git 用户信息
+        run: git config --global user.email "3647844952@qq.com" && git config --global user.name "ctnBobong32"
 
-      - name: Apply All Patches
+      - name: 应用所有补丁
         run: ./gradlew --refresh-dependencies applyAllPatches
 
-      - name: Build Paperclip Jar
+      - name: 构建 Paperclip Jar
         run: ./gradlew --refresh-dependencies createMojmapPaperclipJar
 
-      - name: Upload Artifact
+      - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.project_id_b }} CI Artifacts
           path: lophine-server/build/libs/*-paperclip-*-mojmap.jar
 
-      - name: Set Environment
+      - name: 设置环境变量
         if: github.event_name != 'pull_request'
         run: sh scripts/SetENV.sh
 
-      - name: Check If Release Exists
+      - name: 检查发布是否已存在
         if: github.event_name != 'pull_request' && env.flag_release == 'true'
         run: |
           git fetch --tags
           if [ -n "$(git tag -l "${{ env.tag }}")" ]; then
-            echo "Release already exists"
+            echo "版本已存在"
             release_exists=true
           else
-            echo "Release does not exist"
+            echo "发布不存在"
             release_exists=false
           fi
           if [ "$release_exists" == "true" ]; then
@@ -84,7 +84,7 @@ jobs:
           fi
           echo "release_exists=${release_exists}" >> $GITHUB_ENV
 
-      - name: Publish To Repo
+      - name: 发布到仓库
         if: (( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-push == '2')) || inputs.force-push == '1') && false # do not push to any repo
         continue-on-error: true
         run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
@@ -92,28 +92,28 @@ jobs:
           PRIVATE_MAVEN_REPO_PASSWORD: ${{ secrets.PRIVATE_MAVEN_REPO_PASSWORD }}
           PRIVATE_MAVEN_REPO_USERNAME: ${{ secrets.PRIVATE_MAVEN_REPO_USERNAME }}
 
-      - name: Create Release - Pre Process
+      - name: 创建发布 - 预处理
         if: ( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
         run: |
           if [ ${{ inputs.comments }} == "" ]; then
-          echo "No comments provided"
+          echo "未提供评论"
           echo "flag_comment=true" >> $GITHUB_ENV
           else
           echo "flag_comment=false" >> $GITHUB_ENV
           fi
 
-      - name: Create Release - No Comment
+      - name: 创建发布 - 无注释
         if: env.flag_comment == 'false'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.tag }}
           name: ${{ env.project_id_b }} ${{ env.mcversion }} - ${{ env.commit_id }}${{ env.release_count }}
           body: |
-            📦Version: `${{ env.mcversion }}` | Commit ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
+            📦版本: `${{ env.mcversion }}` | 承诺 ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
             This release is automatically compiled by GitHub Actions
-            ### Branch Info
+            ### 分支信息
             > ${{ github.ref_name }}
-            ### Commit Message
+            ### 提交消息
             ${{ env.commit_msg }}
           artifacts: ${{ env.jar_dir }}
           generateReleaseNotes: true
@@ -121,20 +121,20 @@ jobs:
           makeLatest: ${{ env.make_latest }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Release - With Comment
+      - name: 创建发布 - 带注释
         if: env.flag_comment == 'true'
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.tag }}
           name: ${{ env.project_id_b }} ${{ env.mcversion }} - ${{ env.commit_id }}${{ env.release_count }}
           body: |
-            📦Version: `${{ env.mcversion }}` | Commit ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
-            This release is automatically compiled by GitHub Actions
-            ### Comments
+            📦版本: `${{ env.mcversion }}` | 承诺 ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/ctnBobong32/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/ctnBobong32/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
+            此版本由GitHub Actions自动编译
+            ### 评论
             > ${{ inputs.comments }}
-            ### Branch Info
+            ### 分支信息
             > ${{ github.ref_name }}
-            ### Commit Message
+            ### 提交消息
             ${{ env.commit_msg }}
           artifacts: ${{ env.jar_dir }}
           generateReleaseNotes: true
