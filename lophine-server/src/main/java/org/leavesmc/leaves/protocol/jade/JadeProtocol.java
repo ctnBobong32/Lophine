@@ -17,6 +17,7 @@
 
 package org.leavesmc.leaves.protocol.jade;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.mojang.logging.LogUtils;
 import fun.bm.lophine.config.modules.function.protocol.JadeProtocolConfig;
 import net.minecraft.core.BlockPos;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.AgeableMob;
@@ -196,6 +198,7 @@ public class JadeProtocol implements LeavesProtocol {
 
     @ProtocolHandler.PayloadReceiver(payload = RequestBlockPayload.class)
     public static void requestBlockData(ServerPlayer player, RequestBlockPayload payload) {
+        ServerLevel level = player.level();
         player.getBukkitEntity().taskScheduler.schedule((LivingEntity nmsEntity) -> {
             BlockAccessor accessor = payload.data().unpack(player);
             if (accessor == null) {
@@ -204,7 +207,7 @@ public class JadeProtocol implements LeavesProtocol {
 
             BlockPos pos = accessor.getPosition();
             Block block = accessor.getBlock();
-            BlockEntity blockEntity = accessor.getBlockEntity();
+            BlockEntity blockEntity = TickThread.isTickThreadFor(level, pos) ? accessor.getBlockEntity() : null;
             double maxDistance = Mth.square(player.blockInteractionRange() + 21);
             if (pos.distSqr(player.blockPosition()) > maxDistance || !accessor.getLevel().isLoaded(pos)) {
                 return;
