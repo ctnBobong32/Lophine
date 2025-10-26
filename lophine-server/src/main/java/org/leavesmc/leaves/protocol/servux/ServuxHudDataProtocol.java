@@ -56,8 +56,8 @@ public class ServuxHudDataProtocol implements LeavesProtocol {
     private static final List<ServerPlayer> players = Collections.synchronizedList(new ArrayList<>());
     private static final int updateInterval = 80;
 
-    private static final ConcurrentHashMap<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<DataLogger.Type, DataLogger<?>> LOGGERS = new ConcurrentHashMap<>();
+    private static final Map<ServerPlayer, List<DataLogger.Type>> loggerPlayers = new ConcurrentHashMap<>();
+    private static final Map<DataLogger.Type, DataLogger<?>> LOGGERS = new ConcurrentHashMap<>();
     private static final Table<DataLogger.Type, ServerPlayer, Tag> DATA = HashBasedTable.create();
 
     public static boolean refreshSpawnMetadata = false;

@@ -152,12 +152,16 @@ public class JadeProtocol implements LeavesProtocol {
             return;
         }
         ProtocolUtils.sendPayloadPacket(player, new ServerHandshakePayload(Collections.emptyMap(), shearableBlocks, blockDataProviders.mappedIds(), entityDataProviders.mappedIds()));
-        enabledPlayers.add(player);
+        synchronized (enabledPlayers) {
+            enabledPlayers.add(player);
+        }
     }
 
     @ProtocolHandler.PlayerLeave
     public static void onPlayerLeave(ServerPlayer player) {
-        enabledPlayers.remove(player);
+        synchronized (enabledPlayers) {
+            enabledPlayers.remove(player);
+        }
     }
 
     @ProtocolHandler.PayloadReceiver(payload = RequestEntityPayload.class)
@@ -245,8 +249,10 @@ public class JadeProtocol implements LeavesProtocol {
     @ProtocolHandler.ReloadServer
     public static void onServerReload() {
         rebuildShearableBlocks();
-        for (ServerPlayer player : enabledPlayers) {
-            ProtocolUtils.sendPayloadPacket(player, new ServerHandshakePayload(Collections.emptyMap(), shearableBlocks, blockDataProviders.mappedIds(), entityDataProviders.mappedIds()));
+        synchronized (enabledPlayers) {
+            for (ServerPlayer player : enabledPlayers) {
+                ProtocolUtils.sendPayloadPacket(player, new ServerHandshakePayload(Collections.emptyMap(), shearableBlocks, blockDataProviders.mappedIds(), entityDataProviders.mappedIds()));
+            }
         }
     }
 

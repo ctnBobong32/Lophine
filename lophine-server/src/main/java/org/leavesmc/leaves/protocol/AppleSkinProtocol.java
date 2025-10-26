@@ -30,7 +30,11 @@ import org.leavesmc.leaves.protocol.core.LeavesProtocol;
 import org.leavesmc.leaves.protocol.core.ProtocolHandler;
 import org.leavesmc.leaves.protocol.core.ProtocolUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @LeavesProtocol.Register(namespace = "appleskin")
 public class AppleSkinProtocol implements LeavesProtocol {
@@ -43,11 +47,11 @@ public class AppleSkinProtocol implements LeavesProtocol {
 
     private static final float MINIMUM_EXHAUSTION_CHANGE_THRESHOLD = 0.01F;
 
-    private static final Map<ServerPlayer, Float> previousSaturationLevels = new HashMap<>();
-    private static final Map<ServerPlayer, Float> previousExhaustionLevels = new HashMap<>();
-    private static final Map<ServerPlayer, Boolean> previousNaturalRegeneration = new HashMap<>();
+    private static final Map<ServerPlayer, Float> previousSaturationLevels = new ConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Float> previousExhaustionLevels = new ConcurrentHashMap<>();
+    private static final Map<ServerPlayer, Boolean> previousNaturalRegeneration = new ConcurrentHashMap<>();
 
-    private static final Map<UUID, Set<String>> subscribedChannels = new HashMap<>();
+    private static final Map<UUID, Set<String>> subscribedChannels = new ConcurrentHashMap<>();
 
     @Contract("_ -> new")
     public static ResourceLocation id(String path) {

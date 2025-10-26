@@ -55,7 +55,7 @@ public class BBORProtocol implements LeavesProtocol {
     private static final ResourceLocation STRUCTURE_LIST_SYNC = id("structure_list_sync_v1");
     // call
     private static final Map<Integer, ServerPlayer> players = new ConcurrentHashMap<>();
-    private static final Map<Integer, Set<BBoundingBox>> playerBoundingBoxesCache = new HashMap<>();
+    private static final Map<Integer, Set<BBoundingBox>> playerBoundingBoxesCache = new ConcurrentHashMap<>();
     private static final Map<ResourceLocation, Map<BBoundingBox, Set<BBoundingBox>>> dimensionCache = new ConcurrentHashMap<>();
 
     private static boolean initialized = false;

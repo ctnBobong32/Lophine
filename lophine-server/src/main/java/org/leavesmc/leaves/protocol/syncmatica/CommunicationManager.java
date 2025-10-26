@@ -37,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @LeavesProtocol.Register(namespace = "syncmatica")
 public class CommunicationManager implements LeavesProtocol {
@@ -46,8 +47,8 @@ public class CommunicationManager implements LeavesProtocol {
     protected static final Map<UUID, Exchange> modifyState = new HashMap<>();
     protected static final Rotation[] rotOrdinals = Rotation.values();
     protected static final Mirror[] mirOrdinals = Mirror.values();
-    private static final Map<UUID, List<ServerPlacement>> downloadingFile = new HashMap<>();
-    private static final Map<ExchangeTarget, ServerPlayer> playerMap = new HashMap<>();
+    private static final Map<UUID, List<ServerPlacement>> downloadingFile = new ConcurrentHashMap<>();
+    private static final Map<ExchangeTarget, ServerPlayer> playerMap = new ConcurrentHashMap<>();
 
     public CommunicationManager() {
     }
