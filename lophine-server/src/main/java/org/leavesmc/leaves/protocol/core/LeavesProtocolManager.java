@@ -24,7 +24,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.leavesmc.leaves.protocol.core.invoker.*;
 import org.slf4j.Logger;
@@ -65,6 +64,8 @@ public class LeavesProtocolManager {
     private static final List<PlayerInvokerHolder<ProtocolHandler.PlayerLeave>> PLAYER_LEAVE = new ArrayList<>();
     private static final List<EmptyInvokerHolder<ProtocolHandler.ReloadServer>> RELOAD_SERVER = new ArrayList<>();
     private static final List<EmptyInvokerHolder<ProtocolHandler.ReloadDataPack>> RELOAD_DATAPACK = new ArrayList<>();
+
+    private static long lastAcceptTime = 0;
 
     @SuppressWarnings("unchecked")
     public static void init() {
@@ -253,8 +254,11 @@ public class LeavesProtocolManager {
     }
 
     public static void handleTick() {
+        long currentTime = System.currentTimeMillis() / 50;
+        if (currentTime == lastAcceptTime) return;
+        lastAcceptTime = currentTime;
         for (var tickerInfo : TICKERS) {
-            if (MinecraftServer.getServer().checkTickCount(tickerInfo.owner().tickerInterval(tickerInfo.handler().tickerId()))) {
+            if (currentTime % tickerInfo.owner().tickerInterval(tickerInfo.handler().tickerId()) == 0) {
                 tickerInfo.invoke();
             }
         }

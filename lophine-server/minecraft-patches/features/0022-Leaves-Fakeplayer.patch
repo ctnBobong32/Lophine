@@ -33,10 +33,10 @@ index 66ec0424a46dcd49cf44467357d80b1a2d84d3b2..04ae8de63af0a8abe578f14c8ef85fd4
      private DisconnectionDetails disconnectionDetails;
      private boolean encrypted;
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc47df2aa78 100644
+index b156b5c635f931a3d4abc0584591f90476d011a6..81726e5782d25ff35a2bea8820a62786e46148b1 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -349,6 +349,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -347,6 +347,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      }
      // Folia end - regionised ticking
  
@@ -45,7 +45,7 @@ index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc4
      public static <S extends MinecraftServer> S spin(Function<Thread, S> threadFunction) {
          ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry.init(); // Paper - rewrite data converter system
          AtomicReference<S> atomicReference = new AtomicReference<>();
-@@ -1040,6 +1042,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1038,6 +1040,11 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Folia end - region threading
  
      public void stopServer() {
@@ -57,7 +57,7 @@ index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc4
          // Folia start - region threading
          // halt scheduler
          // don't wait, we may be on a scheduler thread
-@@ -1590,7 +1597,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1588,7 +1595,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          int i = this.pauseWhileEmptySeconds() * 20;
          this.removeDisabledPluginsBlockingSleep(); // Paper - API to allow/disallow tick sleeping
          if (false && i > 0) { // Folia - region threading - this is complicated to implement, and even if done correctly is messy
@@ -66,7 +66,7 @@ index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc4
                  this.emptyTicks++;
              } else {
                  this.emptyTicks = 0;
-@@ -1914,6 +1921,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1912,6 +1919,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      public void tickConnection() {
          this.getConnection().tick();
@@ -74,7 +74,7 @@ index 0c2b7aafa8ddee36d38fabd3561e6f97fce828f9..e5fc1969b8af692d785214731b3f8cc4
      }
  
      private void synchronizeTime(ServerLevel level) {
-@@ -3005,6 +3013,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -2983,6 +2991,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          return 0;
      }
  

@@ -9,7 +9,6 @@ import fun.bm.lophine.command.counter.CounterSubCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.TextColor;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.leavesmc.leaves.command.ArgumentNode;

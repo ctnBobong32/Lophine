@@ -154,7 +154,7 @@ public class ServerBot extends ServerPlayer {
             this.notSleepTicks++;
         }
 
-        if (FakeplayerConfig.regenAmount > 0.0 && getServer().checkTickCount(20)) {
+        if (FakeplayerConfig.regenAmount > 0.0 && this.tickCount % 20 == 0) {
             float regenAmount = (float) (FakeplayerConfig.regenAmount * 20);
             this.setHealth(Math.min(this.getHealth() + regenAmount, this.getMaxHealth()));
         }
