@@ -98,13 +98,13 @@ public class REIServerProtocol implements LeavesProtocol {
             new ArrayBlockingQueue<>(1),
             new ThreadPoolExecutor.DiscardOldestPolicy()
     );
-    private static int minecraftRecipeVer = 0;
-    private static int nextReiRecipeVer = -1;
+    private static long minecraftRecipeVer = 0;
+    private static long nextReiRecipeVer = -1;
     private static ImmutableList<CustomPacketPayload> cachedPayloads;
 
     @ProtocolHandler.ReloadDataPack
     public static void onRecipeReload() {
-        minecraftRecipeVer = MinecraftServer.getServer().getTickCount();
+        minecraftRecipeVer = System.currentTimeMillis() / 50;
     }
 
     @Contract("_ -> new")
@@ -138,7 +138,7 @@ public class REIServerProtocol implements LeavesProtocol {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static void reloadRecipe(int reiRecipeVer) {
+    private static void reloadRecipe(long reiRecipeVer) {
         ImmutableList.Builder<Display> builder = ImmutableList.builder();
         MinecraftServer server = MinecraftServer.getServer();
         RecipeMap recipeMap = server.getRecipeManager().recipes;
