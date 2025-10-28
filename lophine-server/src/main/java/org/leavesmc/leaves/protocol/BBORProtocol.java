@@ -125,22 +125,24 @@ public class BBORProtocol implements LeavesProtocol {
         Map<BBoundingBox, Set<BBoundingBox>> cache = getOrCreateCache(dimensionID);
         for (var entry : structures.entrySet()) {
             StructureStart structureStart = entry.getValue();
-            if (structureStart == null) {
-                return;
+            if (structureStart == null || !structureStart.isValid()) {
+                continue;
             }
 
             String type = "structure:" + entry.getKey();
             BoundingBox bb = structureStart.getBoundingBox();
             BBoundingBox boundingBox = buildStructure(bb, type);
             if (cache.containsKey(boundingBox)) {
-                return;
+                continue;
             }
 
             Set<BBoundingBox> structureBoundingBoxes = new HashSet<>();
-            for (StructurePiece structureComponent : structureStart.getPieces()) {
-                structureBoundingBoxes.add(buildStructure(structureComponent.getBoundingBox(), type));
+            if (!structureStart.getPieces().isEmpty()) {
+                for (StructurePiece structureComponent : structureStart.getPieces()) {
+                    structureBoundingBoxes.add(buildStructure(structureComponent.getBoundingBox(), type));
+                }
+                cache.put(boundingBox, structureBoundingBoxes);
             }
-            cache.put(boundingBox, structureBoundingBoxes);
         }
     }
 
