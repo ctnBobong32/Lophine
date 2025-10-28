@@ -24,4 +24,12 @@ public class OldFeatureConfig implements IConfigModule {
     @TransformedConfig(name = "give_bad_omen_when_kill_raid_captain", directory = {"misc", "revert_raid_changes"}, transformComments = false)
     @ConfigInfo(name = "old_raid_behavior")
     public static boolean oldRaidBehavior = false;
+
+    @TransformedConfig(name = "villager-infinite-trade", directory = {"function", "villager"}, transformComments = false)
+    @TransformedConfig(name = "villager-infinite-trade", directory = {"misc", "villager"}, transformComments = false)
+    @TransformedConfig(name = "villager-infinite-trade", directory = {"misc", "villager-config"}, transformComments = false)
+    @ConfigInfo(name = "villager-void-trade", comments =
+            """
+                    Allow villager void trade.""")
+    public static boolean villagerVoidTrade = false;
 }

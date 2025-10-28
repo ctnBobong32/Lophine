@@ -266,7 +266,7 @@ index 70740381c6501c1a518c52b24381edd16792507f..5e31b499a894113b4be1982a1071348f
              }
          }
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 576dde41a4b48aac9079cca902f4371a31470af3..952b92c55d7192791a19ecebe80894f6cf992049 100644
+index fbce0eafdf685cda258d5e423e686630c6315386..e0fc0e82995b428f4c75a29895d8692dd5671f4e 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
 @@ -207,6 +207,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
@@ -298,7 +298,7 @@ index 576dde41a4b48aac9079cca902f4371a31470af3..952b92c55d7192791a19ecebe80894f6
      @Override
      public void updatePOIOnBlockStateChange(BlockPos pos, BlockState oldState, BlockState newState) {
          Optional<Holder<PoiType>> optional = PoiTypes.forState(oldState);
-@@ -2826,6 +2834,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2828,6 +2836,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              // ServerLevel.this.getChunkSource().addEntity(entity); // Paper - ignore and warn about illegal addEntity calls instead of crashing server; moved down below valid=true
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.add(serverPlayer);
@@ -310,7 +310,7 @@ index 576dde41a4b48aac9079cca902f4371a31470af3..952b92c55d7192791a19ecebe80894f6
                  if (serverPlayer.isReceivingWaypoints()) {
                      ServerLevel.this.getWaypointManager().addPlayer(serverPlayer);
                  }
-@@ -2913,6 +2926,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+@@ -2915,6 +2928,11 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
              ServerLevel.this.getChunkSource().removeEntity(entity);
              if (entity instanceof ServerPlayer serverPlayer) {
                  ServerLevel.this.players.remove(serverPlayer);
@@ -434,7 +434,7 @@ index 144a2644c15f276f02bb3be859dc5d05a677ac55..c6a89e8936cffa49b3de153ed3c40e3c
          boolean stateLocked = true; try { this.stateLock.lock(); // Paper - Fix GameProfileCache concurrency
          GameProfileCache.GameProfileInfo gameProfileInfo = this.profilesByName.get(string);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index cb863a36fc67e993956ec3be655e6e4b9764c051..908ec29a6e285122d1a8a43dc547b74af2697442 100644
+index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..9e80d6c3d70832a8f195987e6934187eee8e22b7 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -425,6 +425,19 @@ public abstract class PlayerList {
