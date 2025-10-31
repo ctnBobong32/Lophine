@@ -13,12 +13,6 @@ public class CommandConfig implements IConfigModule {
                     Allow to use tick command""")
     public static boolean tick = false;
 
-    @ConfigInfo(name = "datapack_command_enabled", comments =
-            """
-                    Allow to use datapack command
-                        --- datapack hot-update unsupported, please restart server""")
-    public static boolean datapack = false;
-
     @ConfigInfo(name = "function_command_enabled", comments =
             """
                     Allow to use function command""")

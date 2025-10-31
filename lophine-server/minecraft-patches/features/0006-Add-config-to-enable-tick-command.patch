@@ -97,10 +97,10 @@ index c485d5b3ba95f2a969bdf0dab9654ac284976f8d..b957585cf7cf7f845e20f59c7b355722
                  this.scheduler.regionFailed(this, false, thr);
                  // regionFailed will schedule a shutdown, so we should avoid letting this region tick further
 diff --git a/net/minecraft/commands/Commands.java b/net/minecraft/commands/Commands.java
-index 6633af3cff77bcd4bcc591c032d647b7a850dced..dc5a558c72a5a7ab8a650262c6a1a2dc5142b8fc 100644
+index 22d211bee83e3ef34d6ac81dd89c0e73924bee90..1fb359073342a657e9e493403263b56be5b3393f 100644
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -251,7 +251,11 @@ public class Commands {
+@@ -249,7 +249,11 @@ public class Commands {
          TeleportCommand.register(this.dispatcher);
          TellRawCommand.register(this.dispatcher, context);
          //TestCommand.register(this.dispatcher, context); // Folia - region threading
@@ -114,7 +114,7 @@ index 6633af3cff77bcd4bcc591c032d647b7a850dced..dc5a558c72a5a7ab8a650262c6a1a2dc
          TitleCommand.register(this.dispatcher, context);
          //TriggerCommand.register(this.dispatcher); // Folia - region threading - TODO later
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index b4b3ff86f7c4afb94fc4da5133746391a078a7fb..b156b5c635f931a3d4abc0584591f90476d011a6 100644
+index 75027e73859c955a54034640f905cb5d91a6a2f4..2f4970242c754cfba8ff5656a63af07d9d0a723c 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
 @@ -267,7 +267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

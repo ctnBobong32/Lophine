@@ -8,6 +8,7 @@ import me.earthme.luminol.enums.EnumConfigCategory;
 
 @ConfigClassInfo(category = EnumConfigCategory.REMOVED, name = "removed_config")
 public class RemovedConfig implements IConfigModule {
+    @TransformedConfig(name = "datapack_command_enabled", directory = {"experiment", "command"}, transform = false)
     @TransformedConfig(name = "disable_end_crystal_check", directory = {"fixes", "end_crystal"}, transform = false)
     @TransformedConfig(name = "disable_end_crystal_check", directory = {"misc", "end_crystal"}, transform = false)
     @TransformedConfig(name = "allow_skip_cooldown", directory = {"misc", "revert_raid_changes"}, transform = false)
