@@ -434,7 +434,7 @@ index 144a2644c15f276f02bb3be859dc5d05a677ac55..c6a89e8936cffa49b3de153ed3c40e3c
          boolean stateLocked = true; try { this.stateLock.lock(); // Paper - Fix GameProfileCache concurrency
          GameProfileCache.GameProfileInfo gameProfileInfo = this.profilesByName.get(string);
 diff --git a/net/minecraft/server/players/PlayerList.java b/net/minecraft/server/players/PlayerList.java
-index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..9e80d6c3d70832a8f195987e6934187eee8e22b7 100644
+index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..580f114fd99b017403c61e994d0c947d00e5115d 100644
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
 @@ -425,6 +425,19 @@ public abstract class PlayerList {
@@ -445,7 +445,7 @@ index 8e2775e873c92beed6a0e4e8ce1304ab8ca6e8d1..9e80d6c3d70832a8f195987e6934187e
 +            if (fun.bm.lophine.config.modules.function.FakeplayerConfig.enable) {
 +                org.leavesmc.leaves.bot.ServerBot bot = this.server.getBotList().getBotByName(player.getScoreboardName());
 +                if (bot != null) {
-+                    this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false);
++                    this.server.getBotList().removeBot(bot, org.leavesmc.leaves.event.bot.BotRemoveEvent.RemoveReason.INTERNAL, player.getBukkitEntity(), false, true);
 +                }
 +                this.server.getBotList().bots.forEach(bot1 -> {
 +                    bot1.sendPlayerInfo(player);
