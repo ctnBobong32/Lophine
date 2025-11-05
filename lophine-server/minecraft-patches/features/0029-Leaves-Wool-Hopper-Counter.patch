@@ -10,7 +10,7 @@ Licensed under: MIT
 This patch is Powered by fabric-carpet(https://github.com/gnembon/fabric-carpet)
 
 diff --git a/net/minecraft/world/level/block/entity/HopperBlockEntity.java b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
-index 55cbf9b4cc568fb9b418433f597ed6b64e4409b0..8449623a313edbe95941a2e328fe47269015f7fb 100644
+index d4fe03fd766caca1d7693a5317460ca1a9b9fa4f..a821deaa5c076151336762d17a8da45abb4c43cd 100644
 --- a/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/HopperBlockEntity.java
 @@ -232,8 +232,30 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
@@ -44,7 +44,7 @@ index 55cbf9b4cc568fb9b418433f597ed6b64e4409b0..8449623a313edbe95941a2e328fe4726
                      setChanged(level, pos, state);
                      // Leaves start - Lithium Sleeping Block Entity
                      if (me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled
-@@ -464,6 +486,13 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -465,6 +487,13 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      // Paper end - Perf: Optimize Hoppers
  
      private static boolean ejectItems(Level level, BlockPos pos, HopperBlockEntity blockEntity) {
@@ -55,10 +55,10 @@ index 55cbf9b4cc568fb9b418433f597ed6b64e4409b0..8449623a313edbe95941a2e328fe4726
 +            }
 +        }
 +        // Leaves end - hopper counter
-         Container attachedContainer = me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled ? blockEntity.getInsertInventory(level, pos, blockEntity) : getAttachedContainer(level, pos, blockEntity); // Leaves - Lithium Sleeping Block Entity
+         Container attachedContainer = me.earthme.luminol.config.modules.optimizations.LeavesSleepingBlockEntityConfig.enabled ? blockEntity.getInsertInventory(level) : getAttachedContainer(level, pos, blockEntity); // Leaves - Lithium Sleeping Block Entity
          if (attachedContainer == null) {
              return false;
-@@ -554,6 +583,26 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -541,6 +570,26 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
          }
      }
  
@@ -85,7 +85,7 @@ index 55cbf9b4cc568fb9b418433f597ed6b64e4409b0..8449623a313edbe95941a2e328fe4726
      private static int[] getSlots(Container container, Direction direction) {
          if (container instanceof WorldlyContainer worldlyContainer) {
              return worldlyContainer.getSlotsForFace(direction);
-@@ -710,6 +759,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
+@@ -683,6 +732,7 @@ public class HopperBlockEntity extends RandomizableContainerBlockEntity implemen
      }
  
      public static boolean addItem(Container container, ItemEntity item) {
