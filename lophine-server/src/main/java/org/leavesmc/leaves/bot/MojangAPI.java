@@ -1,20 +1,3 @@
-/*
- * This file is part of Leaves (https://github.com/LeavesMC/Leaves)
- *
- * Leaves is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Leaves is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Leaves. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package org.leavesmc.leaves.bot;
 
 import com.google.gson.JsonObject;
@@ -23,13 +6,21 @@ import fun.bm.lophine.config.modules.function.FakeplayerConfig;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MojangAPI {
 
     private static final Map<String, String[]> CACHE = new HashMap<>();
+    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);
+    private static final int CONNECT_TIMEOUT = 5000;
+    private static final int READ_TIMEOUT = 10000;
 
     public static String[] getSkin(String name) {
         if (FakeplayerConfig.useSkinCache && CACHE.containsKey(name)) {
@@ -37,20 +28,76 @@ public class MojangAPI {
         }
 
         String[] values = pullFromAPI(name);
-        CACHE.put(name, values);
+        if (values != null) {
+            CACHE.put(name, values);
+        }
         return values;
     }
 
-    // Laggggggggggggggggggggggggggggggggggggggggg
-    public static String[] pullFromAPI(String name) {
+    public static CompletableFuture<String[]> getSkinAsync(String name) {
+        if (FakeplayerConfig.useSkinCache && CACHE.containsKey(name)) {
+            return CompletableFuture.completedFuture(CACHE.get(name));
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            String[] values = pullFromAPI(name);
+            if (values != null) {
+                CACHE.put(name, values);
+            }
+            return values;
+        }, EXECUTOR);
+    }
+
+    private static String[] pullFromAPI(String name) {
+        HttpURLConnection uuidConnection = null;
+        HttpURLConnection profileConnection = null;
+        
         try {
-            String uuid = JsonParser.parseReader(new InputStreamReader(URI.create("https://api.mojang.com/users/profiles/minecraft/" + name).toURL().openStream()))
+            String uuidUrl = "https://htttp-proxy.262832.xyz/https://api.mojang.com/users/profiles/minecraft/" + name;
+            uuidConnection = createConnection(uuidUrl);
+            
+            String uuid = JsonParser.parseReader(new InputStreamReader(uuidConnection.getInputStream()))
                     .getAsJsonObject().get("id").getAsString();
-            JsonObject property = JsonParser.parseReader(new InputStreamReader(URI.create("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false").toURL().openStream()))
+                    
+            String profileUrl = "https://htttp-proxy.262832.xyz/https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false";
+            profileConnection = createConnection(profileUrl);
+            
+            JsonObject property = JsonParser.parseReader(new InputStreamReader(profileConnection.getInputStream()))
                     .getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
+                    
             return new String[]{property.get("value").getAsString(), property.get("signature").getAsString()};
+            
         } catch (IOException | IllegalStateException | IllegalArgumentException e) {
             return null;
+        } finally {
+            if (uuidConnection != null) {
+                uuidConnection.disconnect();
+            }
+            if (profileConnection != null) {
+                profileConnection.disconnect();
+            }
         }
+    }
+
+    private static HttpURLConnection createConnection(String urlString) throws IOException {
+        URL url = URI.create(urlString).toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(CONNECT_TIMEOUT);
+        connection.setReadTimeout(READ_TIMEOUT);
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "LeavesMC/ctn");
+        return connection;
+    }
+
+    public static void clearCache() {
+        CACHE.clear();
+    }
+
+    public static void clearCache(String name) {
+        CACHE.remove(name);
+    }
+
+    public static void shutdown() {
+        EXECUTOR.shutdown();
     }
 }

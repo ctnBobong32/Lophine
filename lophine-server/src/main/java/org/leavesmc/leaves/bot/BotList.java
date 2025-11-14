@@ -190,6 +190,8 @@ public class BotList {
     }
 
     private ServerBot summonBot(ServerBot bot, ServerLevel world) {
+        bot.level().getChunkSource().chunkMap.addEntity(bot);
+        
         world.addNewPlayer(bot);
 
         BotJoinEvent event1 = new BotJoinEvent(bot.getBukkitEntity(), PaperAdventure.asAdventure(Component.translatable("multiplayer.player.joined", bot.getDisplayName())).style(Style.style(NamedTextColor.YELLOW)));
@@ -203,7 +205,6 @@ public class BotList {
         bot.renderInfo();
         bot.supressTrackerForLogin = false;
 
-        bot.level().getChunkSource().chunkMap.addEntity(bot);
         bot.renderData();
         bot.initInventoryMenu();
         botsNameByWorldUuid
@@ -213,9 +214,6 @@ public class BotList {
         return bot;
     }
 
-    /*
-     * return true if async
-     */
     public boolean removeBot(@NotNull ServerBot bot, @NotNull BotRemoveEvent.RemoveReason reason, @Nullable CommandSender remover, boolean saved, boolean async) {
         if (async && !TickThread.isTickThreadFor(bot.level(), bot.getX(), bot.getZ())) {
             bot.getBukkitEntity().taskScheduler.schedule((Entity unused) -> this.removeBot(bot, reason, remover, saved), null, 1L);

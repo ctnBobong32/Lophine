@@ -49,8 +49,6 @@ import org.slf4j.Logger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-// Powered by Servux(https://github.com/sakura-ryoko/servux)
-
 @LeavesProtocol.Register(namespace = "servux")
 public class ServuxStructuresProtocol implements LeavesProtocol {
     private static final Logger LOGGER = LogUtils.getClassLogger();
@@ -70,7 +68,7 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     public static void onPacketReceive(ServerPlayer player, StructuresPayload payload) {
         switch (payload.packetType()) {
             case PACKET_C2S_STRUCTURES_REGISTER -> onPlayerSubscribed(player);
-            case PACKET_C2S_REQUEST_SPAWN_METADATA -> ServuxHudDataProtocol.refreshSpawnMetadata(player); // move to
+            case PACKET_C2S_REQUEST_SPAWN_METADATA -> ServuxHudDataProtocol.refreshSpawnMetadata(player);
             case PACKET_C2S_STRUCTURES_UNREGISTER -> onPlayerLoggedOut(player);
         }
     }
@@ -87,7 +85,6 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
         long tickCounter = System.currentTimeMillis() / 50;
         retainDistance = server.getPlayerList().getViewDistance() + 2;
         for (ServerPlayer player : players.values()) {
-            // TODO DimensionChange
             refreshTrackedChunks(player, tickCounter);
         }
     }
@@ -127,11 +124,12 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
     }
 
     public static void onPlayerSubscribed(@NotNull ServerPlayer player) {
-        if (!players.containsKey(player.getId())) {
-            players.put(player.getId(), player);
-        } else {
-            LOGGER.warn("{} re-register servux:structures", player.getScoreboardName());
+        if (players.containsKey(player.getId())) {
+            LOGGER.debug("{} re-register servux:structures, refreshing data", player.getScoreboardName());
+            onPlayerLoggedOut(player);
         }
+
+        players.put(player.getId(), player);
 
         MinecraftServer server = MinecraftServer.getServer();
         sendMetaData(player);
@@ -183,7 +181,6 @@ public class ServuxStructuresProtocol implements LeavesProtocol {
                 Structure feature = entry.getKey();
                 LongSet startChunks = entry.getValue();
 
-                // TODO add an option && feature != StructureFeature.MINESHAFT (?)
                 if (!startChunks.isEmpty()) {
                     references.merge(feature, startChunks, (oldSet, entrySet) -> {
                         LongOpenHashSet newSet = new LongOpenHashSet(oldSet);
