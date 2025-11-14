@@ -1,4 +1,4 @@
-name: Lophine_CTN
+name: Lophine_CTN构建
 
 on:
   push:
@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
     inputs:
       force-release:
-        description: "输入2强制禁用发布，输入1强制发布，默认如果未发布则发布否则跳过发布"
+        description: "输入2强制禁用发布，输入1强制发布，默认未发布则发布否则跳过发布"
         required: false
         default: ""
       force-push:
-        description: "输入2强制禁用推送到仓库，输入1强制推送到仓库，默认如果未发布则推送否则跳过推送仓库"
+        description: "输入2强制禁用推送到仓库，输入1强制推送，默认未发布则推送否则跳过推送"
         required: false
         default: ""
       comments:
@@ -29,46 +29,46 @@ jobs:
     runs-on: ubuntu-latest
     environment: default
     steps:
-      - name: 检出 Git 仓库
+      - name: 检出Git仓库
         uses: actions/checkout@v5
 
-      - name: 设置 JDK 环境
+      - name: 设置JDK
         uses: actions/setup-java@v5
         with:
           distribution: zulu
           java-version: 21
 
-      - name: 设置 Gradle
+      - name: 设置Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: 授予 gradlew 执行权限
+      - name: 授予gradlew执行权限
         run: chmod +x gradlew
 
-      - name: 配置 Git 用户信息
-        run: git config --global user.email "3647844952@qq.com" && git config --global user.name "ctnBobong32"
+      - name: 配置Git用户信息
+        run: git config --global user.email "ci@luminolmc.com" && git config --global user.name "LuminolMC CI"
 
       - name: 应用所有补丁
         run: ./gradlew --refresh-dependencies applyAllPatches
 
-      - name: 构建 Paperclip Jar
+      - name: 构建Paperclip Jar
         run: ./gradlew --refresh-dependencies createMojmapPaperclipJar
 
       - name: 上传构建产物
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
-          name: ${{ env.project_id_b }} CI Artifacts
+          name: ${{ env.project_id_b }} CI 构建产物
           path: lophine-server/build/libs/*-paperclip-*-mojmap.jar
 
       - name: 设置环境变量
         if: github.event_name != 'pull_request'
         run: sh scripts/SetENV.sh
 
-      - name: 检查发布是否已存在
+      - name: 检查发布是否存在
         if: github.event_name != 'pull_request' && env.flag_release == 'true'
         run: |
           git fetch --tags
           if [ -n "$(git tag -l "${{ env.tag }}")" ]; then
-            echo "版本已存在"
+            echo "发布已存在"
             release_exists=true
           else
             echo "发布不存在"
@@ -85,7 +85,7 @@ jobs:
           echo "release_exists=${release_exists}" >> $GITHUB_ENV
 
       - name: 发布到仓库
-        if: (( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-push == '2')) || inputs.force-push == '1') && false # do not push to any repo
+        if: (( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-push == '2')) || inputs.force-push == '1') && false # 不要推送到任何仓库
         continue-on-error: true
         run: ./gradlew --refresh-dependencies generateDevelopmentBundle publish -PpublishDevBundle=true
         env:
@@ -96,7 +96,7 @@ jobs:
         if: ( github.event_name != 'pull_request' && env.flag_release == 'true' && env.release_exists != 'true' && !(inputs.force-release == '2')) || inputs.force-release == '1'
         run: |
           if [ ${{ inputs.comments }} == "" ]; then
-          echo "未提供评论"
+          echo "未提供注释"
           echo "flag_comment=true" >> $GITHUB_ENV
           else
           echo "flag_comment=false" >> $GITHUB_ENV
@@ -109,11 +109,11 @@ jobs:
           tag: ${{ env.tag }}
           name: ${{ env.project_id_b }} ${{ env.mcversion }} - ${{ env.commit_id }}${{ env.release_count }}
           body: |
-            📦版本: `${{ env.mcversion }}` | 承诺 ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
-            This release is automatically compiled by GitHub Actions
+            📦版本: `${{ env.mcversion }}` | 提交 ${{ env.commit_id }} [![下载](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
+            此发布由GitHub Actions自动编译
             ### 分支信息
             > ${{ github.ref_name }}
-            ### 提交消息
+            ### 提交信息
             ${{ env.commit_msg }}
           artifacts: ${{ env.jar_dir }}
           generateReleaseNotes: true
@@ -128,13 +128,13 @@ jobs:
           tag: ${{ env.tag }}
           name: ${{ env.project_id_b }} ${{ env.mcversion }} - ${{ env.commit_id }}${{ env.release_count }}
           body: |
-            📦版本: `${{ env.mcversion }}` | 承诺 ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/ctnBobong32/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/ctnBobong32/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
-            此版本由GitHub Actions自动编译
-            ### 评论
+            📦版本: `${{ env.mcversion }}` | 提交 ${{ env.commit_id }} [![下载](https://img.shields.io/github/downloads/LuminolMC/${{ env.project_id }}/${{ env.tag }}/total?color=red&style=flat-square)](https://github.com/LuminolMC/${{ env.project_id }}/releases/download/${{ env.tag }}/${{ env.jar }})
+            此发布由GitHub Actions自动编译
+            ### 注释
             > ${{ inputs.comments }}
             ### 分支信息
             > ${{ github.ref_name }}
-            ### 提交消息
+            ### 提交信息
             ${{ env.commit_msg }}
           artifacts: ${{ env.jar_dir }}
           generateReleaseNotes: true
