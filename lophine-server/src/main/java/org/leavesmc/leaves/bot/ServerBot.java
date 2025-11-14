@@ -154,7 +154,7 @@ public class ServerBot extends ServerPlayer {
             this.notSleepTicks++;
         }
 
-        if (FakeplayerConfig.regenAmount > 0.0 && getServer().checkTickCount(20)) {
+        if (FakeplayerConfig.regenAmount > 0.0 && this.tickCount % 20 == 0) {
             float regenAmount = (float) (FakeplayerConfig.regenAmount * 20);
             this.setHealth(Math.min(this.getHealth() + regenAmount, this.getMaxHealth()));
         }
@@ -464,10 +464,29 @@ public class ServerBot extends ServerPlayer {
     }
 
     public void sendFakeData(ServerPlayerConnection playerConnection, boolean login) {
+        // 添加实体追踪器检查，确保实体已经完全初始化
+        if (this.isRemoved() || !this.isAddedToWorld()) {
+            LOGGER.warn("尝试发送假数据时实体尚未完全初始化: {}", this.getId());
+            return;
+        }
+        
         ChunkMap.TrackedEntity entityTracker = this.level().getChunkSource().chunkMap.entityMap.get(this.getId());
 
         if (entityTracker == null) {
-            LOGGER.warn("Fakeplayer cant get entity tracker for " + this.getId());
+            // 如果追踪器不存在，延迟重试
+            if (login) {
+                Bukkit.getScheduler().runTaskLater(MinecraftInternalPlugin.INSTANCE, () -> {
+                    ChunkMap.TrackedEntity retryTracker = this.level().getChunkSource().chunkMap.entityMap.get(this.getId());
+                    if (retryTracker != null) {
+                        playerConnection.send(this.getAddEntityPacket(retryTracker.serverEntity));
+                        playerConnection.send(new ClientboundRotateHeadPacket(this, (byte) ((getYRot() * 256f) / 360f)));
+                    } else {
+                        LOGGER.warn("Fakeplayer cant get entity tracker for {} after retry", this.getId());
+                    }
+                }, 2L); // 延迟2 ticks重试
+            } else {
+                LOGGER.warn("Fakeplayer cant get entity tracker for {}", this.getId());
+            }
             return;
         }
 
@@ -484,9 +503,12 @@ public class ServerBot extends ServerPlayer {
     }
 
     public void renderData() {
-        this.getServer().getPlayerList().getPlayers().forEach(
-                player -> this.sendFakeDataIfNeed(player, false)
-        );
+        // 添加延迟以确保实体追踪器已经初始化
+        Bukkit.getScheduler().runTaskLater(MinecraftInternalPlugin.INSTANCE, () -> {
+            this.getServer().getPlayerList().getPlayers().forEach(
+                    player -> this.sendFakeDataIfNeed(player, false)
+            );
+        }, 2L); // 延迟2 ticks执行
     }
 
     private void sendPacket(Packet<?> packet) {
