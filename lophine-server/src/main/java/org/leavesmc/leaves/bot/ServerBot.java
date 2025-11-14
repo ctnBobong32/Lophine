@@ -464,8 +464,8 @@ public class ServerBot extends ServerPlayer {
     }
 
     public void sendFakeData(ServerPlayerConnection playerConnection, boolean login) {
-        // 添加实体追踪器检查，确保实体已经完全初始化
-        if (this.isRemoved() || !this.isAddedToWorld()) {
+        // 修复：使用 isAddedToLevel() 替代不存在的 isAddedToWorld()
+        if (this.isRemoved() || !this.isAddedToLevel()) {
             LOGGER.warn("尝试发送假数据时实体尚未完全初始化: {}", this.getId());
             return;
         }
